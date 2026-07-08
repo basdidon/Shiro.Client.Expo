@@ -12,7 +12,7 @@ const orders: Order[] = [
         orderBy: "New York",
     },
     {
-        id: "15455452256",
+        id: "15455452257",
         orderNumber: 2,
         itemsCount: 199,
         orderBy: "New York",
@@ -62,7 +62,7 @@ export default function Orders() {
             <View style={{ marginTop: 24 }}>
                 {orders.map((x) => (
                     <View
-                        id={x.id}
+                        key={x.id}
                         style={{
                             flexDirection: "row",
                             backgroundColor: "white",

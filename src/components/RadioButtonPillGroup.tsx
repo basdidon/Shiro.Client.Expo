@@ -25,7 +25,7 @@ const RadioPillButtonGroup = ({ options, selectedId, onPress }: RadioPillButtonG
                     const id = x.id.toString();
                     return (
                         <Pressable
-                            id={id}
+                            key={id}
                             style={[
                                 {
                                     paddingHorizontal: 12,
