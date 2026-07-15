@@ -1,6 +1,11 @@
-import api from "@/api/_config";
-import { Product } from "@/types/Product";
+import api from "@/lib/api";
+import type { components } from "@/types/api";
 
-export const getProductByBarcode = async (barcode: string): Promise<Product> => {
-    return await api.get(`/products/barcode/${barcode}`).then((response) => response.data);
+type ProductDto = components["schemas"]["ProductDto"];
+
+export const getProductByBarcode = async (barcode: string): Promise<ProductDto> => {
+    const { data } = await api.get<ProductDto>(
+        `/api/v1/products/barcodes/${encodeURIComponent(barcode)}`,
+    );
+    return data;
 };

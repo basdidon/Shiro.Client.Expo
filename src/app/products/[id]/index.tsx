@@ -1,25 +1,27 @@
-import { getProductById } from "@/api/products/getProductById";
 import HeartButton from "@/components/HeartButton";
 import Stepper from "@/components/Stepper";
 import Tag from "@/components/ui/Tag";
+import { useProduct } from "@/hooks/useProducts";
+import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { useQuery } from "@tanstack/react-query";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Button,
+    Pressable,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SingleProductPage() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const {
-        data: product,
-        isPending,
-        isError,
-    } = useQuery({
-        queryKey: ["products", id],
-        queryFn: () => getProductById(id),
-    });
+    const isProductManager = useAuthStore((state) => state.role === "ProductManager");
+    const { data: product, isPending, isError, error, refetch } = useProduct(id);
 
     const cartItem = useCartStore((state) => state.cart.find((item) => item.id == id));
     const setItemToCart = useCartStore((state) => state.setItemToCart);
@@ -28,25 +30,43 @@ export default function SingleProductPage() {
 
     const [liked, setLiked] = useState(false);
 
-    if (isPending || isError) return;
+    const headerRight = isProductManager
+        ? () => (
+              <Link href={{ pathname: "/products/[id]/edit", params: { id } }} asChild>
+                  <Pressable hitSlop={8}>
+                      <MaterialDesignIcons name="pencil" size={20} />
+                  </Pressable>
+              </Link>
+          )
+        : undefined;
+
+    if (isPending) {
+        return (
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <Stack.Screen options={{ title: "", headerRight }} />
+                <ActivityIndicator size={64} />
+            </View>
+        );
+    }
+
+    if (isError) {
+        return (
+            <View style={{ flex: 1, gap: 16, justifyContent: "center", alignItems: "center" }}>
+                <Stack.Screen options={{ title: "", headerRight }} />
+                <Text>{error.message}</Text>
+                <Button title="Reload" onPress={() => refetch()} />
+            </View>
+        );
+    }
+
+    const unitPrice = Number(product.unitPrice);
 
     return (
         <SafeAreaView
             edges={["left", "right", "bottom"]}
             style={{ flexDirection: "column", flex: 1 }}
         >
-            <Stack.Screen
-                options={{
-                    title: "",
-                    headerRight: () => (
-                        <Link href={{ pathname: "/products/[id]", params: { id } }} asChild>
-                            <Pressable>
-                                <MaterialDesignIcons name="pencil" size={16} />
-                            </Pressable>
-                        </Link>
-                    ),
-                }}
-            />
+            <Stack.Screen options={{ title: "", headerRight }} />
             <View style={{ backgroundColor: "cyan", aspectRatio: 4 / 3 }} />
             <View style={{ margin: 8, flex: 1 }}>
                 <View style={{ gap: 4, flexDirection: "column", alignItems: "flex-start" }}>
@@ -54,14 +74,13 @@ export default function SingleProductPage() {
                     <Text style={{ fontSize: 28 }} numberOfLines={2}>
                         {product.name}
                     </Text>
+
                     <View style={{ flexDirection: "row", gap: 4 }}>
                         {product.barcodes.map((x) => (
                             <Tag key={x} label={x} />
                         ))}
                     </View>
-                    <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>
-                        {product.unitPrice}.-
-                    </Text>
+                    <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
                 </View>
             </View>
             {/* Footer */}
@@ -71,7 +90,7 @@ export default function SingleProductPage() {
                         <Text>Total Price :</Text>
                         <Text style={{ fontSize: 24 }}>
                             <MaterialDesignIcons name="currency-thb" size={24} />
-                            {product.unitPrice * quantity}
+                            {unitPrice * quantity}
                         </Text>
                     </View>
                     <Stepper value={quantity} setValue={setQuantity} />
@@ -84,7 +103,7 @@ export default function SingleProductPage() {
                             setItemToCart({
                                 id: product.id,
                                 name: product.name,
-                                unitPrice: product.unitPrice,
+                                unitPrice,
                                 quantity: quantity,
                             })
                         }

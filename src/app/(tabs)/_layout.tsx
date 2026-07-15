@@ -14,17 +14,33 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="orders"
+                name="categories"
                 options={{
                     tabBarIcon: ({ focused, ...rest }) => (
                         <MaterialDesignIcons
-                            name={
-                                focused
-                                    ? "file-document-multiple"
-                                    : "file-document-multiple-outline"
-                            }
+                            name={focused ? "view-grid" : "view-grid-outline"}
                             {...rest}
                         />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="products"
+                options={{
+                    tabBarIcon: ({ focused, ...rest }) => (
+                        <MaterialDesignIcons
+                            name={focused ? "package-variant" : "package-variant-closed"}
+                            {...rest}
+                        />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="scanner"
+                options={{
+                    title: "Scan",
+                    tabBarIcon: ({ focused: _focused, ...rest }) => (
+                        <MaterialDesignIcons name="barcode-scan" {...rest} />
                     ),
                 }}
             />

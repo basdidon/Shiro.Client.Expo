@@ -4,10 +4,3 @@ export interface Product {
     name: string;
     unitPrice: number;
 }
-
-export interface Order {
-    id: string;
-    orderNumber: number;
-    itemsCount: number;
-    orderBy: string;
-}
