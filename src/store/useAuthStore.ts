@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import api from "@/lib/api";
-import { getRoleFromToken, type Role } from "@/lib/jwt";
+import { getRolesFromToken, getUsernameFromToken, type Role } from "@/lib/jwt";
 import { tokenStorage } from "@/lib/tokenStorage";
 import type { components } from "@/types/api";
 
@@ -13,7 +13,8 @@ type AuthState = {
     accessToken: string | null;
     isLoading: boolean; // true ระหว่างเช็ค token ตอนเปิดแอพ
     isAuthenticated: boolean;
-    role: Role | null;
+    roles: Role[];
+    username: string | null;
 
     // actions
     init: () => Promise<void>;
@@ -27,16 +28,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     accessToken: null,
     isLoading: true,
     isAuthenticated: false,
-    role: null,
+    roles: [],
+    username: null,
 
-    // เรียกตอนแอพเปิดครั้งแรก เพื่อเช็คว่ามี token ค้างอยู่ไหม
     init: async () => {
         try {
             const accessToken = await tokenStorage.getAccessToken();
             set({
                 accessToken,
                 isAuthenticated: !!accessToken,
-                role: accessToken ? getRoleFromToken(accessToken) : null,
+                roles: accessToken ? getRolesFromToken(accessToken) : [],
+                username: accessToken ? getUsernameFromToken(accessToken) : null,
                 isLoading: false,
             });
         } catch (err) {
@@ -71,12 +73,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({
             accessToken: accessToken ?? null,
             isAuthenticated: true,
-            role: accessToken ? getRoleFromToken(accessToken) : null,
+            roles: accessToken ? getRolesFromToken(accessToken) : [],
+            username: accessToken ? getUsernameFromToken(accessToken) : null,
         });
     },
 
     logout: async () => {
         await tokenStorage.clear();
-        set({ accessToken: null, isAuthenticated: false, role: null });
+        set({ accessToken: null, isAuthenticated: false, roles: [], username: null });
     },
 }));

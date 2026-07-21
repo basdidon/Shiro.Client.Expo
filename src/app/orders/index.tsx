@@ -1,63 +1,51 @@
 import RadioPillButtonGroup from "@/components/RadioButtonPillGroup";
 import AppText from "@/components/ui/AppText";
-import { useOrderStore } from "@/store/useOrderStore";
+import { useOrders } from "@/hooks/useOrders";
+import { formatDateTime } from "@/lib/date";
+import type { components } from "@/types/api";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Link } from "expo-router";
 import { useMemo, useState } from "react";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+type OrderStatus = components["schemas"]["OrderStatus"];
+
+const STATUS_OPTIONS: { id: number; label: string; value: string; status?: OrderStatus }[] = [
+    { id: 1, label: "All", value: "all" },
+    { id: 2, label: "Created", value: "created", status: 0 },
+    { id: 3, label: "Completed", value: "completed", status: 1 },
+    { id: 4, label: "Cancelled", value: "cancelled", status: 2 },
+];
+
 export default function Orders() {
-    const orders = useOrderStore((state) => state.orders);
-    const [selectedId, setSelectedId] = useState<string | undefined>();
-    const options = useMemo(
-        () => [
-            {
-                id: 1,
-                label: "All",
-                value: "all",
-            },
-            {
-                id: 2,
-                label: "Pending",
-                value: "pending",
-            },
-            {
-                id: 3,
-                label: "Preparing",
-                value: "preparing",
-            },
-            {
-                id: 4,
-                label: "On Delivery",
-                value: "onDelivery",
-            },
-            {
-                id: 5,
-                label: "Completed",
-                value: "completed",
-            },
-        ],
-        [],
-    );
+    const [selectedId, setSelectedId] = useState<string>("2");
+    const status = STATUS_OPTIONS.find((x) => x.id.toString() === selectedId)?.status;
+
+    const { data, isPending } = useOrders(20, status);
+    const orders = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
 
     return (
-        <SafeAreaView edges={["left", "right"]} style={styles.container}>
-            <RadioPillButtonGroup
-                options={options}
-                selectedId={selectedId}
-                onPress={setSelectedId}
-            />
-            <View style={{ marginTop: 24 }}>
-                {orders.length === 0 ? (
+        <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
+            <View style={{ margin: 12, marginVertical: 8 }}>
+                <RadioPillButtonGroup
+                    options={STATUS_OPTIONS}
+                    selectedId={selectedId}
+                    onPress={setSelectedId}
+                />
+            </View>
+            <ScrollView showsVerticalScrollIndicator={false}>
+                {isPending ? (
+                    <ActivityIndicator style={{ marginTop: 24 }} />
+                ) : orders.length === 0 ? (
                     <AppText style={{ textAlign: "center", color: "gray", marginTop: 24 }}>
                         ยังไม่มีคำสั่งซื้อ
                     </AppText>
                 ) : (
                     orders.map((x) => (
                         <Link
-                            key={x.id}
-                            href={{ pathname: "/orders/[id]", params: { id: x.id } }}
+                            key={x.orderId}
+                            href={{ pathname: "/orders/[id]", params: { id: x.orderId! } }}
                             asChild
                         >
                             <Pressable
@@ -69,11 +57,22 @@ export default function Orders() {
                                     marginBottom: 8,
                                 }}
                             >
-                                <MaterialDesignIcons
-                                    name="file-document-outline"
-                                    size={64}
-                                    style={{ backgroundColor: "cyan", borderRadius: 12 }}
-                                />
+                                <View
+                                    style={{
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        width: 88,
+                                        aspectRatio: 1,
+                                        backgroundColor: "beige",
+                                        borderRadius: 12,
+                                    }}
+                                >
+                                    <MaterialDesignIcons
+                                        name="file-document-outline"
+                                        size={64}
+                                        color={"lightsalmon"}
+                                    />
+                                </View>
                                 <View style={{ rowGap: 4 }}>
                                     <Text
                                         style={{
@@ -82,20 +81,60 @@ export default function Orders() {
                                             letterSpacing: 0.5,
                                         }}
                                     >
-                                        # {String(x.orderNumber).padStart(4, "0")}
+                                        # {x.orderId?.slice(0, 8)}
                                     </Text>
-                                    <Text style={{ fontSize: 12, color: "gray" }}>
-                                        รายการ {x.items.length}
-                                    </Text>
-                                    <Text style={{ fontSize: 14, fontWeight: "600" }}>
-                                        {x.totalPrice} .-
-                                    </Text>
+                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <MaterialDesignIcons
+                                            name="account-outline"
+                                            size={20}
+                                            color={"gray"}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <AppText style={{ color: "gray" }}>{x.orderByName}</AppText>
+                                    </View>
+                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <MaterialDesignIcons
+                                            name="clock-plus-outline"
+                                            size={20}
+                                            color={"gray"}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <AppText style={{ color: "gray" }}>
+                                            {formatDateTime(x.createdAt)}
+                                        </AppText>
+                                    </View>
+                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <MaterialDesignIcons
+                                            name="list-box-outline"
+                                            size={20}
+                                            color={"gray"}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <AppText style={{ color: "gray" }}>
+                                            {x.orderLines?.length ?? 0} รายการ
+                                        </AppText>
+                                    </View>
+                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                        <MaterialDesignIcons
+                                            name="currency-thb"
+                                            size={20}
+                                            color={"gray"}
+                                            style={{ marginRight: 8 }}
+                                        />
+                                        <AppText style={{ fontSize: 14, fontWeight: "600" }}>
+                                            {x.orderLines?.reduce(
+                                                (sum, line) => sum + Number(line.lineTotal ?? 0),
+                                                0,
+                                            )}
+                                            .-
+                                        </AppText>
+                                    </View>
                                 </View>
                             </Pressable>
                         </Link>
                     ))
                 )}
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -103,6 +142,5 @@ export default function Orders() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 8,
     },
 });

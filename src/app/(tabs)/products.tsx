@@ -24,7 +24,7 @@ const HAFT_COLUMN_GAP = COLUMN_GAP / 2;
 export default function ProductPage() {
     const { categoryId: categoryIdParam } = useLocalSearchParams<{ categoryId?: string }>();
     const categoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
-    const isProductManager = useAuthStore((state) => state.role === "ProductManager");
+    const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
     const {
         data,
         isError,
@@ -53,16 +53,6 @@ export default function ProductPage() {
         [hasNextPage, isFetchingNextPage, fetchNextPage],
     );
 
-    const headerRight = isProductManager
-        ? () => (
-              <Link href="/products/create" asChild>
-                  <Pressable hitSlop={8}>
-                      <MaterialDesignIcons name="plus" size={24} />
-                  </Pressable>
-              </Link>
-          )
-        : undefined;
-
     const clearFilter = () => router.setParams({ categoryId: undefined });
 
     const filterBar = categoryId ? (
@@ -83,7 +73,7 @@ export default function ProductPage() {
     if (isError) {
         return (
             <View style={{ flex: 1, gap: 16, justifyContent: "center", alignItems: "center" }}>
-                <Stack.Screen options={{ title: categoryName, headerRight }} />
+                <Stack.Screen options={{ title: categoryName }} />
                 {filterBar}
                 {isRefetching ? (
                     <ActivityIndicator size={48} />
@@ -97,7 +87,6 @@ export default function ProductPage() {
 
     return (
         <SafeAreaView edges={["left", "right"]} style={styles.container}>
-            <Stack.Screen options={{ headerRight }} />
             {filterBar}
             <View style={styles.contentContainer}>
                 {isPending ? (

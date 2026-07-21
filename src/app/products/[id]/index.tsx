@@ -5,12 +5,13 @@ import { useProduct } from "@/hooks/useProducts";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Link, Stack, useLocalSearchParams } from "expo-router";
+import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
     Button,
     Pressable,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -20,25 +21,53 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SingleProductPage() {
     const { id } = useLocalSearchParams<{ id: string }>();
-    const isProductManager = useAuthStore((state) => state.role === "ProductManager");
+    const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
+    const canAddToOrder = useAuthStore(
+        (state) =>
+            state.roles.includes("super-admin") ||
+            state.roles.includes("owner") ||
+            state.roles.includes("order-manager") ||
+            state.roles.includes("staff"),
+    );
     const { data: product, isPending, isError, error, refetch } = useProduct(id);
 
-    const cartItem = useCartStore((state) => state.cart.find((item) => item.id == id));
-    const setItemToCart = useCartStore((state) => state.setItemToCart);
+    const cartItem = useCartStore((state) => state.items.find((item) => item.productId === id));
+    const setCartItem = useCartStore((state) => state.setItem);
+    const removeCartItem = useCartStore((state) => state.removeItem);
 
     const [quantity, setQuantity] = useState(cartItem?.quantity ?? 1);
-
     const [liked, setLiked] = useState(false);
 
-    const headerRight = isProductManager
-        ? () => (
-              <Link href={{ pathname: "/products/[id]/edit", params: { id } }} asChild>
-                  <Pressable hitSlop={8}>
-                      <MaterialDesignIcons name="pencil" size={20} />
-                  </Pressable>
-              </Link>
-          )
-        : undefined;
+    const isInCart = !!cartItem;
+    const isRemoving = isInCart && quantity === 0;
+
+    const handleAddToCart = () => {
+        if (!product) return;
+
+        setCartItem({
+            productId: product.id,
+            productName: product.name,
+            unitPrice: Number(product.unitPrice),
+            quantity,
+        });
+    };
+
+    const handleCartButtonPress = () => {
+        if (isRemoving) {
+            removeCartItem(id);
+        } else {
+            handleAddToCart();
+        }
+        router.back();
+    };
+
+    const headerRight = () => (
+        <Link href="/cart" asChild>
+            <Pressable hitSlop={8}>
+                <MaterialDesignIcons name="cart-outline" size={22} />
+            </Pressable>
+        </Link>
+    );
 
     if (isPending) {
         return (
@@ -67,22 +96,43 @@ export default function SingleProductPage() {
             style={{ flexDirection: "column", flex: 1 }}
         >
             <Stack.Screen options={{ title: "", headerRight }} />
-            <View style={{ backgroundColor: "cyan", aspectRatio: 4 / 3 }} />
-            <View style={{ margin: 8, flex: 1 }}>
-                <View style={{ gap: 4, flexDirection: "column", alignItems: "flex-start" }}>
-                    <Text style={{ fontSize: 10, color: "gray" }}>{id}</Text>
-                    <Text style={{ fontSize: 28 }} numberOfLines={2}>
-                        {product.name}
-                    </Text>
+            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+                <View style={{ backgroundColor: "cyan", aspectRatio: 4 / 3 }} />
+                <View style={{ margin: 8 }}>
+                    <View style={{ gap: 4, flexDirection: "column", alignItems: "flex-start" }}>
+                        <Text style={{ fontSize: 10, color: "gray" }}>{id}</Text>
+                        <Text style={{ fontSize: 28 }} numberOfLines={2}>
+                            {product.name}
+                        </Text>
 
-                    <View style={{ flexDirection: "row", gap: 4 }}>
-                        {product.barcodes.map((x) => (
-                            <Tag key={x} label={x} />
-                        ))}
+                        <View style={{ flexDirection: "row", gap: 4 }}>
+                            {product.barcodes.map((x) => (
+                                <Tag key={x} label={x} />
+                            ))}
+                        </View>
+                        <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
                     </View>
-                    <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
+
+                    {isProductManager && (
+                        <Link href={{ pathname: "/products/[id]/edit", params: { id } }} asChild>
+                            <TouchableOpacity style={styles.updateBtn}>
+                                <Text style={styles.updateBtnText}>แก้ไขสินค้า</Text>
+                            </TouchableOpacity>
+                        </Link>
+                    )}
+
+                    {canAddToOrder && (
+                        <Link
+                            href={{ pathname: "/products/[id]/add-to-order", params: { id } }}
+                            asChild
+                        >
+                            <TouchableOpacity style={styles.updateBtn}>
+                                <Text style={styles.updateBtnText}>เพิ่มสินค้าลงคำสั่งซื้อ</Text>
+                            </TouchableOpacity>
+                        </Link>
+                    )}
                 </View>
-            </View>
+            </ScrollView>
             {/* Footer */}
             <View style={styles.footerContainer}>
                 <View style={styles.footerRow}>
@@ -93,22 +143,21 @@ export default function SingleProductPage() {
                             {unitPrice * quantity}
                         </Text>
                     </View>
-                    <Stepper value={quantity} setValue={setQuantity} />
+                    <Stepper value={quantity} setValue={setQuantity} min={isInCart ? 0 : 1} />
                 </View>
                 <View style={styles.footerRow}>
                     <HeartButton value={liked} setValue={setLiked} />
                     <TouchableOpacity
-                        style={styles.btn}
-                        onPress={() =>
-                            setItemToCart({
-                                id: product.id,
-                                name: product.name,
-                                unitPrice,
-                                quantity: quantity,
-                            })
-                        }
+                        style={[styles.btn, isRemoving && styles.removeBtn]}
+                        onPress={handleCartButtonPress}
                     >
-                        <Text style={styles.textButton}>เพิ่มลงในตะกร้า</Text>
+                        <Text style={styles.textButton}>
+                            {isRemoving
+                                ? "ลบออกจากตะกร้า"
+                                : isInCart
+                                  ? "อัปเดตตะกร้า"
+                                  : "เพิ่มลงในตะกร้า"}
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -141,5 +190,15 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         flex: 2,
     },
+    removeBtn: { backgroundColor: "#c00" },
+    updateBtn: {
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "blue",
+        paddingVertical: 12,
+        borderRadius: 12,
+        marginTop: 16,
+    },
+    updateBtnText: { color: "blue", textAlign: "center", fontSize: 20 },
     textButton: { color: "white", textAlign: "center", fontSize: 20 },
 });

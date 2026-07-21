@@ -23,15 +23,31 @@ function SplashScreenController() {
 
 function RootNavigator() {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-    const isProductManager = useAuthStore((state) => state.role === "ProductManager");
+    const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
+    const canManageOrderLines = useAuthStore(
+        (state) => state.roles.includes("order-manager") || state.roles.includes("staff"),
+    );
+    const canManageUsers = useAuthStore(
+        (state) => state.roles.includes("super-admin") || state.roles.includes("owner"),
+    );
+    const canAddToOrder = useAuthStore(
+        (state) =>
+            state.roles.includes("super-admin") ||
+            state.roles.includes("owner") ||
+            state.roles.includes("order-manager") ||
+            state.roles.includes("staff"),
+    );
 
     return (
         <Stack screenOptions={{ headerShown: false }}>
             <Stack.Protected guard={isAuthenticated}>
                 <Stack.Screen name="(tabs)" />
                 <Stack.Screen name="cart" options={{ headerShown: true }} />
-                <Stack.Screen name="orders" options={{ headerShown: true }} />
-                <Stack.Screen name="orders/[id]" options={{ headerShown: true }} />
+                <Stack.Screen
+                    name="orders"
+                    options={{ headerShown: true, headerTitle: "คำสั่งซื้อ" }}
+                />
+                <Stack.Screen name="orders/[id]" options={{ headerShown: true, headerTitle: "" }} />
                 <Stack.Screen name="products/[id]" options={{ headerShown: true }} />
             </Stack.Protected>
 
@@ -40,6 +56,23 @@ function RootNavigator() {
                 <Stack.Screen name="products/[id]/edit" options={{ headerShown: true }} />
                 <Stack.Screen name="categories/create" options={{ headerShown: true }} />
                 <Stack.Screen name="categories/[id]/edit" options={{ headerShown: true }} />
+            </Stack.Protected>
+
+            <Stack.Protected guard={isAuthenticated && canManageOrderLines}>
+                <Stack.Screen name="orders/[id]/edit" options={{ headerShown: true }} />
+                <Stack.Screen name="orders/[id]/scan-item" options={{ headerShown: true }} />
+            </Stack.Protected>
+
+            <Stack.Protected guard={isAuthenticated && canManageUsers}>
+                <Stack.Screen name="users/index" options={{ headerShown: true, title: "ผู้ใช้" }} />
+                <Stack.Screen name="users/[id]" options={{ headerShown: true }} />
+            </Stack.Protected>
+
+            <Stack.Protected guard={isAuthenticated && canAddToOrder}>
+                <Stack.Screen
+                    name="products/[id]/add-to-order"
+                    options={{ headerShown: true, title: "เลือกคำสั่งซื้อ" }}
+                />
             </Stack.Protected>
 
             <Stack.Protected guard={!isAuthenticated}>

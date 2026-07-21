@@ -23,16 +23,56 @@ const ROLE_CLAIM_KEYS = [
     "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
 ];
 
-export type Role = "ProductManager" | "User";
+// Same situation for the username claim — check the common shapes.
+const USERNAME_CLAIM_KEYS = [
+    "username",
+    "unique_name",
+    "name",
+    "preferred_username",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+];
 
-export const getRoleFromToken = (token: string): Role | null => {
+export type Role =
+    | "super-admin"
+    | "owner"
+    | "order-manager"
+    | "product-manager"
+    | "staff"
+    | "user";
+
+const VALID_ROLES: Role[] = [
+    "super-admin",
+    "owner",
+    "order-manager",
+    "product-manager",
+    "staff",
+    "user",
+];
+
+// A user can hold more than one role at once (e.g. OrderManager + Staff), and the
+// role claim may show up as a single string or an array under any of the claim keys.
+export const getRolesFromToken = (token: string): Role[] => {
+    const payload = decodeJwtPayload(token);
+    if (!payload) return [];
+
+    const roles = new Set<Role>();
+    for (const key of ROLE_CLAIM_KEYS) {
+        const value = payload[key];
+        const values = Array.isArray(value) ? value : [value];
+        for (const role of values) {
+            if (VALID_ROLES.includes(role as Role)) roles.add(role as Role);
+        }
+    }
+    return [...roles];
+};
+
+export const getUsernameFromToken = (token: string): string | null => {
     const payload = decodeJwtPayload(token);
     if (!payload) return null;
 
-    for (const key of ROLE_CLAIM_KEYS) {
+    for (const key of USERNAME_CLAIM_KEYS) {
         const value = payload[key];
-        const role = Array.isArray(value) ? value[0] : value;
-        if (role === "ProductManager" || role === "User") return role;
+        if (typeof value === "string") return value;
     }
     return null;
 };

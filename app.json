@@ -41,7 +41,11 @@
         {
           "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan product barcodes"
         }
-      ]
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,

@@ -4,13 +4,13 @@ import { DEFAULT_CATEGORY_ICON, type CategoryIconName } from "@/lib/categoryIcon
 import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
-import { Link, router, Stack } from "expo-router";
+import { router } from "expo-router";
 import { useRef } from "react";
 import { ActivityIndicator, Button, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CategoriesPage() {
-    const isProductManager = useAuthStore((state) => state.role === "ProductManager");
+    const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
     const { data: categories, isPending, isError, error, refetch } = useCategories();
 
     // long-pressing a cell should navigate to edit instead of filtering products;
@@ -18,20 +18,9 @@ export default function CategoriesPage() {
     // after a long press
     const suppressNextPressRef = useRef(false);
 
-    const headerRight = isProductManager
-        ? () => (
-              <Link href="/categories/create" asChild>
-                  <Pressable hitSlop={8}>
-                      <MaterialDesignIcons name="plus" size={24} />
-                  </Pressable>
-              </Link>
-          )
-        : undefined;
-
     if (isPending) {
         return (
             <View style={{ flex: 1, justifyContent: "center" }}>
-                <Stack.Screen options={{ headerRight }} />
                 <ActivityIndicator size={64} />
             </View>
         );
@@ -40,7 +29,6 @@ export default function CategoriesPage() {
     if (isError) {
         return (
             <View style={{ flex: 1, gap: 16, justifyContent: "center", alignItems: "center" }}>
-                <Stack.Screen options={{ headerRight }} />
                 <AppText>{error.message}</AppText>
                 <Button title="Reload" onPress={() => refetch()} />
             </View>
@@ -49,7 +37,6 @@ export default function CategoriesPage() {
 
     return (
         <SafeAreaView edges={["left", "right"]} style={styles.container}>
-            <Stack.Screen options={{ headerRight }} />
             <View style={styles.contentContainer}>
                 {categories.length === 0 ? (
                     <View style={{ flex: 1, justifyContent: "center" }}>
@@ -115,12 +102,16 @@ export default function CategoriesPage() {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    contentContainer: { flex: 1, backgroundColor: "white" },
+    contentContainer: {
+        flex: 1,
+        backgroundColor: "white",
+        paddingVertical: 16,
+    },
     cell: {
         flex: 1,
         alignItems: "center",
         gap: 4,
-        marginBottom: 16,
+        marginBottom: 24,
     },
     iconCircle: {
         width: 56,

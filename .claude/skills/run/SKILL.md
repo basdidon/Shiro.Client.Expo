@@ -27,9 +27,25 @@ This is an Expo Router app (Expo SDK 56 — read https://docs.expo.dev/versions/
 
 ## Roles & permissions
 
-The app has exactly two roles:
+A user can hold more than one role at once. Roles are read from claims on the JWT access token (`src/lib/jwt.ts`, `getRolesFromToken`) and exposed as `roles: Role[]` on `useAuthStore` — gate screens with `roles.includes("x")`, not `role === "x"`.
 
-- **ProductManager** — full CRUD on products and categories.
-- **User** — read-only access to products and categories.
+Role names on the wire are **kebab-case** (e.g. `"order-manager"`, not `"OrderManager"`) — the backend switched formats; `src/lib/jwt.ts`'s `Role` union and `VALID_ROLES` are the source of truth for the exact strings.
 
-As of now `RegisterCommand`/`LoginCommand`/`TokenResponse` in `src/types/api.d.ts` carry no role field and nothing in `src/` reads or branches on a role yet — this split is not implemented in the frontend. When building or verifying product/category CRUD screens (create/edit/delete forms, buttons, etc.), gate them by role, and confirm with a ProductManager account that writes work and with a plain User account that write actions are hidden or rejected. If the generated API types still don't expose a role by then, check with the backend/API contract before assuming a shape.
+The system has six roles:
+
+- **super-admin** — assigns roles to users.
+- **owner** — can add/remove lower roles on users.
+- **order-manager** — full CRUD on order lines; can also set an order as completed or cancelled.
+- **product-manager** — full CRUD on products and categories.
+- **staff** — full CRUD on order lines (cannot complete/cancel an order).
+- **user** — read-only access to their own orders.
+
+Every authenticated user, regardless of role, can read products/categories and create orders.
+
+What's actually gated in the frontend today:
+- Product/category create/edit/delete (`(tabs)/products.tsx`, `(tabs)/categories.tsx`, `(tabs)/scanner.tsx`, `products/[id]/index.tsx`, `products/[id]/edit.tsx`, `categories/create.tsx`, `categories/[id]/edit.tsx`, and their `Stack.Protected` guards in `_layout.tsx`): **product-manager** only.
+- Order line management — add via barcode scan, update quantity, remove (`orders/[id]/edit.tsx`, `orders/[id]/scan-item.tsx`): **order-manager** or **staff**.
+- Completing/cancelling an order (`orders/[id]/edit.tsx`): **order-manager** only.
+- User list + role assignment (`users/index.tsx`, `users/[id].tsx`, via `src/api/users/` and `src/hooks/useUsers.ts`): **super-admin** or **owner**. The role picker/remove buttons are driven by `GET /api/v1/users/assignable-roles`, not the raw six-role list, so it already reflects each caller's own hierarchy.
+
+When building or verifying a role-gated screen, confirm with an account holding the relevant role that the action works, and with an account lacking it that the action is hidden or rejected.

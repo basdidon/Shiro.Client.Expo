@@ -4,15 +4,16 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 interface Props {
     value: number;
     setValue: (newValue: number) => void;
+    min?: number;
 }
 
-export default function Stepper({ value, setValue }: Props) {
+export default function Stepper({ value, setValue, min = 1 }: Props) {
     const onIncrease = () => {
         setValue(value + 1);
     };
 
     const onDecrease = () => {
-        if (value <= 1) return;
+        if (value <= min) return;
 
         setValue(value - 1);
     };
