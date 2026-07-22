@@ -4,7 +4,7 @@ import { useOrders } from "@/hooks/useOrders";
 import { formatDateTime } from "@/lib/date";
 import type { components } from "@/types/api";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Link } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -13,16 +13,17 @@ type OrderStatus = components["schemas"]["OrderStatus"];
 
 const STATUS_OPTIONS: { id: number; label: string; value: string; status?: OrderStatus }[] = [
     { id: 1, label: "All", value: "all" },
-    { id: 2, label: "Created", value: "created", status: 0 },
-    { id: 3, label: "Completed", value: "completed", status: 1 },
-    { id: 4, label: "Cancelled", value: "cancelled", status: 2 },
+    { id: 2, label: "Created", value: "created", status: "Created" },
+    { id: 3, label: "Completed", value: "completed", status: "Completed" },
+    { id: 4, label: "Cancelled", value: "cancelled", status: "Cancelled" },
 ];
 
 export default function Orders() {
+    const { orderById } = useLocalSearchParams<{ orderById: string }>();
     const [selectedId, setSelectedId] = useState<string>("2");
     const status = STATUS_OPTIONS.find((x) => x.id.toString() === selectedId)?.status;
 
-    const { data, isPending } = useOrders(20, status);
+    const { data, isPending } = useOrders(20, orderById, status);
     const orders = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
 
     return (

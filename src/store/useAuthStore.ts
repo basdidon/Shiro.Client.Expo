@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 import api from "@/lib/api";
-import { getRolesFromToken, getUsernameFromToken, type Role } from "@/lib/jwt";
+import { getRolesFromToken, getUserIdFromToken, getUsernameFromToken, type Role } from "@/lib/jwt";
 import { tokenStorage } from "@/lib/tokenStorage";
 import type { components } from "@/types/api";
 
@@ -15,6 +15,7 @@ type AuthState = {
     isAuthenticated: boolean;
     roles: Role[];
     username: string | null;
+    userId: string | null;
 
     // actions
     init: () => Promise<void>;
@@ -30,6 +31,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     isAuthenticated: false,
     roles: [],
     username: null,
+    userId: null,
 
     init: async () => {
         try {
@@ -39,6 +41,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
                 isAuthenticated: !!accessToken,
                 roles: accessToken ? getRolesFromToken(accessToken) : [],
                 username: accessToken ? getUsernameFromToken(accessToken) : null,
+                userId: accessToken ? getUserIdFromToken(accessToken) : null,
                 isLoading: false,
             });
         } catch (err) {
@@ -75,6 +78,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             isAuthenticated: true,
             roles: accessToken ? getRolesFromToken(accessToken) : [],
             username: accessToken ? getUsernameFromToken(accessToken) : null,
+            userId: accessToken ? getUserIdFromToken(accessToken) : null,
         });
     },
 

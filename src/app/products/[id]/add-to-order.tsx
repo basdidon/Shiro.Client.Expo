@@ -1,5 +1,5 @@
-import AppText from "@/components/ui/AppText";
 import Stepper from "@/components/Stepper";
+import AppText from "@/components/ui/AppText";
 import { useAddOrderLine, useOrders, useUpdateOrderLine } from "@/hooks/useOrders";
 import { useProduct } from "@/hooks/useProducts";
 import type { components } from "@/types/api";
@@ -12,15 +12,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 type OrderDto = components["schemas"]["OrderDto"];
 
-const STATUS_CREATED = 0;
-
 export default function AddProductToOrderScreen() {
     const { id: productId } = useLocalSearchParams<{ id: string }>();
     const { data: product } = useProduct(productId);
 
     const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useOrders(
         20,
-        STATUS_CREATED,
+        "",
+        "Created",
     );
     const orders = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
 
@@ -68,7 +67,10 @@ export default function AddProductToOrderScreen() {
             setSelectedOrder(null);
             router.back();
         } catch {
-            Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถเพิ่มสินค้าลงในคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง");
+            Alert.alert(
+                "เกิดข้อผิดพลาด",
+                "ไม่สามารถเพิ่มสินค้าลงในคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง",
+            );
         }
     };
 

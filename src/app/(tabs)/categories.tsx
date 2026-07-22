@@ -68,7 +68,7 @@ export default function CategoriesPage() {
                                         ? () => {
                                               suppressNextPressRef.current = true;
                                               router.push({
-                                                  pathname: "/categories/[id]/edit",
+                                                  pathname: "/edit/categories/[id]",
                                                   params: { id: String(item.id) },
                                               });
                                           }

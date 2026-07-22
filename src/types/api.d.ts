@@ -798,7 +798,7 @@ export interface paths {
                 query?: {
                     limit?: number | string;
                     cursor?: string;
-                    userId?: string;
+                    orderById?: string;
                     status?: components["schemas"]["OrderStatus"];
                 };
                 header?: never;
@@ -1036,6 +1036,45 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/dashboard/best-sellers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    limit?: number | string;
+                    dateFrom?: string;
+                    dateTo?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BestSellerDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1047,6 +1086,13 @@ export interface components {
             productId: string;
             /** Format: int32 */
             quantity: number | string;
+        };
+        BestSellerDto: {
+            /** Format: uuid */
+            productId: string;
+            productName?: string;
+            /** Format: int32 */
+            soldQuantity?: number | string;
         };
         CategoryDto: {
             /** Format: int32 */
@@ -1139,6 +1185,8 @@ export interface components {
         OrderDto: {
             /** Format: uuid */
             orderId?: string;
+            /** Format: uuid */
+            orderById?: string;
             orderByName?: string;
             status?: components["schemas"]["OrderStatus"];
             orderLines?: components["schemas"]["LineOfOrderDto"][];
@@ -1150,8 +1198,6 @@ export interface components {
             completedAt?: null | string;
             /** Format: date-time */
             cancelledAt?: null | string;
-            /** Format: uuid */
-            orderById?: string;
         };
         OrderLineDto: {
             /** Format: uuid */
@@ -1168,7 +1214,8 @@ export interface components {
             /** Format: double */
             lineTotal?: number | string;
         };
-        OrderStatus: number;
+        /** @enum {unknown} */
+        OrderStatus: "Created" | "Completed" | "Cancelled";
         ProductCategoryDto: {
             /** Format: int32 */
             id: number | string;

@@ -1,18 +1,21 @@
 import AppText from "@/components/ui/AppText";
 import { useOrder } from "@/hooks/useOrders";
 import { useAuthStore } from "@/store/useAuthStore";
+import type { components } from "@/types/api";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ORDER_STATUS_LABELS: Record<number, string> = {
-    0: "อยู่ระหว่างดำเนินการ",
-    1: "เสร็จสมบูรณ์",
-    2: "ยกเลิกแล้ว",
+type OrderStatus = components["schemas"]["OrderStatus"];
+
+const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+    Created: "อยู่ระหว่างดำเนินการ",
+    Completed: "เสร็จสมบูรณ์",
+    Cancelled: "ยกเลิกแล้ว",
 };
 
-const STATUS_CREATED = 0;
+const STATUS_CREATED: OrderStatus = "Created";
 
 export default function OrderDetailScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -61,7 +64,7 @@ export default function OrderDetailScreen() {
                     {order.createdAt ? new Date(order.createdAt).toLocaleString("th-TH") : ""}
                 </AppText>
                 <AppText size="medium" style={styles.subtleText}>
-                    สถานะ: {ORDER_STATUS_LABELS[order.status ?? 0] ?? "-"}
+                    สถานะ: {order.status ? ORDER_STATUS_LABELS[order.status] : "-"}
                 </AppText>
             </View>
 

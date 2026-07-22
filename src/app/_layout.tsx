@@ -42,7 +42,10 @@ function RootNavigator() {
         <Stack screenOptions={{ headerShown: false }}>
             <Stack.Protected guard={isAuthenticated}>
                 <Stack.Screen name="(tabs)" />
-                <Stack.Screen name="cart" options={{ headerShown: true }} />
+                <Stack.Screen
+                    name="cart"
+                    options={{ headerShown: true, headerTitle: "ตะกร้าของฉัน" }}
+                />
                 <Stack.Screen
                     name="orders"
                     options={{ headerShown: true, headerTitle: "คำสั่งซื้อ" }}
@@ -52,10 +55,26 @@ function RootNavigator() {
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && isProductManager}>
-                <Stack.Screen name="products/create" options={{ headerShown: true }} />
-                <Stack.Screen name="products/[id]/edit" options={{ headerShown: true }} />
-                <Stack.Screen name="categories/create" options={{ headerShown: true }} />
-                <Stack.Screen name="categories/[id]/edit" options={{ headerShown: true }} />
+                <Stack.Screen
+                    name="products/create"
+                    options={{ headerShown: true, headerTitle: "" }}
+                />
+                <Stack.Screen
+                    name="products/[id]/edit"
+                    options={{ headerShown: true, headerTitle: "" }}
+                />
+                <Stack.Screen
+                    name="categories/create"
+                    options={{ headerShown: true, headerTitle: "" }}
+                />
+                <Stack.Screen
+                    name="categories/manage"
+                    options={{ headerShown: true, headerTitle: "หมวดหมู่" }}
+                />
+                <Stack.Screen
+                    name="categories/[id]/edit"
+                    options={{ headerShown: true, headerTitle: "" }}
+                />
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && canManageOrderLines}>
@@ -64,7 +83,10 @@ function RootNavigator() {
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && canManageUsers}>
-                <Stack.Screen name="users/index" options={{ headerShown: true, title: "ผู้ใช้" }} />
+                <Stack.Screen
+                    name="users/index"
+                    options={{ headerShown: true, title: "ผู้ใช้งาน" }}
+                />
                 <Stack.Screen name="users/[id]" options={{ headerShown: true }} />
             </Stack.Protected>
 
@@ -76,8 +98,8 @@ function RootNavigator() {
             </Stack.Protected>
 
             <Stack.Protected guard={!isAuthenticated}>
-                <Stack.Screen name="login" options={{ headerShown: true }} />
-                <Stack.Screen name="register" options={{ headerShown: true }} />
+                <Stack.Screen name="login" options={{ headerShown: true, headerTitle: "" }} />
+                <Stack.Screen name="register" options={{ headerShown: true, headerTitle: "" }} />
             </Stack.Protected>
         </Stack>
     );

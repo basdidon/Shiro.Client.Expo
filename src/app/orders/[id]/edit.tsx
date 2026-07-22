@@ -1,5 +1,5 @@
-import AppText from "@/components/ui/AppText";
 import Stepper from "@/components/Stepper";
+import AppText from "@/components/ui/AppText";
 import {
     useCancelOrder,
     useCompleteOrder,
@@ -11,12 +11,12 @@ import { useAuthStore } from "@/store/useAuthStore";
 import type { components } from "@/types/api";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Link, router, Stack, useLocalSearchParams } from "expo-router";
-import { Alert, ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type LineOfOrderDto = components["schemas"]["LineOfOrderDto"];
 
-const STATUS_CREATED = 0;
+const STATUS_CREATED = "Created";
 
 function OrderLineRow({ orderId, line }: { orderId: string; line: LineOfOrderDto }) {
     const updateOrderLine = useUpdateOrderLine();
@@ -68,13 +68,17 @@ export default function EditOrderScreen() {
     const cancelOrder = useCancelOrder();
 
     const handleComplete = () => {
-        Alert.alert("ยืนยันคำสั่งซื้อ", "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าเสร็จสมบูรณ์หรือไม่?", [
-            { text: "ยกเลิก", style: "cancel" },
-            {
-                text: "ยืนยัน",
-                onPress: () => completeOrder.mutate(id, { onSuccess: () => router.back() }),
-            },
-        ]);
+        Alert.alert(
+            "ยืนยันคำสั่งซื้อ",
+            "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าเสร็จสมบูรณ์หรือไม่?",
+            [
+                { text: "ยกเลิก", style: "cancel" },
+                {
+                    text: "ยืนยัน",
+                    onPress: () => completeOrder.mutate(id, { onSuccess: () => router.back() }),
+                },
+            ],
+        );
     };
 
     const handleCancel = () => {

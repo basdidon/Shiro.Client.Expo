@@ -43,7 +43,7 @@ The system has six roles:
 Every authenticated user, regardless of role, can read products/categories and create orders.
 
 What's actually gated in the frontend today:
-- Product/category create/edit/delete (`(tabs)/products.tsx`, `(tabs)/categories.tsx`, `(tabs)/scanner.tsx`, `products/[id]/index.tsx`, `products/[id]/edit.tsx`, `categories/create.tsx`, `categories/[id]/edit.tsx`, and their `Stack.Protected` guards in `_layout.tsx`): **product-manager** only.
+- Product/category create/edit/delete (`(tabs)/products.tsx`, `(tabs)/categories.tsx`, `(tabs)/scanner.tsx`, `products/[id]/index.tsx`, `products/[id]/edit.tsx`, `categories/create.tsx`, `edit/categories/[id].tsx`, and their `Stack.Protected` guards in `_layout.tsx`): **product-manager** only.
 - Order line management — add via barcode scan, update quantity, remove (`orders/[id]/edit.tsx`, `orders/[id]/scan-item.tsx`): **order-manager** or **staff**.
 - Completing/cancelling an order (`orders/[id]/edit.tsx`): **order-manager** only.
 - User list + role assignment (`users/index.tsx`, `users/[id].tsx`, via `src/api/users/` and `src/hooks/useUsers.ts`): **super-admin** or **owner**. The role picker/remove buttons are driven by `GET /api/v1/users/assignable-roles`, not the raw six-role list, so it already reflects each caller's own hierarchy.

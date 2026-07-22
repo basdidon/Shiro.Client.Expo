@@ -5,9 +5,12 @@ interface Props {
     value: number;
     setValue: (newValue: number) => void;
     min?: number;
+    size?: "default" | "small";
 }
 
-export default function Stepper({ value, setValue, min = 1 }: Props) {
+export default function Stepper({ value, setValue, min = 1, size = "default" }: Props) {
+    const isSmall = size === "small";
+
     const onIncrease = () => {
         setValue(value + 1);
     };
@@ -19,23 +22,19 @@ export default function Stepper({ value, setValue, min = 1 }: Props) {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={onDecrease}>
-                <MaterialDesignIcons
-                    name="minus"
-                    color={"white"}
-                    size={24}
-                    style={styles.iconButton}
-                />
+        <View style={[styles.container, isSmall && styles.containerSmall]}>
+            <TouchableOpacity
+                style={[styles.button, isSmall && styles.buttonSmall]}
+                onPress={onDecrease}
+            >
+                <MaterialDesignIcons name="minus" color={"white"} size={isSmall ? 16 : 24} />
             </TouchableOpacity>
-            <Text style={styles.text}>{value}</Text>
-            <TouchableOpacity style={styles.button} onPress={onIncrease}>
-                <MaterialDesignIcons
-                    name="plus"
-                    color={"white"}
-                    size={24}
-                    style={styles.iconButton}
-                />
+            <Text style={[styles.text, isSmall && styles.textSmall]}>{value}</Text>
+            <TouchableOpacity
+                style={[styles.button, isSmall && styles.buttonSmall]}
+                onPress={onIncrease}
+            >
+                <MaterialDesignIcons name="plus" color={"white"} size={isSmall ? 16 : 24} />
             </TouchableOpacity>
         </View>
     );
@@ -43,7 +42,9 @@ export default function Stepper({ value, setValue, min = 1 }: Props) {
 
 const styles = StyleSheet.create({
     container: { flexDirection: "row", justifyContent: "flex-end", alignItems: "center", gap: 24 },
+    containerSmall: { gap: 12 },
     button: { backgroundColor: "blue", padding: 8, borderRadius: 24 },
-    iconButton: {},
+    buttonSmall: { padding: 4, borderRadius: 16 },
     text: { fontSize: 20, fontWeight: "bold" },
+    textSmall: { fontSize: 14, minWidth: 16, textAlign: "center" },
 });

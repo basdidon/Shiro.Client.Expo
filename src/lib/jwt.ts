@@ -32,6 +32,14 @@ const USERNAME_CLAIM_KEYS = [
     "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
 ];
 
+// Same situation for the user id claim — check the common shapes.
+const USER_ID_CLAIM_KEYS = [
+    "sub",
+    "nameid",
+    "userId",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+];
+
 export type Role =
     | "super-admin"
     | "owner"
@@ -71,6 +79,17 @@ export const getUsernameFromToken = (token: string): string | null => {
     if (!payload) return null;
 
     for (const key of USERNAME_CLAIM_KEYS) {
+        const value = payload[key];
+        if (typeof value === "string") return value;
+    }
+    return null;
+};
+
+export const getUserIdFromToken = (token: string): string | null => {
+    const payload = decodeJwtPayload(token);
+    if (!payload) return null;
+
+    for (const key of USER_ID_CLAIM_KEYS) {
         const value = payload[key];
         if (typeof value === "string") return value;
     }

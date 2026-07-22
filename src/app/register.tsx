@@ -16,7 +16,7 @@ export default function RegisterScreen() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { control, handleSubmit } = useForm<RegisterFormValues>({
+    const { control, handleSubmit, setFocus } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
         defaultValues: { username: "", password: "", confirmPassword: "" },
     });
@@ -46,17 +46,23 @@ export default function RegisterScreen() {
                     placeholder="ชื่อผู้ใช้"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("password")}
                 />
                 <FormTextInput
                     control={control}
                     name="password"
                     placeholder="รหัสผ่าน"
+                    autoCapitalize="none"
                     secureTextEntry
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("confirmPassword")}
                 />
                 <FormTextInput
                     control={control}
                     name="confirmPassword"
                     placeholder="ยืนยันรหัสผ่าน"
+                    autoCapitalize="none"
                     secureTextEntry
                 />
 
@@ -79,7 +85,7 @@ export default function RegisterScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: "center" },
+    container: { flex: 1 },
     form: { gap: 12, paddingHorizontal: 24 },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },

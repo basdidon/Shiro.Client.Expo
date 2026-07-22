@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -16,7 +17,7 @@ export default function LoginScreen() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const { control, handleSubmit } = useForm<LoginFormValues>({
+    const { control, handleSubmit, setFocus } = useForm<LoginFormValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: { username: "", password: "" },
     });
@@ -26,8 +27,12 @@ export default function LoginScreen() {
         setIsSubmitting(true);
         try {
             await login(username, password);
-        } catch {
-            setError("เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบชื่อผู้ใช้และรหัสผ่าน");
+        } catch (err) {
+            if (axios.isAxiosError(err) && !err.response) {
+                setError("ขาดการเชื่อมต่อ กรุณาตรวจสอบอินเทอร์เน็ตของคุณ");
+            } else {
+                setError("เข้าสู่ระบบไม่สำเร็จ กรุณาตรวจสอบชื่อผู้ใช้และรหัสผ่าน");
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -46,12 +51,15 @@ export default function LoginScreen() {
                     placeholder="ชื่อผู้ใช้"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("password")}
                 />
                 <FormTextInput
                     control={control}
                     name="password"
                     placeholder="รหัสผ่าน"
                     secureTextEntry
+                    autoCapitalize="none"
                 />
 
                 {error ? <AppText style={styles.error}>{error}</AppText> : null}
@@ -73,7 +81,7 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, justifyContent: "center" },
+    container: { flex: 1 },
     form: { gap: 12, paddingHorizontal: 24 },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },

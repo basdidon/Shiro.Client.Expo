@@ -11,10 +11,10 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tansta
 
 type OrderStatus = components["schemas"]["OrderStatus"];
 
-export const useOrders = (limit: number, status?: OrderStatus) => {
+export const useOrders = (limit: number, orderById?: string, status?: OrderStatus) => {
     return useInfiniteQuery({
         queryKey: ["orders", { limit, status }],
-        queryFn: ({ pageParam }) => getOrders(limit, pageParam, status),
+        queryFn: ({ pageParam }) => getOrders(limit, pageParam, orderById, status),
         initialPageParam: "",
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         retry: false,

@@ -7,10 +7,11 @@ type OrderStatus = components["schemas"]["OrderStatus"];
 export const getOrders = async (
     limit: number,
     cursor?: string,
+    orderById?: string,
     status?: OrderStatus,
 ): Promise<CursorResultOfOrderDto> => {
     const { data } = await api.get<CursorResultOfOrderDto>("/api/v1/orders", {
-        params: { limit, cursor, status },
+        params: { limit, cursor, orderById, status },
     });
     return data;
 };
