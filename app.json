@@ -45,7 +45,14 @@
       "expo-font",
       "expo-image",
       "expo-status-bar",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "react-native-maps",
+        {
+          "androidGoogleMapsApiKey": "REPLACE_WITH_ANDROID_GOOGLE_MAPS_API_KEY",
+          "iosGoogleMapsApiKey": "REPLACE_WITH_IOS_GOOGLE_MAPS_API_KEY"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

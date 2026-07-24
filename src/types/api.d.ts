@@ -259,6 +259,62 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/shipping-addresses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["UserShippingAddressDto"][];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["AddShippingAddressToUserCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users": {
         parameters: {
             query?: never;
@@ -1087,6 +1143,18 @@ export interface components {
             /** Format: int32 */
             quantity: number | string;
         };
+        Address: {
+            addressLine1?: string;
+            addressLine2?: string;
+            subDistrict?: string;
+            district?: string;
+            province?: string;
+            zipCode?: string;
+        };
+        AddShippingAddressToUserCommand: {
+            address: components["schemas"]["Address"];
+            googleMapUrl: string;
+        };
         BestSellerDto: {
             /** Format: uuid */
             productId: string;
@@ -1126,6 +1194,7 @@ export interface components {
         CreateOrderCommand: {
             /** Format: uuid */
             checkoutId: string;
+            address: components["schemas"]["Address"];
         };
         CreateProductCommand: {
             barcode: null | string;
@@ -1285,6 +1354,12 @@ export interface components {
             userId?: string;
             username?: string;
             roles?: string[];
+        };
+        UserShippingAddressDto: {
+            /** Format: uuid */
+            userShippingAddressId: string;
+            shippingAddress: components["schemas"]["Address"];
+            googleMapUrl: string;
         };
     };
     responses: never;

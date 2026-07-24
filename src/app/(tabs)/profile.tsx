@@ -63,13 +63,19 @@ export default function Profile() {
                                 <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
                             </Pressable>
                         </Link>
-                        <Pressable style={styles.menuItem}>
-                            <MaterialDesignIcons name="map-marker-outline" size={20} color="#333" />
-                            <AppText size="large" style={styles.menuItemText}>
-                                สถานที่ที่บันทึกไว้
-                            </AppText>
-                            <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
-                        </Pressable>
+                        <Link href="/shipping-addresses" asChild>
+                            <Pressable style={styles.menuItem}>
+                                <MaterialDesignIcons
+                                    name="map-marker-outline"
+                                    size={20}
+                                    color="#333"
+                                />
+                                <AppText size="large" style={styles.menuItemText}>
+                                    สถานที่ที่บันทึกไว้
+                                </AppText>
+                                <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
+                            </Pressable>
+                        </Link>
                     </View>
                     <AppText style={styles.menuGroupHeader} size="title">
                         ฐานข้อมูล

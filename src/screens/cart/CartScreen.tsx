@@ -9,8 +9,10 @@ import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartItemView from "./CartItemView";
+import ShippingAddressSection from "./ShippingAddressSection";
 
 type CheckoutDto = components["schemas"]["CheckoutDto"];
+type Address = components["schemas"]["Address"];
 
 const formatCountdown = (ms: number) => {
     const totalSeconds = Math.max(0, Math.floor(ms / 1000));
@@ -26,6 +28,7 @@ export default function Cart() {
     const [checkout, setCheckout] = useState<CheckoutDto | null>(null);
     const [now, setNow] = useState(() => Date.now());
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [address, setAddress] = useState<Address | null>(null);
 
     const createCheckout = useCreateCheckout();
     const createOrder = useCreateOrder();
@@ -68,12 +71,16 @@ export default function Cart() {
     };
 
     const handleConfirm = async () => {
-        if (!checkout?.checkoutId) return;
+        if (!checkout?.checkoutId || !address) return;
         setErrorMessage(null);
         try {
-            const order = await createOrder.mutateAsync({ checkoutId: checkout.checkoutId });
+            const order = await createOrder.mutateAsync({
+                checkoutId: checkout.checkoutId,
+                address,
+            });
             clearCart();
             setCheckout(null);
+            setAddress(null);
             router.push({ pathname: "/orders/[id]", params: { id: order.orderId! } });
         } catch {
             setErrorMessage("ยืนยันคำสั่งซื้อไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
@@ -105,6 +112,8 @@ export default function Cart() {
                             </View>
                         );
                     })}
+
+                    <ShippingAddressSection onAddressChange={setAddress} />
                 </ScrollView>
                 <View style={styles.footer}>
                     {errorMessage && <AppText style={styles.errorText}>{errorMessage}</AppText>}
@@ -156,10 +165,10 @@ export default function Cart() {
                             <TouchableOpacity
                                 style={[
                                     styles.submitBtn,
-                                    createOrder.isPending && styles.submitBtnDisabled,
+                                    (createOrder.isPending || !address) && styles.submitBtnDisabled,
                                 ]}
                                 onPress={handleConfirm}
-                                disabled={createOrder.isPending}
+                                disabled={createOrder.isPending || !address}
                             >
                                 <Text style={styles.submitTxtBtn}>
                                     {createOrder.isPending
