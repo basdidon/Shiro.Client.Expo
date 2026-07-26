@@ -4,6 +4,6 @@ import type { components } from "@/types/api";
 type CategoryDto = components["schemas"]["CategoryDto"];
 
 export const getCategories = async (): Promise<CategoryDto[]> => {
-    const { data } = await api.get<CategoryDto[]>("/categories");
+    const { data } = await api.get<CategoryDto[]>("/api/v1/categories");
     return data;
 };

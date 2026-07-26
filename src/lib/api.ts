@@ -10,8 +10,12 @@ type TokenResponse = components["schemas"]["TokenResponse"];
 // (that's how the phone reaches the bundler), so reuse it for the API host
 // instead of the IP hardcoded in EXPO_PUBLIC_API_URL, which goes stale whenever
 // the laptop reconnects to WiFi and gets a new address.
+// Set EXPO_PUBLIC_USE_REMOTE_API=1 to skip this and hit EXPO_PUBLIC_API_URL
+// directly, e.g. when testing a deployed API from a dev build.
 const getApiBaseUrl = (): string | undefined => {
-    const devHost = __DEV__ ? Constants.expoConfig?.hostUri?.split(":")[0] : undefined;
+    const useRemoteApi = process.env.EXPO_PUBLIC_USE_REMOTE_API === "1";
+    const devHost =
+        __DEV__ && !useRemoteApi ? Constants.expoConfig?.hostUri?.split(":")[0] : undefined;
     if (devHost) {
         return `http://${devHost}:${process.env.EXPO_PUBLIC_API_PORT ?? "5000"}`;
     }
