@@ -1,4 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -6,7 +8,7 @@ import { Pressable, StyleSheet, View } from "react-native";
 import AppText from "@/components/ui/AppText";
 import FormTextInput from "@/components/ui/FormTextInput";
 import FormThailandLocationPicker from "@/components/ui/FormThailandLocationPicker";
-import { useShippingAddresses } from "@/hooks/useShippingAddresses";
+import { useAddresses } from "@/hooks/useAddresses";
 import { manualAddressSchema, type ManualAddressFormValues } from "@/lib/validation/addressSchema";
 import type { components } from "@/types/api";
 
@@ -19,7 +21,7 @@ interface ShippingAddressSectionProps {
 type Mode = "saved" | "manual";
 
 export default function ShippingAddressSection({ onAddressChange }: ShippingAddressSectionProps) {
-    const { data: savedAddresses, isLoading } = useShippingAddresses();
+    const { data: savedAddresses, isLoading } = useAddresses();
     const [mode, setMode] = useState<Mode>("manual");
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
@@ -46,14 +48,14 @@ export default function ShippingAddressSection({ onAddressChange }: ShippingAddr
     useEffect(() => {
         if (savedAddresses && savedAddresses.length > 0 && selectedId === null) {
             setMode("saved");
-            setSelectedId(savedAddresses[0].userShippingAddressId);
+            setSelectedId(savedAddresses[0].userAddressId);
         }
     }, [savedAddresses, selectedId]);
 
     useEffect(() => {
         if (mode === "saved") {
             const selected = savedAddresses?.find(
-                (item) => item.userShippingAddressId === selectedId,
+                (item) => item.userAddressId === selectedId,
             );
             onAddressChange(selected?.shippingAddress ?? null);
             return;
@@ -104,22 +106,31 @@ export default function ShippingAddressSection({ onAddressChange }: ShippingAddr
                 </View>
             )}
 
+            {!isLoading && savedAddresses && savedAddresses.length === 0 && (
+                <Link href="/addresses/create" asChild>
+                    <Pressable style={styles.createAddressBtn}>
+                        <MaterialDesignIcons name="plus" size={18} color="blue" />
+                        <AppText style={styles.createAddressText}>เพิ่มที่อยู่จัดส่ง</AppText>
+                    </Pressable>
+                </Link>
+            )}
+
             {mode === "saved" ? (
                 <View style={{ gap: 8 }}>
                     {isLoading ? (
                         <AppText style={styles.muted}>กำลังโหลดที่อยู่...</AppText>
                     ) : (
                         savedAddresses?.map((item) => {
-                            const isSelected = item.userShippingAddressId === selectedId;
+                            const isSelected = item.userAddressId === selectedId;
                             const a = item.shippingAddress;
                             return (
                                 <Pressable
-                                    key={item.userShippingAddressId}
+                                    key={item.userAddressId}
                                     style={[
                                         styles.addressCard,
                                         isSelected && styles.addressCardSelected,
                                     ]}
-                                    onPress={() => setSelectedId(item.userShippingAddressId)}
+                                    onPress={() => setSelectedId(item.userAddressId)}
                                 >
                                     <AppText size="large">{a.addressLine1}</AppText>
                                     {a.addressLine2 ? (
@@ -183,4 +194,16 @@ const styles = StyleSheet.create({
     },
     addressCardSelected: { borderColor: "blue", borderWidth: 2 },
     muted: { color: "gray" },
+    createAddressBtn: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 6,
+        borderWidth: 1,
+        borderColor: "blue",
+        borderStyle: "dashed",
+        borderRadius: 8,
+        paddingVertical: 10,
+    },
+    createAddressText: { color: "blue", fontWeight: "600" },
 });

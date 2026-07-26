@@ -14,8 +14,9 @@ type OrderStatus = components["schemas"]["OrderStatus"];
 const STATUS_OPTIONS: { id: number; label: string; value: string; status?: OrderStatus }[] = [
     { id: 1, label: "All", value: "all" },
     { id: 2, label: "Created", value: "created", status: "Created" },
-    { id: 3, label: "Completed", value: "completed", status: "Completed" },
-    { id: 4, label: "Cancelled", value: "cancelled", status: "Cancelled" },
+    { id: 3, label: "Shipped", value: "shipped", status: "Shipped" },
+    { id: 4, label: "Completed", value: "completed", status: "Completed" },
+    { id: 5, label: "Cancelled", value: "cancelled", status: "Cancelled" },
 ];
 
 export default function Orders() {

@@ -6,21 +6,17 @@ import { Button, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
-import FormMapLocationPicker from "@/components/ui/FormMapLocationPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
 import FormThailandLocationPicker from "@/components/ui/FormThailandLocationPicker";
-import { useAddShippingAddress } from "@/hooks/useShippingAddresses";
-import {
-    addShippingAddressSchema,
-    type AddShippingAddressFormValues,
-} from "@/lib/validation/addressSchema";
+import { useAddAddress } from "@/hooks/useAddresses";
+import { addAddressSchema, type AddAddressFormValues } from "@/lib/validation/addressSchema";
 
-export default function CreateShippingAddressScreen() {
-    const { mutateAsync: addShippingAddress, isPending } = useAddShippingAddress();
+export default function CreateAddressScreen() {
+    const { mutateAsync: addAddress, isPending } = useAddAddress();
     const [error, setError] = useState<string | null>(null);
 
-    const { control, handleSubmit } = useForm<AddShippingAddressFormValues>({
-        resolver: zodResolver(addShippingAddressSchema),
+    const { control, handleSubmit } = useForm<AddAddressFormValues>({
+        resolver: zodResolver(addAddressSchema),
         defaultValues: {
             addressLine1: "",
             addressLine2: "",
@@ -28,7 +24,6 @@ export default function CreateShippingAddressScreen() {
             district: "",
             subDistrict: "",
             zipCode: "",
-            googleMapUrl: "",
         },
     });
 
@@ -39,13 +34,16 @@ export default function CreateShippingAddressScreen() {
         district,
         subDistrict,
         zipCode,
-        googleMapUrl,
-    }: AddShippingAddressFormValues) => {
+    }: AddAddressFormValues) => {
         setError(null);
         try {
-            await addShippingAddress({
-                address: { addressLine1, addressLine2, province, district, subDistrict, zipCode },
-                googleMapUrl,
+            await addAddress({
+                addressLine1,
+                addressLine2: addressLine2 ?? "",
+                province,
+                district,
+                subDistrict,
+                zipCode,
             });
             router.back();
         } catch {
@@ -77,8 +75,6 @@ export default function CreateShippingAddressScreen() {
                     placeholder="รหัสไปรษณีย์"
                     keyboardType="numeric"
                 />
-                <FormMapLocationPicker control={control} name="googleMapUrl" />
-
                 {error ? <AppText style={styles.error}>{error}</AppText> : null}
 
                 <Button

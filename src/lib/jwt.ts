@@ -45,6 +45,7 @@ export type Role =
     | "owner"
     | "order-manager"
     | "product-manager"
+    | "finance-manager"
     | "staff"
     | "user";
 
@@ -53,6 +54,7 @@ const VALID_ROLES: Role[] = [
     "owner",
     "order-manager",
     "product-manager",
+    "finance-manager",
     "staff",
     "user",
 ];

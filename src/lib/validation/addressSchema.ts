@@ -11,11 +11,6 @@ export const manualAddressSchema = z.object({
 
 export type ManualAddressFormValues = z.infer<typeof manualAddressSchema>;
 
-export const addShippingAddressSchema = manualAddressSchema.extend({
-    googleMapUrl: z
-        .string()
-        .min(1, "กรุณาวางลิงก์ Google Maps")
-        .url("ลิงก์ Google Maps ไม่ถูกต้อง"),
-});
+export const addAddressSchema = manualAddressSchema;
 
-export type AddShippingAddressFormValues = z.infer<typeof addShippingAddressSchema>;
+export type AddAddressFormValues = z.infer<typeof addAddressSchema>;

@@ -5,6 +5,7 @@ import { createOrder } from "@/api/orders/createOrder";
 import { getOrderById } from "@/api/orders/getOrderById";
 import { getOrders } from "@/api/orders/getOrders";
 import { removeOrderLine } from "@/api/orders/removeOrderLine";
+import { shipOrder } from "@/api/orders/shipOrder";
 import { updateOrderLine } from "@/api/orders/updateOrderLine";
 import type { components } from "@/types/api";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -72,6 +73,18 @@ export const useRemoveOrderLine = () => {
         mutationFn: removeOrderLine,
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["orders", variables.orderId] });
+            queryClient.invalidateQueries({ queryKey: ["orders"] });
+        },
+    });
+};
+
+export const useShipOrder = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: shipOrder,
+        onSuccess: (_, orderId) => {
+            queryClient.invalidateQueries({ queryKey: ["orders", orderId] });
             queryClient.invalidateQueries({ queryKey: ["orders"] });
         },
     });

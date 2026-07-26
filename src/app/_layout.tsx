@@ -52,6 +52,10 @@ function RootNavigator() {
                 />
                 <Stack.Screen name="orders/[id]" options={{ headerShown: true, headerTitle: "" }} />
                 <Stack.Screen name="products/[id]" options={{ headerShown: true }} />
+                <Stack.Screen
+                    name="payments/index"
+                    options={{ headerShown: true, headerTitle: "การชำระเงิน" }}
+                />
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && isProductManager}>
