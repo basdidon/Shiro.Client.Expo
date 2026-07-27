@@ -46,13 +46,16 @@ export default function CreateProductScreen() {
     }: CreateProductFormOutput) => {
         setError(null);
         try {
-            await createProduct({
+            const product = await createProduct({
                 name,
                 unitPrice,
                 barcode: barcode || null,
                 categoryId,
             });
-            router.back();
+            router.replace({
+                pathname: "/products/[id]",
+                params: { id: product.id },
+            });
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 409) {
                 setFieldError("barcode", { message: "บาร์โค้ดนี้มีสินค้าอยู่แล้ว" });

@@ -1,9 +1,10 @@
 import AppText from "@/components/ui/AppText";
 import { useCategories } from "@/hooks/useCategories";
-import { useProducts } from "@/hooks/useProducts";
+import { useProductImageDownloadUrl, useProducts } from "@/hooks/useProducts";
 import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
+import { Image } from "expo-image";
 import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { debounce } from "lodash";
 import { useCallback, useMemo } from "react";
@@ -136,12 +137,9 @@ export default function ProductPage() {
                                             marginBottom: ROW_GAP,
                                         }}
                                     >
-                                        <View
-                                            style={{
-                                                aspectRatio: 1,
-                                                backgroundColor: "skyblue",
-                                                borderRadius: 8,
-                                            }}
+                                        <ProductThumbnail
+                                            productId={item.id}
+                                            hasThumbnailImage={item.hasThumbnailImage}
                                         />
                                         <View>
                                             <AppText
@@ -175,6 +173,32 @@ export default function ProductPage() {
             </View>
         </SafeAreaView>
     );
+}
+
+function ProductThumbnail({
+    productId,
+    hasThumbnailImage,
+}: {
+    productId: string;
+    hasThumbnailImage: boolean;
+}) {
+    const { data: thumbnailUrl } = useProductImageDownloadUrl(
+        productId,
+        "Thumbnail",
+        hasThumbnailImage,
+    );
+
+    if (thumbnailUrl) {
+        return (
+            <Image
+                source={{ uri: thumbnailUrl }}
+                style={{ aspectRatio: 1, borderRadius: 8 }}
+                contentFit="cover"
+            />
+        );
+    }
+
+    return <View style={{ aspectRatio: 1, backgroundColor: "skyblue", borderRadius: 8 }} />;
 }
 
 const styles = StyleSheet.create({

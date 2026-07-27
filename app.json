@@ -1,74 +1,78 @@
 {
-  "expo": {
-    "name": "Shiro.Client.Expo",
-    "slug": "ShiroClientExpo",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "shiroclientexpo",
-    "userInterfaceStyle": "automatic",
-    "ios": {
-      "icon": "./assets/expo.icon"
-    },
-    "android": {
-      "package": "com.h8studio.shiro",
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false,
-      "permissions": [
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
-      ]
-    },
-    "web": {
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#208AEF",
-          "android": {
-            "image": "./assets/images/splash-icon.png",
-            "imageWidth": 76
-          }
+    "expo": {
+        "name": "Shiro.Client.Expo",
+        "slug": "ShiroClientExpo",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/icon.png",
+        "scheme": "shiroclientexpo",
+        "userInterfaceStyle": "light",
+        "ios": {
+            "icon": "./assets/expo.icon"
+        },
+        "android": {
+            "package": "com.h8studio.shiro",
+            "adaptiveIcon": {
+                "backgroundColor": "#E6F4FE",
+                "foregroundImage": "./assets/images/android-icon-foreground.png",
+                "backgroundImage": "./assets/images/android-icon-background.png",
+                "monochromeImage": "./assets/images/android-icon-monochrome.png"
+            },
+            "predictiveBackGestureEnabled": false,
+            "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"]
+        },
+        "web": {
+            "output": "static",
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            "expo-router",
+            [
+                "expo-splash-screen",
+                {
+                    "backgroundColor": "#208AEF",
+                    "android": {
+                        "image": "./assets/images/splash-icon.png",
+                        "imageWidth": 76
+                    }
+                }
+            ],
+            "expo-secure-store",
+            [
+                "expo-camera",
+                {
+                    "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan product barcodes"
+                }
+            ],
+            "expo-file-system",
+            "expo-font",
+            "expo-image",
+            [
+                "expo-image-picker",
+                {
+                    "photosPermission": "Allow $(PRODUCT_NAME) to access your photos to upload product images"
+                }
+            ],
+            "expo-status-bar",
+            "expo-web-browser",
+            [
+                "react-native-maps",
+                {
+                    "androidGoogleMapsApiKey": "REPLACE_WITH_ANDROID_GOOGLE_MAPS_API_KEY",
+                    "iosGoogleMapsApiKey": "REPLACE_WITH_IOS_GOOGLE_MAPS_API_KEY"
+                }
+            ]
+        ],
+        "experiments": {
+            "typedRoutes": true,
+            "reactCompiler": true
+        },
+        "owner": "h8studio",
+        "extra": {
+            "router": {},
+            "eas": {
+                "projectId": "d48247c1-56d2-4b0a-b59e-1772be2e1143"
+            }
         }
-      ],
-      "expo-secure-store",
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera to scan product barcodes"
-        }
-      ],
-      "expo-font",
-      "expo-image",
-      "expo-status-bar",
-      "expo-web-browser",
-      [
-        "react-native-maps",
-        {
-          "androidGoogleMapsApiKey": "REPLACE_WITH_ANDROID_GOOGLE_MAPS_API_KEY",
-          "iosGoogleMapsApiKey": "REPLACE_WITH_IOS_GOOGLE_MAPS_API_KEY"
-        }
-      ]
-    ],
-    "experiments": {
-      "typedRoutes": true,
-      "reactCompiler": true
-    },
-    "owner": "h8studio",
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "d48247c1-56d2-4b0a-b59e-1772be2e1143"
-      }
     }
-  }
 }

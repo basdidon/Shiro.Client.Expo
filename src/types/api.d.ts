@@ -595,7 +595,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/categories/categories/{categoryId}": {
+    "/api/v1/categories/{categoryId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -698,12 +698,14 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["ProductDto"];
+                    };
                 };
             };
         };
@@ -897,6 +899,122 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/products/{productId}/images/{type}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    productId: string;
+                    type: components["schemas"]["ProductImageType"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProductImageDownloadUrlResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/products/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query: {
+                    productId: string;
+                    type: components["schemas"]["ProductImageType"];
+                    filename: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ProductImageUploadUrlResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/products/{productId}/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    productId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateProductImageKeyRequest"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1354,6 +1472,14 @@ export interface components {
             province?: string;
             zipCode?: string;
         };
+        AddressRequestDto: {
+            addressLine1?: string;
+            addressLine2?: string;
+            subDistrict?: string;
+            district?: string;
+            province?: string;
+            zipCode?: string;
+        };
         BestSeller: {
             /** Format: uuid */
             productId: string;
@@ -1397,7 +1523,7 @@ export interface components {
         CreateOrderCommand: {
             /** Format: uuid */
             checkoutId: string;
-            address: components["schemas"]["Address"];
+            address: components["schemas"]["AddressRequestDto"];
         };
         CreatePaymentCommand: {
             /** Format: uuid */
@@ -1478,6 +1604,8 @@ export interface components {
             /** Format: date-time */
             createdAt?: string;
             /** Format: date-time */
+            shippedAt?: null | string;
+            /** Format: date-time */
             completedAt?: null | string;
             /** Format: date-time */
             cancelledAt?: null | string;
@@ -1525,10 +1653,22 @@ export interface components {
             category?: null | components["schemas"]["ProductCategoryDto"];
             /** Format: double */
             unitPrice: number | string;
+            hasThumbnailImage: boolean;
+            hasDetailImage: boolean;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             lastUpdated: string;
+        };
+        ProductImageDownloadUrlResponse: {
+            downloadUrl?: string;
+        };
+        /** @enum {unknown} */
+        ProductImageType: "Thumbnail" | "Detail";
+        ProductImageUploadUrlResponse: {
+            uploadUrl?: string;
+            key?: string;
+            contentType?: string;
         };
         RefreshCommand: {
             refreshToken: string;
@@ -1585,6 +1725,10 @@ export interface components {
             unitPrice: number | string;
             /** Format: int32 */
             categoryId: null | number | string;
+        };
+        UpdateProductImageKeyRequest: {
+            type: components["schemas"]["ProductImageType"];
+            imageKey: string;
         };
         UserAddressDto: {
             /** Format: uuid */

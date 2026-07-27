@@ -1,9 +1,9 @@
+import { useAuthStore } from "@/store/useAuthStore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-
-import { useAuthStore } from "@/store/useAuthStore";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -105,6 +105,15 @@ function RootNavigator() {
                 <Stack.Screen name="login" options={{ headerShown: true, headerTitle: "" }} />
                 <Stack.Screen name="register" options={{ headerShown: true, headerTitle: "" }} />
             </Stack.Protected>
+
+            <Stack.Screen
+                name="products/[id]/upload-image/select-image-type"
+                options={{ presentation: "formSheet", sheetAllowedDetents: "fitToContents" }}
+            />
+            <Stack.Screen
+                name="products/[id]/upload-image/select-image-source"
+                options={{ presentation: "formSheet", sheetAllowedDetents: "fitToContents" }}
+            />
         </Stack>
     );
 }
@@ -116,6 +125,7 @@ export default function RootLayout() {
 
     return (
         <QueryClientProvider client={queryClient}>
+            <StatusBar style="dark" />
             <SplashScreenController />
             <RootNavigator />
         </QueryClientProvider>

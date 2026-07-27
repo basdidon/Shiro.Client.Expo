@@ -1,10 +1,13 @@
 import HeartButton from "@/components/HeartButton";
 import Stepper from "@/components/Stepper";
+import UploadProductImageButton from "@/components/products/UploadProductImageButton";
+import AppText from "@/components/ui/AppText";
 import Tag from "@/components/ui/Tag";
-import { useProduct } from "@/hooks/useProducts";
+import { useProduct, useProductImageDownloadUrl } from "@/hooks/useProducts";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { Image } from "expo-image";
 import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
@@ -20,7 +23,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SingleProductPage() {
-    const { id } = useLocalSearchParams<{ id: string }>();
+    const { id, type } = useLocalSearchParams<{ id: string; type: string }>();
     const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
     const canAddToOrder = useAuthStore(
         (state) =>
@@ -30,6 +33,11 @@ export default function SingleProductPage() {
             state.roles.includes("staff"),
     );
     const { data: product, isPending, isError, error, refetch } = useProduct(id);
+    const { data: detailImageUrl } = useProductImageDownloadUrl(
+        id,
+        "Detail",
+        !!product?.hasDetailImage,
+    );
 
     const cartItem = useCartStore((state) => state.items.find((item) => item.productId === id));
     const setCartItem = useCartStore((state) => state.setItem);
@@ -97,7 +105,15 @@ export default function SingleProductPage() {
         >
             <Stack.Screen options={{ title: "", headerRight }} />
             <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-                <View style={{ backgroundColor: "cyan", aspectRatio: 4 / 3 }} />
+                {detailImageUrl ? (
+                    <Image
+                        source={{ uri: detailImageUrl }}
+                        style={{ aspectRatio: 4 / 3 }}
+                        contentFit="cover"
+                    />
+                ) : (
+                    <View style={{ backgroundColor: "cyan", aspectRatio: 4 / 3 }} />
+                )}
                 <View style={{ margin: 8 }}>
                     <View style={{ gap: 4, flexDirection: "column", alignItems: "flex-start" }}>
                         <Text style={{ fontSize: 10, color: "gray" }}>{id}</Text>
@@ -110,6 +126,7 @@ export default function SingleProductPage() {
                                 <Tag key={x} label={x} />
                             ))}
                         </View>
+                        <AppText>{type}</AppText>
                         <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
                     </View>
 
@@ -121,6 +138,8 @@ export default function SingleProductPage() {
                         </Link>
                     )}
 
+                    {isProductManager && <UploadProductImageButton productId={id} />}
+
                     {canAddToOrder && (
                         <Link
                             href={{ pathname: "/products/[id]/add-to-order", params: { id } }}
@@ -131,6 +150,17 @@ export default function SingleProductPage() {
                             </TouchableOpacity>
                         </Link>
                     )}
+                    <Link
+                        href={{
+                            pathname: "/products/[id]/upload-image",
+                            params: { id },
+                        }}
+                        asChild
+                    >
+                        <TouchableOpacity style={styles.updateBtn}>
+                            <Text style={styles.updateBtnText}>เปิด Modal</Text>
+                        </TouchableOpacity>
+                    </Link>
                 </View>
             </ScrollView>
             {/* Footer */}
