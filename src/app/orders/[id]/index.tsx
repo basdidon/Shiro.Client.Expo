@@ -1,11 +1,6 @@
 import RadioPillButtonGroup from "@/components/RadioButtonPillGroup";
 import AppText from "@/components/ui/AppText";
-import {
-    useCancelOrder,
-    useCompleteOrder,
-    useOrder,
-    useShipOrder,
-} from "@/hooks/useOrders";
+import { useCancelOrder, useCompleteOrder, useOrder, useShipOrder } from "@/hooks/useOrders";
 import { useCancelPayment, useCreatePayment, usePayments } from "@/hooks/usePayments";
 import { formatDateTime } from "@/lib/date";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -89,8 +84,7 @@ function PaymentsSection({ orderId, remaining }: { orderId: string; remaining: n
                     <View key={p.paymentId} style={styles.paymentRow}>
                         <View>
                             <AppText style={p.cancelledAt ? styles.subtleText : undefined}>
-                                {p.amount} .- (
-                                {p.paymentMethod === "Cash" ? "เงินสด" : "โอนเงิน"})
+                                {p.amount} .- ({p.paymentMethod === "Cash" ? "เงินสด" : "โอนเงิน"})
                             </AppText>
                             {p.cancelledAt && (
                                 <AppText size="small" style={styles.subtleText}>
@@ -158,15 +152,26 @@ export default function OrderDetailScreen() {
             0,
         ) ?? 0;
 
+    const getStatusIcon = (status?: OrderStatus) => {
+        switch (status) {
+            case "Created":
+                return "clock-outline";
+            case "Shipped":
+                return "truck-outline";
+            case "Completed":
+                return "check-circle-outline";
+            case "Cancelled":
+                return "cancel";
+            default:
+                return "help-circle-outline";
+        }
+    };
+
     const handleShip = () => {
-        Alert.alert(
-            "จัดส่งคำสั่งซื้อ",
-            "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าจัดส่งแล้วหรือไม่?",
-            [
-                { text: "ยกเลิก", style: "cancel" },
-                { text: "ยืนยัน", onPress: () => shipOrder.mutate(id) },
-            ],
-        );
+        Alert.alert("จัดส่งคำสั่งซื้อ", "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าจัดส่งแล้วหรือไม่?", [
+            { text: "ยกเลิก", style: "cancel" },
+            { text: "ยืนยัน", onPress: () => shipOrder.mutate(id) },
+        ]);
     };
 
     const handleComplete = () => {
@@ -229,37 +234,55 @@ export default function OrderDetailScreen() {
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <Stack.Screen options={{ headerRight }} />
-            <ScrollView contentContainerStyle={{ padding: 16 }} showsVerticalScrollIndicator={false}>
-                <View style={styles.header}>
-                    <AppText size="heading"># {order.orderId?.slice(0, 8)}</AppText>
-                    <AppText size="medium" style={styles.subtleText}>
-                        สถานะ: {order.status ? ORDER_STATUS_LABELS[order.status] : "-"}
-                    </AppText>
-                </View>
-
-                <View style={styles.timestamps}>
-                    <View style={styles.timestampRow}>
-                        <AppText size="small" style={styles.subtleText}>
-                            สร้างเมื่อ
-                        </AppText>
-                        <AppText size="small">{formatDateTime(order.createdAt)}</AppText>
+            <ScrollView
+                contentContainerStyle={{ padding: 16 }}
+                showsVerticalScrollIndicator={false}
+            >
+                <View style={{ flexDirection: "row", gap: 12 }}>
+                    <View
+                        style={{
+                            width: 120,
+                            aspectRatio: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                        }}
+                    >
+                        <MaterialDesignIcons name={getStatusIcon(order.status)} size={92} />
                     </View>
-                    {order.completedAt ? (
-                        <View style={styles.timestampRow}>
-                            <AppText size="small" style={styles.subtleText}>
-                                เสร็จสมบูรณ์เมื่อ
-                            </AppText>
-                            <AppText size="small">{formatDateTime(order.completedAt)}</AppText>
+                    <View style={styles.header}>
+                        <AppText size="heading"># {order.orderId?.slice(0, 8)}</AppText>
+                        <AppText size="medium" style={styles.subtleText}>
+                            สถานะ: {order.status ? ORDER_STATUS_LABELS[order.status] : "-"}
+                        </AppText>
+                        <View style={styles.timestamps}>
+                            <View style={styles.timestampRow}>
+                                <AppText size="small" style={styles.subtleText}>
+                                    สร้างเมื่อ
+                                </AppText>
+                                <AppText size="small">{formatDateTime(order.createdAt)}</AppText>
+                            </View>
+                            {order.completedAt ? (
+                                <View style={styles.timestampRow}>
+                                    <AppText size="small" style={styles.subtleText}>
+                                        เสร็จสมบูรณ์เมื่อ
+                                    </AppText>
+                                    <AppText size="small">
+                                        {formatDateTime(order.completedAt)}
+                                    </AppText>
+                                </View>
+                            ) : null}
+                            {order.cancelledAt ? (
+                                <View style={styles.timestampRow}>
+                                    <AppText size="small" style={styles.subtleText}>
+                                        ยกเลิกเมื่อ
+                                    </AppText>
+                                    <AppText size="small">
+                                        {formatDateTime(order.cancelledAt)}
+                                    </AppText>
+                                </View>
+                            ) : null}
                         </View>
-                    ) : null}
-                    {order.cancelledAt ? (
-                        <View style={styles.timestampRow}>
-                            <AppText size="small" style={styles.subtleText}>
-                                ยกเลิกเมื่อ
-                            </AppText>
-                            <AppText size="small">{formatDateTime(order.cancelledAt)}</AppText>
-                        </View>
-                    ) : null}
+                    </View>
                 </View>
 
                 <View style={styles.items}>
@@ -330,7 +353,7 @@ export default function OrderDetailScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     notFound: { flex: 1, justifyContent: "center", alignItems: "center" },
-    header: { marginBottom: 16, gap: 4 },
+    header: { marginBottom: 16, gap: 8, flex: 1 },
     subtleText: { color: "gray" },
     timestamps: {
         gap: 4,

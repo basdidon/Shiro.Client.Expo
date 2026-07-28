@@ -4,7 +4,7 @@
         "slug": "ShiroClientExpo",
         "version": "1.0.0",
         "orientation": "portrait",
-        "icon": "./assets/images/icon.png",
+        "icon": "./assets/images/app_icon.png",
         "scheme": "shiroclientexpo",
         "userInterfaceStyle": "light",
         "ios": {

@@ -1,4 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -8,12 +7,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/components/ui/AppText";
 import FormCategoryPicker from "@/components/ui/FormCategoryPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
+import { useCategories } from "@/hooks/useCategories";
 import { useProduct, useUpdateProduct } from "@/hooks/useProducts";
 import {
+    UpdateProductFormInput,
     updateProductSchema,
-    type UpdateProductFormInput,
     type UpdateProductFormOutput,
 } from "@/lib/validation/productSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function EditProductScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,6 +30,8 @@ export default function EditProductScreen() {
         resolver: zodResolver(updateProductSchema),
         defaultValues: { name: "", unitPrice: "", categoryId: null },
     });
+
+    const { data: categories } = useCategories();
 
     useEffect(() => {
         if (product) {
@@ -97,4 +100,14 @@ const styles = StyleSheet.create({
     form: { gap: 12, paddingHorizontal: 24, paddingTop: 24 },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },
+    trigger: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+    },
 });

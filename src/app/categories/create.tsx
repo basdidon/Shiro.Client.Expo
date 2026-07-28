@@ -1,7 +1,5 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { useForm } from "react-hook-form";
 import { Button, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,12 +7,13 @@ import AppText from "@/components/ui/AppText";
 import FormIconPicker from "@/components/ui/FormIconPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
 import { useCreateCategory } from "@/hooks/useCategories";
-import { DEFAULT_CATEGORY_ICON } from "@/lib/categoryIcons";
 import {
+    CategoryFormInput,
+    CategoryFormOutput,
     categoryFormSchema,
-    type CategoryFormInput,
-    type CategoryFormOutput,
 } from "@/lib/validation/categorySchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function CreateCategoryScreen() {
     const { mutateAsync: createCategory, isPending } = useCreateCategory();
@@ -24,7 +23,11 @@ export default function CreateCategoryScreen() {
 
     const { control, handleSubmit } = useForm<CategoryFormInput, unknown, CategoryFormOutput>({
         resolver: zodResolver(categoryFormSchema),
-        defaultValues: { name: "", iconName: DEFAULT_CATEGORY_ICON, parentCategoryId: "" },
+        defaultValues: {
+            name: "",
+            iconName: undefined,
+            parentCategoryId: undefined,
+        },
     });
 
     const onSubmit = async ({ name, iconName, parentCategoryId }: CategoryFormOutput) => {
@@ -52,6 +55,7 @@ export default function CreateCategoryScreen() {
                     onSubmitEditing={() => parentCategoryIdRef.current?.focus()}
                 />
                 <FormIconPicker control={control} name="iconName" />
+
                 <FormTextInput
                     ref={parentCategoryIdRef}
                     control={control}

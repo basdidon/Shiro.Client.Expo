@@ -1,4 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
@@ -9,26 +8,30 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/components/ui/AppText";
 import FormCategoryPicker from "@/components/ui/FormCategoryPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
+import { useCategories } from "@/hooks/useCategories";
 import { useCreateProduct } from "@/hooks/useProducts";
 import {
+    CreateProductFormInput,
     createProductSchema,
-    type CreateProductFormInput,
     type CreateProductFormOutput,
 } from "@/lib/validation/productSchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function CreateProductScreen() {
     const { barcode: barcodeParam } = useLocalSearchParams<{ barcode?: string }>();
+
     const { mutateAsync: createProduct, isPending } = useCreateProduct();
     const [error, setError] = useState<string | null>(null);
 
     const unitPriceRef = useRef<TextInput>(null);
     const barcodeRef = useRef<TextInput>(null);
+    const { data: categories } = useCategories();
 
-    const { control, handleSubmit, setError: setFieldError } = useForm<
-        CreateProductFormInput,
-        unknown,
-        CreateProductFormOutput
-    >({
+    const {
+        control,
+        handleSubmit,
+        setError: setFieldError,
+    } = useForm<CreateProductFormInput, unknown, CreateProductFormOutput>({
         resolver: zodResolver(createProductSchema),
         defaultValues: {
             name: "",
@@ -38,12 +41,7 @@ export default function CreateProductScreen() {
         },
     });
 
-    const onSubmit = async ({
-        name,
-        unitPrice,
-        barcode,
-        categoryId,
-    }: CreateProductFormOutput) => {
+    const onSubmit = async ({ name, unitPrice, barcode, categoryId }: CreateProductFormOutput) => {
         setError(null);
         try {
             const product = await createProduct({
@@ -115,4 +113,14 @@ const styles = StyleSheet.create({
     form: { gap: 12, paddingHorizontal: 24, paddingTop: 24 },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },
+    trigger: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 12,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        paddingHorizontal: 12,
+        paddingVertical: 10,
+    },
 });

@@ -1,9 +1,10 @@
 import AppText from "@/components/ui/AppText";
 import { useUsers } from "@/hooks/useUsers";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
-import { useCallback, useMemo } from "react";
 import { debounce } from "lodash";
+import { useCallback, useMemo } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -38,7 +39,6 @@ export default function UsersScreen() {
                 <FlashList
                     data={users}
                     keyExtractor={(item) => item.userId!}
-                    contentContainerStyle={{ padding: 12 }}
                     onEndReachedThreshold={0.4}
                     onEndReached={handleEndReached}
                     ListFooterComponent={
@@ -51,15 +51,35 @@ export default function UsersScreen() {
                         ) : null
                     }
                     renderItem={({ item }) => (
-                        <Link href={{ pathname: "/users/[id]", params: { id: item.userId! } }} asChild>
+                        <Link
+                            href={{ pathname: "/users/[id]", params: { id: item.userId! } }}
+                            asChild
+                        >
                             <Pressable style={styles.row}>
-                                <View style={{ flex: 1 }}>
-                                    <AppText size="large">{item.username}</AppText>
-                                    <AppText size="small" style={{ color: "gray" }}>
-                                        {item.roles && item.roles.length > 0
-                                            ? item.roles.join(", ")
-                                            : "ไม่มีบทบาท"}
-                                    </AppText>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        paddingHorizontal: 18,
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            width: 36,
+                                            aspectRatio: 1,
+                                            marginRight: 12,
+                                        }}
+                                    >
+                                        <MaterialDesignIcons name="account-circle" size={32} />
+                                    </View>
+                                    <View style={{ flex: 1 }}>
+                                        <AppText size="large">{item.username}</AppText>
+                                        <AppText size="small" style={{ color: "gray" }}>
+                                            {item.roles && item.roles.length > 0
+                                                ? item.roles.join(", ")
+                                                : "ไม่มีบทบาท"}
+                                        </AppText>
+                                    </View>
                                 </View>
                             </Pressable>
                         </Link>
@@ -79,5 +99,6 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         borderBottomWidth: 1,
         borderBottomColor: "#eee",
+        backgroundColor: "white",
     },
 });

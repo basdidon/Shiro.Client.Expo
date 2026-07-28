@@ -1,7 +1,7 @@
 import AppText from "@/components/ui/AppText";
 import { useAssignRole, useAssignableRoles, useRemoveRole, useUser } from "@/hooks/useUsers";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -48,8 +48,7 @@ export default function UserDetailScreen() {
                     removeRole.mutate(
                         { userId, role },
                         {
-                            onError: () =>
-                                Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถนำบทบาทออกได้"),
+                            onError: () => Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถนำบทบาทออกได้"),
                         },
                     ),
             },
@@ -88,9 +87,22 @@ export default function UserDetailScreen() {
 
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
-            <Stack.Screen options={{ title: user.username }} />
-
-            <AppText size="heading">{user.username}</AppText>
+            <View style={{ flexDirection: "row", gap: 12 }}>
+                <View
+                    style={{
+                        backgroundColor: "cyan",
+                        width: 120,
+                        aspectRatio: 1,
+                        borderRadius: 12,
+                    }}
+                />
+                <View style={{ gap: 8 }}>
+                    <AppText size="heading">{user.username}</AppText>
+                    <AppText size="small" style={{ color: "#ccc" }}>
+                        {user.userId}
+                    </AppText>
+                </View>
+            </View>
 
             <View style={styles.section}>
                 <View style={styles.sectionHeader}>
@@ -155,7 +167,7 @@ export default function UserDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16 },
+    container: { flex: 1, padding: 8 },
     center: { flex: 1, justifyContent: "center", alignItems: "center" },
     section: { marginTop: 24 },
     sectionHeader: {

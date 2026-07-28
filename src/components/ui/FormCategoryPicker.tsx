@@ -6,6 +6,7 @@ import AppText from "@/components/ui/AppText";
 import { useCategories } from "@/hooks/useCategories";
 import { DEFAULT_CATEGORY_ICON, type CategoryIconName } from "@/lib/categoryIcons";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface FormCategoryPickerProps<
     TFieldValues extends FieldValues,
@@ -61,54 +62,57 @@ export default function FormCategoryPicker<
                             transparent
                             onRequestClose={() => setIsOpen(false)}
                         >
-                            <Pressable style={styles.backdrop} onPress={() => setIsOpen(false)}>
-                                <Pressable
-                                    style={styles.sheet}
-                                    onPress={(e) => e.stopPropagation()}
-                                >
-                                    <AppText size="title" style={styles.sheetTitle}>
-                                        เลือกหมวดหมู่
-                                    </AppText>
-                                    <FlatList
-                                        data={categories ?? []}
-                                        keyExtractor={(item, index) => String(item.id ?? index)}
-                                        ListHeaderComponent={
-                                            <Pressable
-                                                style={styles.row}
-                                                onPress={() => {
-                                                    onChange(null);
-                                                    setIsOpen(false);
-                                                }}
-                                            >
-                                                <MaterialDesignIcons name="cancel" size={24} />
-                                                <AppText style={styles.rowText}>
-                                                    ไม่มีหมวดหมู่
-                                                </AppText>
-                                            </Pressable>
-                                        }
-                                        renderItem={({ item }) => (
-                                            <Pressable
-                                                style={styles.row}
-                                                onPress={() => {
-                                                    onChange(Number(item.id));
-                                                    setIsOpen(false);
-                                                }}
-                                            >
-                                                <MaterialDesignIcons
-                                                    name={
-                                                        (item.iconName as CategoryIconName) ??
-                                                        DEFAULT_CATEGORY_ICON
-                                                    }
-                                                    size={24}
-                                                />
-                                                <AppText style={styles.rowText}>
-                                                    {item.name}
-                                                </AppText>
-                                            </Pressable>
-                                        )}
-                                    />
+                            <SafeAreaView edges={["left", "right", "bottom"]} style={{ flex: 1 }}>
+                                <Pressable style={styles.backdrop} onPress={() => setIsOpen(false)}>
+                                    <Pressable
+                                        style={styles.sheet}
+                                        onPress={(e) => e.stopPropagation()}
+                                    >
+                                        <AppText size="title" style={styles.sheetTitle}>
+                                            เลือกหมวดหมู่
+                                        </AppText>
+                                        <FlatList
+                                            data={categories ?? []}
+                                            keyExtractor={(item, index) => String(item.id ?? index)}
+                                            showsVerticalScrollIndicator={false}
+                                            ListHeaderComponent={
+                                                <Pressable
+                                                    style={styles.row}
+                                                    onPress={() => {
+                                                        onChange(null);
+                                                        setIsOpen(false);
+                                                    }}
+                                                >
+                                                    <MaterialDesignIcons name="cancel" size={24} />
+                                                    <AppText style={styles.rowText}>
+                                                        ไม่มีหมวดหมู่
+                                                    </AppText>
+                                                </Pressable>
+                                            }
+                                            renderItem={({ item }) => (
+                                                <Pressable
+                                                    style={styles.row}
+                                                    onPress={() => {
+                                                        onChange(Number(item.id));
+                                                        setIsOpen(false);
+                                                    }}
+                                                >
+                                                    <MaterialDesignIcons
+                                                        name={
+                                                            (item.iconName as CategoryIconName) ??
+                                                            DEFAULT_CATEGORY_ICON
+                                                        }
+                                                        size={24}
+                                                    />
+                                                    <AppText style={styles.rowText}>
+                                                        {item.name}
+                                                    </AppText>
+                                                </Pressable>
+                                            )}
+                                        />
+                                    </Pressable>
                                 </Pressable>
-                            </Pressable>
+                            </SafeAreaView>
                         </Modal>
                     </View>
                 );

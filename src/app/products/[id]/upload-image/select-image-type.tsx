@@ -10,7 +10,7 @@ export default function () {
         <SafeAreaView edges={["bottom"]}>
             <View style={styles.container}>
                 <AppText size="title" style={styles.title}>
-                    อัปโหลดรูปภาพ {id}
+                    อัปโหลดรูปภาพ
                 </AppText>
                 <View style={styles.btnContainer}>
                     <Link
@@ -23,7 +23,7 @@ export default function () {
                     >
                         <Pressable style={styles.btn}>
                             <View style={styles.iconContainer}>
-                                <MaterialDesignIcons name="image" color={"lightgray"} size={24} />
+                                <MaterialDesignIcons name="image" size={32} />
                             </View>
                             <AppText size="large">รูปย่อ (512x512)</AppText>
                         </Pressable>
@@ -38,7 +38,7 @@ export default function () {
                     >
                         <Pressable style={styles.btn}>
                             <View style={styles.iconContainer}>
-                                <MaterialDesignIcons name="image" color={"lightgray"} size={24} />
+                                <MaterialDesignIcons name="image" size={32} />
                             </View>
                             <AppText size="large">รูปปก (1024x768)</AppText>
                         </Pressable>
@@ -62,15 +62,16 @@ const styles = StyleSheet.create({
     btnContainer: { gap: 8 },
     btn: {
         flexDirection: "row",
-        backgroundColor: "lightgray",
+        backgroundColor: "#efefef",
         padding: 12,
         borderRadius: 12,
         alignItems: "center",
         gap: 24,
     },
     iconContainer: {
-        backgroundColor: "white",
-        padding: 8,
-        borderRadius: 8,
+        width: 36,
+        height: 36,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

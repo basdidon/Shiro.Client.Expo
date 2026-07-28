@@ -53,11 +53,7 @@ export default function FormMapLocationPicker<TFieldValues extends FieldValues>(
                 <AppText style={styles.error}>{fieldState.error.message}</AppText>
             ) : null}
 
-            <Modal
-                visible={isOpen}
-                animationType="slide"
-                onRequestClose={() => setIsOpen(false)}
-            >
+            <Modal visible={isOpen} animationType="slide" onRequestClose={() => setIsOpen(false)}>
                 <View style={styles.mapContainer}>
                     <MapView
                         style={styles.map}

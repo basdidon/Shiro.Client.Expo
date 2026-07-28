@@ -1,6 +1,5 @@
 import HeartButton from "@/components/HeartButton";
 import Stepper from "@/components/Stepper";
-import UploadProductImageButton from "@/components/products/UploadProductImageButton";
 import AppText from "@/components/ui/AppText";
 import Tag from "@/components/ui/Tag";
 import { useProduct, useProductImageDownloadUrl } from "@/hooks/useProducts";
@@ -104,7 +103,10 @@ export default function SingleProductPage() {
             style={{ flexDirection: "column", flex: 1 }}
         >
             <Stack.Screen options={{ title: "", headerRight }} />
-            <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={{ flex: 1, backgroundColor: "white" }}
+                showsVerticalScrollIndicator={false}
+            >
                 {detailImageUrl ? (
                     <Image
                         source={{ uri: detailImageUrl }}
@@ -129,38 +131,77 @@ export default function SingleProductPage() {
                         <AppText>{type}</AppText>
                         <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
                     </View>
-
-                    {isProductManager && (
-                        <Link href={{ pathname: "/products/[id]/edit", params: { id } }} asChild>
-                            <TouchableOpacity style={styles.updateBtn}>
-                                <Text style={styles.updateBtnText}>แก้ไขสินค้า</Text>
-                            </TouchableOpacity>
-                        </Link>
-                    )}
-
-                    {isProductManager && <UploadProductImageButton productId={id} />}
-
-                    {canAddToOrder && (
-                        <Link
-                            href={{ pathname: "/products/[id]/add-to-order", params: { id } }}
-                            asChild
+                    <View>
+                        <AppText size="title">เมนู</AppText>
+                        <View
+                            style={{
+                                marginVertical: 12,
+                                borderColor: "lightgray",
+                                borderWidth: 1,
+                                borderRadius: 12,
+                                overflow: "hidden",
+                                backgroundColor: "lightgray",
+                                gap: 1,
+                            }}
                         >
-                            <TouchableOpacity style={styles.updateBtn}>
-                                <Text style={styles.updateBtnText}>เพิ่มสินค้าลงคำสั่งซื้อ</Text>
-                            </TouchableOpacity>
-                        </Link>
-                    )}
-                    <Link
-                        href={{
-                            pathname: "/products/[id]/upload-image",
-                            params: { id },
-                        }}
-                        asChild
-                    >
-                        <TouchableOpacity style={styles.updateBtn}>
-                            <Text style={styles.updateBtnText}>เปิด Modal</Text>
-                        </TouchableOpacity>
-                    </Link>
+                            {canAddToOrder && (
+                                <Link
+                                    href={{
+                                        pathname: "/products/[id]/add-to-order",
+                                        params: { id },
+                                    }}
+                                    asChild
+                                >
+                                    <TouchableOpacity style={styles.menuBtn}>
+                                        <View style={styles.iconContainer}>
+                                            <MaterialDesignIcons
+                                                name="file-document-plus-outline"
+                                                size={24}
+                                            />
+                                        </View>
+                                        <Text style={styles.menuBtnText}>
+                                            เพิ่มสินค้าลงคำสั่งซื้อ
+                                        </Text>
+                                    </TouchableOpacity>
+                                </Link>
+                            )}
+                            {isProductManager && (
+                                <Link
+                                    href={{ pathname: "/products/[id]/edit", params: { id } }}
+                                    asChild
+                                >
+                                    <TouchableOpacity style={styles.menuBtn}>
+                                        <View style={styles.iconContainer}>
+                                            <MaterialDesignIcons
+                                                name="file-edit-outline"
+                                                size={24}
+                                            />
+                                        </View>
+                                        <Text style={styles.menuBtnText}>แก้ไขสินค้า</Text>
+                                    </TouchableOpacity>
+                                </Link>
+                            )}
+                            {isProductManager && (
+                                <Link
+                                    href={{
+                                        pathname: "/products/[id]/upload-image",
+                                        params: { id },
+                                    }}
+                                    asChild
+                                >
+                                    <TouchableOpacity style={styles.menuBtn}>
+                                        <View style={styles.iconContainer}>
+                                            <MaterialDesignIcons
+                                                name="image-edit-outline"
+                                                size={24}
+                                            />
+                                        </View>
+                                        <Text style={styles.menuBtnText}>แก้ไขรูปภาพ</Text>
+                                    </TouchableOpacity>
+                                </Link>
+                            )}
+                        </View>
+                    </View>
                 </View>
             </ScrollView>
             {/* Footer */}
@@ -203,6 +244,7 @@ const styles = StyleSheet.create({
     contentContainer: { flex: 1 },
     nameLabel: { fontSize: 24, fontWeight: "bold" },
     footerContainer: {
+        elevation: 5,
         backgroundColor: "white",
         padding: 12,
         paddingTop: 18,
@@ -221,14 +263,19 @@ const styles = StyleSheet.create({
         flex: 2,
     },
     removeBtn: { backgroundColor: "#c00" },
-    updateBtn: {
-        backgroundColor: "transparent",
-        borderWidth: 1,
-        borderColor: "blue",
-        paddingVertical: 12,
-        borderRadius: 12,
-        marginTop: 16,
+    iconContainer: {
+        height: 36,
+        width: 36,
+        justifyContent: "center",
+        alignItems: "center",
     },
-    updateBtnText: { color: "blue", textAlign: "center", fontSize: 20 },
+    menuBtn: {
+        flexDirection: "row",
+        backgroundColor: "white",
+        padding: 12,
+        gap: 8,
+        alignItems: "center",
+    },
+    menuBtnText: { textAlign: "center", fontSize: 20 },
     textButton: { color: "white", textAlign: "center", fontSize: 20 },
 });

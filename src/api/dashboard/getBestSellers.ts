@@ -1,7 +1,7 @@
 import api from "@/lib/api";
 import type { components } from "@/types/api";
 
-type BestSellerDto = components["schemas"]["BestSellerDto"];
+type BestSellerDto = components["schemas"]["BestSeller"];
 
 export const getBestSellers = async (
     limit: number,

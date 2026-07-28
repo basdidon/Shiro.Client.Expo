@@ -112,20 +112,22 @@ export default function () {
         <SafeAreaView edges={["bottom"]}>
             <View style={styles.container}>
                 <AppText size="title" style={styles.title}>
-                    อัปโหลดจาก {productId}
+                    อัปโหลดจาก
                 </AppText>
-                <Pressable style={styles.btn} onPress={pickFromCamera}>
-                    <View style={styles.iconContainer}>
-                        <MaterialDesignIcons name="image" color={"lightgray"} size={24} />
-                    </View>
-                    <AppText size="large">กล้องถ่ายรูป</AppText>
-                </Pressable>
-                <Pressable style={styles.btn} onPress={pickFromGallery}>
-                    <View style={styles.iconContainer}>
-                        <MaterialDesignIcons name="image" color={"lightgray"} size={24} />
-                    </View>
-                    <AppText size="large">คลังภาพ</AppText>
-                </Pressable>
+                <View style={styles.btnContainer}>
+                    <Pressable style={styles.btn} onPress={pickFromCamera}>
+                        <View style={styles.iconContainer}>
+                            <MaterialDesignIcons name="camera" size={32} />
+                        </View>
+                        <AppText size="large">กล้องถ่ายรูป</AppText>
+                    </Pressable>
+                    <Pressable style={styles.btn} onPress={pickFromGallery}>
+                        <View style={styles.iconContainer}>
+                            <MaterialDesignIcons name="image" size={32} />
+                        </View>
+                        <AppText size="large">คลังภาพ</AppText>
+                    </Pressable>
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -141,17 +143,19 @@ const styles = StyleSheet.create({
     title: {
         marginBottom: 24,
     },
+    btnContainer: { gap: 8 },
     btn: {
         flexDirection: "row",
-        backgroundColor: "lightgray",
+        backgroundColor: "#efefef",
         padding: 12,
         borderRadius: 12,
         alignItems: "center",
         gap: 24,
     },
     iconContainer: {
-        backgroundColor: "white",
-        padding: 8,
-        borderRadius: 8,
+        width: 36,
+        height: 36,
+        justifyContent: "center",
+        alignItems: "center",
     },
 });

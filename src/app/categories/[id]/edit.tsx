@@ -1,20 +1,29 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { router, useLocalSearchParams } from "expo-router";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
-import { useForm } from "react-hook-form";
-import { ActivityIndicator, Button, StyleSheet, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    Button,
+    Pressable,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
 import FormIconPicker from "@/components/ui/FormIconPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
-import { useCategories, useUpdateCategory } from "@/hooks/useCategories";
+import { useCategories, useDeleteCategory, useUpdateCategory } from "@/hooks/useCategories";
 import { DEFAULT_CATEGORY_ICON, type CategoryIconName } from "@/lib/categoryIcons";
 import {
     categoryFormSchema,
     type CategoryFormInput,
     type CategoryFormOutput,
 } from "@/lib/validation/categorySchemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function EditCategoryScreen() {
     const { id } = useLocalSearchParams<{ id: string }>();
@@ -24,6 +33,7 @@ export default function EditCategoryScreen() {
     const category = categories?.find((c) => String(c.id) === id);
 
     const { mutateAsync: updateCategory, isPending: isSaving } = useUpdateCategory();
+    const { mutateAsync: deleteCategory, isPending: isDeleting } = useDeleteCategory();
     const [error, setError] = useState<string | null>(null);
 
     const parentCategoryIdRef = useRef<TextInput>(null);
@@ -59,6 +69,34 @@ export default function EditCategoryScreen() {
         }
     };
 
+    const handleDelete = () => {
+        Alert.alert(
+            "ลบหมวดหมู่",
+            `ต้องการลบหมวดหมู่ "${category?.name ?? ""}" หรือไม่?`,
+            [
+                { text: "ยกเลิก", style: "cancel" },
+                {
+                    text: "ลบ",
+                    style: "destructive",
+                    onPress: async () => {
+                        try {
+                            await deleteCategory(id);
+                            router.back();
+                        } catch {
+                            setError("ลบไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+                        }
+                    },
+                },
+            ],
+        );
+    };
+
+    const headerRight = () => (
+        <Pressable onPress={handleDelete} disabled={isDeleting} hitSlop={8}>
+            <MaterialDesignIcons name="trash-can-outline" size={22} color="#c00" />
+        </Pressable>
+    );
+
     if (isLoadingCategories) {
         return (
             <View style={styles.loading}>
@@ -69,6 +107,7 @@ export default function EditCategoryScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
+            <Stack.Screen options={{ headerRight }} />
             <View style={styles.form}>
                 <AppText size="heading" style={styles.title}>
                     แก้ไขหมวดหมู่
@@ -108,4 +147,11 @@ const styles = StyleSheet.create({
     form: { gap: 12, paddingHorizontal: 24, paddingTop: 24 },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },
+    trigger: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        padding: 12,
+        paddingVertical: 8,
+        borderRadius: 8,
+    },
 });

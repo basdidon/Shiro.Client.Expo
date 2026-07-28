@@ -56,6 +56,7 @@ function RootNavigator() {
                     name="payments/index"
                     options={{ headerShown: true, headerTitle: "การชำระเงิน" }}
                 />
+                <Stack.Screen name="addresses" options={{ title: "" }} />
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && isProductManager}>
@@ -91,7 +92,7 @@ function RootNavigator() {
                     name="users/index"
                     options={{ headerShown: true, title: "ผู้ใช้งาน" }}
                 />
-                <Stack.Screen name="users/[id]" options={{ headerShown: true }} />
+                <Stack.Screen name="users/[id]" options={{ headerShown: true, title: "" }} />
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && canAddToOrder}>
