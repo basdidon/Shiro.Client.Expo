@@ -1,9 +1,20 @@
+import { getHealth } from "@/api/health/getHealth";
 import AppText from "@/components/ui/AppText";
 import api from "@/lib/api";
-import { StyleSheet, View } from "react-native";
+import { useMutation } from "@tanstack/react-query";
+import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AppDetails() {
+    const {
+        mutate: ping,
+        isPending,
+        isSuccess,
+        isError,
+        data,
+        error,
+    } = useMutation({ mutationFn: getHealth });
+
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <View
@@ -45,6 +56,36 @@ export default function AppDetails() {
                     <PropertyField label={"BaseUrl"} value={api.defaults.baseURL} />
                 </View>
             </View>
+            <View style={{ marginTop: 12 }}>
+                <View style={{ marginBottom: 4 }}>
+                    <AppText size="title">Health Check</AppText>
+                </View>
+                <View style={styles.sectionContainer}>
+                    <PropertyField
+                        label={"GET /health"}
+                        value={
+                            isPending
+                                ? "Pinging..."
+                                : isSuccess
+                                  ? data
+                                  : isError
+                                    ? (error as Error).message
+                                    : "-"
+                        }
+                    />
+                </View>
+                <Pressable
+                    style={styles.pingButton}
+                    onPress={() => ping()}
+                    disabled={isPending}
+                >
+                    {isPending ? (
+                        <ActivityIndicator color="blue" />
+                    ) : (
+                        <AppText style={styles.pingButtonText}>Ping /health</AppText>
+                    )}
+                </Pressable>
+            </View>
         </SafeAreaView>
     );
 }
@@ -76,5 +117,18 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#ccc",
         paddingHorizontal: 12,
+    },
+    pingButton: {
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "blue",
+        paddingVertical: 12,
+        borderRadius: 12,
+        marginTop: 8,
+    },
+    pingButtonText: {
+        color: "blue",
+        textAlign: "center",
+        fontSize: 16,
     },
 });
