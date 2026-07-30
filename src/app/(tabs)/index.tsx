@@ -11,7 +11,7 @@ export default function Index() {
     return (
         <View style={styles.container}>
             <ScrollView
-                contentContainerStyle={{ padding: 12 }}
+                contentContainerStyle={{ padding: 12, gap: 8 }}
                 showsVerticalScrollIndicator={false}
             >
                 {showDashboard && <DashboardScreen />}

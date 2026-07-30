@@ -57,9 +57,7 @@ export default function PaymentsScreen() {
                                 >
                                     <MaterialDesignIcons
                                         name={
-                                            item.paymentMethod === "Cash"
-                                                ? "cash"
-                                                : "bank-transfer"
+                                            item.paymentMethod === "Cash" ? "cash" : "bank-transfer"
                                         }
                                         size={28}
                                         color={item.cancelledAt ? "gray" : "green"}

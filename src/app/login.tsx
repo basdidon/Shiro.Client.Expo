@@ -3,13 +3,14 @@ import axios from "axios";
 import { Link } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
 import FormTextInput from "@/components/ui/FormTextInput";
 import { loginSchema, type LoginFormValues } from "@/lib/validation/authSchemas";
 import { useAuthStore } from "@/store/useAuthStore";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
 export default function LoginScreen() {
     const login = useAuthStore((state) => state.login);
@@ -39,7 +40,7 @@ export default function LoginScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <View style={styles.form}>
                 <AppText size="heading" style={styles.title}>
                     เข้าสู่ระบบ
@@ -75,6 +76,13 @@ export default function LoginScreen() {
                         ยังไม่มีบัญชี? สมัครสมาชิก
                     </AppText>
                 </Link>
+                <View style={{ marginTop: "auto" }}>
+                    <Link href={"/app-info"} asChild>
+                        <Pressable>
+                            <MaterialDesignIcons name="information-slab-circle-outline" size={18} />
+                        </Pressable>
+                    </Link>
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -82,7 +90,7 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    form: { gap: 12, paddingHorizontal: 24 },
+    form: { flex: 1, backgroundColor: "white", gap: 12, paddingTop: 48, paddingHorizontal: 24 },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },
     link: { alignSelf: "center", marginTop: 8 },

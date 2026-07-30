@@ -190,17 +190,19 @@ export default function Profile() {
                         เกี่ยวกับ
                     </AppText>
                     <View style={styles.menu}>
-                        <Pressable style={styles.menuItem}>
-                            <MaterialDesignIcons
-                                name="information-slab-circle-outline"
-                                size={20}
-                                color="#333"
-                            />
-                            <AppText size="large" style={styles.menuItemText}>
-                                ข้อมูลแอพ
-                            </AppText>
-                            <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
-                        </Pressable>
+                        <Link href={"/app-info"} asChild>
+                            <Pressable style={styles.menuItem}>
+                                <MaterialDesignIcons
+                                    name="information-slab-circle-outline"
+                                    size={20}
+                                    color="#333"
+                                />
+                                <AppText size="large" style={styles.menuItemText}>
+                                    ข้อมูลแอพ
+                                </AppText>
+                                <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
+                            </Pressable>
+                        </Link>
                     </View>
                 </View>
 

@@ -107,6 +107,7 @@ function RootNavigator() {
                 <Stack.Screen name="register" options={{ headerShown: true, headerTitle: "" }} />
             </Stack.Protected>
 
+            <Stack.Screen name="app-info" options={{ headerShown: true, headerTitle: "" }} />
             <Stack.Screen
                 name="products/[id]/upload-image/select-image-type"
                 options={{ presentation: "formSheet", sheetAllowedDetents: "fitToContents" }}

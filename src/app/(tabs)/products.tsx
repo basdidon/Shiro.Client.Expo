@@ -198,7 +198,19 @@ function ProductThumbnail({
         );
     }
 
-    return <View style={{ aspectRatio: 1, backgroundColor: "skyblue", borderRadius: 8 }} />;
+    return (
+        <View
+            style={{
+                aspectRatio: 1,
+                backgroundColor: "#ccc",
+                borderRadius: 8,
+                justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            <MaterialDesignIcons name="image-off-outline" size={92} color={"#fff"} />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
