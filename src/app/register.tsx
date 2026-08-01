@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, StyleSheet, View } from "react-native";
@@ -12,20 +12,37 @@ import { useAuthStore } from "@/store/useAuthStore";
 
 export default function RegisterScreen() {
     const register = useAuthStore((state) => state.register);
+    const router = useRouter();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const { control, handleSubmit, setFocus } = useForm<RegisterFormValues>({
         resolver: zodResolver(registerSchema),
-        defaultValues: { username: "", password: "", confirmPassword: "" },
+        defaultValues: {
+            username: "",
+            password: "",
+            confirmPassword: "",
+            firstname: "",
+            lastname: "",
+            email: "",
+            phoneNumber: "",
+        },
     });
 
-    const onSubmit = async ({ username, password }: RegisterFormValues) => {
+    const onSubmit = async ({
+        username,
+        password,
+        firstname,
+        lastname,
+        email,
+        phoneNumber,
+    }: RegisterFormValues) => {
         setError(null);
         setIsSubmitting(true);
         try {
-            await register(username, password);
+            await register({ username, password, firstname, lastname, email, phoneNumber });
+            router.replace("/verify-otp");
         } catch {
             setError("สมัครสมาชิกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
         } finally {
@@ -42,10 +59,44 @@ export default function RegisterScreen() {
 
                 <FormTextInput
                     control={control}
+                    name="firstname"
+                    placeholder="ชื่อ"
+                    autoCorrect={false}
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("lastname")}
+                />
+                <FormTextInput
+                    control={control}
+                    name="lastname"
+                    placeholder="นามสกุล"
+                    autoCorrect={false}
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("username")}
+                />
+                <FormTextInput
+                    control={control}
                     name="username"
                     placeholder="ชื่อผู้ใช้"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("email")}
+                />
+                <FormTextInput
+                    control={control}
+                    name="email"
+                    placeholder="อีเมล"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    keyboardType="email-address"
+                    returnKeyType="next"
+                    onSubmitEditing={() => setFocus("phoneNumber")}
+                />
+                <FormTextInput
+                    control={control}
+                    name="phoneNumber"
+                    placeholder="เบอร์โทรศัพท์"
+                    keyboardType="phone-pad"
                     returnKeyType="next"
                     onSubmitEditing={() => setFocus("password")}
                 />

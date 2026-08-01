@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Pressable, StyleSheet, View } from "react-native";
@@ -14,6 +14,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 
 export default function LoginScreen() {
     const login = useAuthStore((state) => state.login);
+    const router = useRouter();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -27,7 +28,10 @@ export default function LoginScreen() {
         setError(null);
         setIsSubmitting(true);
         try {
-            await login(username, password);
+            const result = await login(username, password);
+            if (result === "verification-required") {
+                router.replace("/verify-otp");
+            }
         } catch (err) {
             if (axios.isAxiosError(err) && !err.response) {
                 setError("ขาดการเชื่อมต่อ กรุณาตรวจสอบอินเทอร์เน็ตของคุณ");

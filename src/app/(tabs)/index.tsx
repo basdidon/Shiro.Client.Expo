@@ -15,9 +15,7 @@ export default function Index() {
                 showsVerticalScrollIndicator={false}
             >
                 {showDashboard && <DashboardScreen />}
-                <BestSellersView />
-                {showDashboard && <DashboardScreen />}
-                {showDashboard && <DashboardScreen />}
+                {showDashboard && <BestSellersView />}
             </ScrollView>
         </View>
     );

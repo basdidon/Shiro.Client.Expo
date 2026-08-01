@@ -105,6 +105,7 @@ function RootNavigator() {
             <Stack.Protected guard={!isAuthenticated}>
                 <Stack.Screen name="login" options={{ headerShown: true, headerTitle: "" }} />
                 <Stack.Screen name="register" options={{ headerShown: true, headerTitle: "" }} />
+                <Stack.Screen name="verify-otp" options={{ headerShown: true, headerTitle: "" }} />
             </Stack.Protected>
 
             <Stack.Screen name="app-info" options={{ headerShown: true, headerTitle: "" }} />
