@@ -4,6 +4,7 @@ import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Pressable, StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
@@ -45,7 +46,11 @@ export default function LoginScreen() {
 
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
-            <View style={styles.form}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     เข้าสู่ระบบ
                 </AppText>
@@ -56,7 +61,9 @@ export default function LoginScreen() {
                     placeholder="ชื่อผู้ใช้"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    autoFocus
                     returnKeyType="next"
+                    submitBehavior="submit"
                     onSubmitEditing={() => setFocus("password")}
                 />
                 <FormTextInput
@@ -87,14 +94,20 @@ export default function LoginScreen() {
                         </Pressable>
                     </Link>
                 </View>
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    form: { flex: 1, backgroundColor: "white", gap: 12, paddingTop: 48, paddingHorizontal: 24 },
+    form: {
+        flexGrow: 1,
+        backgroundColor: "white",
+        gap: 12,
+        paddingTop: 48,
+        paddingHorizontal: 24,
+    },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },
     link: { alignSelf: "center", marginTop: 8 },

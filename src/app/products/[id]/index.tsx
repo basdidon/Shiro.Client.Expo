@@ -131,77 +131,79 @@ export default function SingleProductPage() {
                         <AppText>{type}</AppText>
                         <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
                     </View>
-                    <View>
-                        <AppText size="title">เมนู</AppText>
-                        <View
-                            style={{
-                                marginVertical: 12,
-                                borderColor: "lightgray",
-                                borderWidth: 1,
-                                borderRadius: 12,
-                                overflow: "hidden",
-                                backgroundColor: "lightgray",
-                                gap: 1,
-                            }}
-                        >
-                            {canAddToOrder && (
-                                <Link
-                                    href={{
-                                        pathname: "/products/[id]/add-to-order",
-                                        params: { id },
-                                    }}
-                                    asChild
-                                >
-                                    <TouchableOpacity style={styles.menuBtn}>
-                                        <View style={styles.iconContainer}>
-                                            <MaterialDesignIcons
-                                                name="file-document-plus-outline"
-                                                size={24}
-                                            />
-                                        </View>
-                                        <Text style={styles.menuBtnText}>
-                                            เพิ่มสินค้าลงคำสั่งซื้อ
-                                        </Text>
-                                    </TouchableOpacity>
-                                </Link>
-                            )}
-                            {isProductManager && (
-                                <Link
-                                    href={{ pathname: "/products/[id]/edit", params: { id } }}
-                                    asChild
-                                >
-                                    <TouchableOpacity style={styles.menuBtn}>
-                                        <View style={styles.iconContainer}>
-                                            <MaterialDesignIcons
-                                                name="file-edit-outline"
-                                                size={24}
-                                            />
-                                        </View>
-                                        <Text style={styles.menuBtnText}>แก้ไขสินค้า</Text>
-                                    </TouchableOpacity>
-                                </Link>
-                            )}
-                            {isProductManager && (
-                                <Link
-                                    href={{
-                                        pathname: "/products/[id]/upload-image",
-                                        params: { id },
-                                    }}
-                                    asChild
-                                >
-                                    <TouchableOpacity style={styles.menuBtn}>
-                                        <View style={styles.iconContainer}>
-                                            <MaterialDesignIcons
-                                                name="image-edit-outline"
-                                                size={24}
-                                            />
-                                        </View>
-                                        <Text style={styles.menuBtnText}>แก้ไขรูปภาพ</Text>
-                                    </TouchableOpacity>
-                                </Link>
-                            )}
+                    {(canAddToOrder || isProductManager) && (
+                        <View>
+                            <AppText size="title">เมนู</AppText>
+                            <View
+                                style={{
+                                    marginVertical: 12,
+                                    borderColor: "lightgray",
+                                    borderWidth: 1,
+                                    borderRadius: 12,
+                                    overflow: "hidden",
+                                    backgroundColor: "lightgray",
+                                    gap: 1,
+                                }}
+                            >
+                                {canAddToOrder && (
+                                    <Link
+                                        href={{
+                                            pathname: "/products/[id]/add-to-order",
+                                            params: { id },
+                                        }}
+                                        asChild
+                                    >
+                                        <TouchableOpacity style={styles.menuBtn}>
+                                            <View style={styles.iconContainer}>
+                                                <MaterialDesignIcons
+                                                    name="file-document-plus-outline"
+                                                    size={24}
+                                                />
+                                            </View>
+                                            <Text style={styles.menuBtnText}>
+                                                เพิ่มสินค้าลงคำสั่งซื้อ
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </Link>
+                                )}
+                                {isProductManager && (
+                                    <Link
+                                        href={{ pathname: "/products/[id]/edit", params: { id } }}
+                                        asChild
+                                    >
+                                        <TouchableOpacity style={styles.menuBtn}>
+                                            <View style={styles.iconContainer}>
+                                                <MaterialDesignIcons
+                                                    name="file-edit-outline"
+                                                    size={24}
+                                                />
+                                            </View>
+                                            <Text style={styles.menuBtnText}>แก้ไขสินค้า</Text>
+                                        </TouchableOpacity>
+                                    </Link>
+                                )}
+                                {isProductManager && (
+                                    <Link
+                                        href={{
+                                            pathname: "/products/[id]/upload-image",
+                                            params: { id },
+                                        }}
+                                        asChild
+                                    >
+                                        <TouchableOpacity style={styles.menuBtn}>
+                                            <View style={styles.iconContainer}>
+                                                <MaterialDesignIcons
+                                                    name="image-edit-outline"
+                                                    size={24}
+                                                />
+                                            </View>
+                                            <Text style={styles.menuBtnText}>แก้ไขรูปภาพ</Text>
+                                        </TouchableOpacity>
+                                    </Link>
+                                )}
+                            </View>
                         </View>
-                    </View>
+                    )} 
                 </View>
             </ScrollView>
             {/* Footer */}

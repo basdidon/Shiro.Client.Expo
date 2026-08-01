@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -128,9 +129,11 @@ export default function RootLayout() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <StatusBar style="dark" />
-            <SplashScreenController />
-            <RootNavigator />
+            <KeyboardProvider>
+                <StatusBar style="dark" />
+                <SplashScreenController />
+                <RootNavigator />
+            </KeyboardProvider>
         </QueryClientProvider>
     );
 }

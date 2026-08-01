@@ -7,6 +7,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartItemView from "./CartItemView";
 import ShippingAddressSection from "./ShippingAddressSection";
@@ -90,9 +91,11 @@ export default function Cart() {
     if (checkout) {
         return (
             <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
-                <ScrollView
+                <KeyboardAwareScrollView
                     contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    bottomOffset={62}
                 >
                     <AppText size="title">สรุปคำสั่งซื้อ</AppText>
                     <AppText style={styles.muted}>ราคาถูกล็อกไว้แล้ว</AppText>
@@ -114,7 +117,7 @@ export default function Cart() {
                     })}
 
                     <ShippingAddressSection onAddressChange={setAddress} />
-                </ScrollView>
+                </KeyboardAwareScrollView>
                 <View style={styles.footer}>
                     {errorMessage && <AppText style={styles.errorText}>{errorMessage}</AppText>}
                     {isExpired ? (

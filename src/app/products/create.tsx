@@ -2,7 +2,8 @@ import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { Button, StyleSheet, TextInput } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
@@ -65,7 +66,11 @@ export default function CreateProductScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     เพิ่มสินค้าใหม่
                 </AppText>
@@ -74,7 +79,9 @@ export default function CreateProductScreen() {
                     control={control}
                     name="name"
                     placeholder="ชื่อสินค้า"
+                    autoFocus
                     returnKeyType="next"
+                    submitBehavior="submit"
                     onSubmitEditing={() => unitPriceRef.current?.focus()}
                 />
                 <FormTextInput
@@ -84,6 +91,7 @@ export default function CreateProductScreen() {
                     placeholder="ราคา"
                     keyboardType="numeric"
                     returnKeyType="next"
+                    submitBehavior="submit"
                     onSubmitEditing={() => barcodeRef.current?.focus()}
                 />
                 <FormTextInput
@@ -103,7 +111,7 @@ export default function CreateProductScreen() {
                     onPress={handleSubmit(onSubmit)}
                     disabled={isPending}
                 />
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }

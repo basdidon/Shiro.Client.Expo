@@ -1,5 +1,6 @@
 import AppText from "@/components/ui/AppText";
 import { usePayments } from "@/hooks/usePayments";
+import { formatDate, formatTime } from "@/lib/date";
 import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
@@ -97,11 +98,15 @@ export default function PaymentsScreen() {
                                                 </AppText>
                                             </View>
                                             <View style={{ flexDirection: "row", gap: 4 }}>
-                                                <AppText size="extraSmall">13:15:59</AppText>
+                                                <AppText size="extraSmall">
+                                                    {formatTime(item.createdAt)}
+                                                </AppText>
                                                 <MaterialDesignIcons name="clock-outline" />
                                             </View>
                                             <View style={{ flexDirection: "row", gap: 4 }}>
-                                                <AppText size="extraSmall">30/7</AppText>
+                                                <AppText size="extraSmall">
+                                                    {formatDate(item.createdAt)}
+                                                </AppText>
                                                 <MaterialDesignIcons name="calendar-month-outline" />
                                             </View>
                                         </View>

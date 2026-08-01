@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { Button, StyleSheet, TextInput } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
@@ -42,7 +43,11 @@ export default function CreateCategoryScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     เพิ่มหมวดหมู่ใหม่
                 </AppText>
@@ -51,7 +56,9 @@ export default function CreateCategoryScreen() {
                     control={control}
                     name="name"
                     placeholder="ชื่อหมวดหมู่"
+                    autoFocus
                     returnKeyType="next"
+                    submitBehavior="submit"
                     onSubmitEditing={() => parentCategoryIdRef.current?.focus()}
                 />
                 <FormIconPicker control={control} name="iconName" />
@@ -71,7 +78,7 @@ export default function CreateCategoryScreen() {
                     onPress={handleSubmit(onSubmit)}
                     disabled={isPending}
                 />
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }

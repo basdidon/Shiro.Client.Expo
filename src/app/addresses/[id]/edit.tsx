@@ -3,6 +3,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { ActivityIndicator, Button, StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
@@ -81,7 +82,11 @@ export default function EditAddressScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     แก้ไขที่อยู่จัดส่ง
                 </AppText>
@@ -110,7 +115,7 @@ export default function EditAddressScreen() {
                     onPress={handleSubmit(onSubmit)}
                     disabled={isSaving}
                 />
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }

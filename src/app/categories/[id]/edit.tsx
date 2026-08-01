@@ -10,6 +10,7 @@ import {
     TextInput,
     View,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
@@ -108,7 +109,11 @@ export default function EditCategoryScreen() {
     return (
         <SafeAreaView style={styles.container}>
             <Stack.Screen options={{ headerRight }} />
-            <View style={styles.form}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     แก้ไขหมวดหมู่
                 </AppText>
@@ -136,7 +141,7 @@ export default function EditCategoryScreen() {
                     onPress={handleSubmit(onSubmit)}
                     disabled={isSaving}
                 />
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }

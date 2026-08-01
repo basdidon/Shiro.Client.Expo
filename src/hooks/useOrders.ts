@@ -98,6 +98,7 @@ export const useCompleteOrder = () => {
         onSuccess: (_, orderId) => {
             queryClient.invalidateQueries({ queryKey: ["orders", orderId] });
             queryClient.invalidateQueries({ queryKey: ["orders"] });
+            queryClient.invalidateQueries({ queryKey: ["dashboard", "summary"] });
         },
     });
 };

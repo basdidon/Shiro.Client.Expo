@@ -1905,6 +1905,8 @@ export interface components {
             /** Format: double */
             amount?: number | string;
             /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
             cancelledAt?: null | string;
         };
         /** @enum {unknown} */

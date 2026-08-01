@@ -52,6 +52,6 @@ export const uploadImageToPresignedUrl = async (
         headers: { "Content-Type": contentType },
     });
     if (result.status < 200 || result.status >= 300) {
-        throw new Error(`Image upload failed with status ${result.status}`);
+        throw new Error(`Image upload failed with status ${result.status}: ${result.body}`);
     }
 };

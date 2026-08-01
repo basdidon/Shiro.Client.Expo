@@ -2,7 +2,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { router } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, StyleSheet } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
@@ -53,7 +54,11 @@ export default function CreateAddressScreen() {
 
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     เพิ่มที่อยู่จัดส่ง
                 </AppText>
@@ -82,7 +87,7 @@ export default function CreateAddressScreen() {
                     onPress={handleSubmit(onSubmit)}
                     disabled={isPending}
                 />
-            </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }
