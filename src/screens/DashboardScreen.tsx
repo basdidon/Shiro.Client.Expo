@@ -43,7 +43,7 @@ export default function DashboardScreen() {
             </View>
             <View style={styles.cardContainer}>
                 <Link href={"/orders"} asChild>
-                    <Pressable style={[styles.cardSmall, { backgroundColor: "#2DD4BF" }]}>
+                    <Pressable style={StyleSheet.flatten([styles.cardSmall, { backgroundColor: "#2DD4BF" }])}>
                         <AppText style={{ color: "white", fontWeight: "600" }}>รอดำเนินการ</AppText>
                         <AppText size="display" style={{ color: "white", textAlign: "right" }}>
                             {summary.pendingOrdersCount ?? 0}
