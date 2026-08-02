@@ -10,6 +10,7 @@ import FormCategoryPicker from "@/components/ui/FormCategoryPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
 import { useCategories } from "@/hooks/useCategories";
 import { useProduct, useUpdateProduct } from "@/hooks/useProducts";
+import { getApiErrorDetail } from "@/lib/api";
 import {
     UpdateProductFormInput,
     updateProductSchema,
@@ -54,8 +55,8 @@ export default function EditProductScreen() {
                 categoryId,
             });
             router.back();
-        } catch {
-            setError("บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
+        } catch (err) {
+            setError(getApiErrorDetail(err) ?? "บันทึกไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
         }
     };
 

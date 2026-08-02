@@ -30,7 +30,10 @@ export default () => {
                     >
                         <View style={styles.bestSellerRow}>
                             <View style={styles.rankBadge}>
-                                <AppText style={{ color: "white", fontWeight: "700" }} size="small">
+                                <AppText
+                                    style={{ color: "white", fontFamily: "Mali_700Bold" }}
+                                    size="small"
+                                >
                                     {index + 1}
                                 </AppText>
                             </View>

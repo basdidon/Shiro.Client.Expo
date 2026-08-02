@@ -1,28 +1,39 @@
+import {
+    Mali_200ExtraLight,
+    Mali_300Light,
+    Mali_400Regular,
+    Mali_500Medium,
+    Mali_600SemiBold,
+    Mali_700Bold,
+    useFonts,
+} from "@expo-google-fonts/mali";
 import { useAuthStore } from "@/store/useAuthStore";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
-function SplashScreenController() {
+function SplashScreenController({ fontsLoaded }: { fontsLoaded: boolean }) {
     const isLoading = useAuthStore((state) => state.isLoading);
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!isLoading && fontsLoaded) {
             SplashScreen.hide();
         }
-    }, [isLoading]);
+    }, [isLoading, fontsLoaded]);
 
     return null;
 }
 
 function RootNavigator() {
+    const isLoading = useAuthStore((state) => state.isLoading);
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
     const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
     const canManageOrderLines = useAuthStore(
@@ -38,6 +49,14 @@ function RootNavigator() {
             state.roles.includes("order-manager") ||
             state.roles.includes("staff"),
     );
+
+    if (isLoading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#fff" />
+            </View>
+        );
+    }
 
     return (
         <Stack screenOptions={{ headerShown: false }}>
@@ -123,17 +142,39 @@ function RootNavigator() {
 }
 
 export default function RootLayout() {
+    const [fontsLoaded, fontError] = useFonts({
+        Mali_200ExtraLight,
+        Mali_300Light,
+        Mali_400Regular,
+        Mali_500Medium,
+        Mali_600SemiBold,
+        Mali_700Bold,
+    });
+
     useEffect(() => {
         useAuthStore.getState().init();
     }, []);
+
+    if (!fontsLoaded && !fontError) {
+        return null;
+    }
 
     return (
         <QueryClientProvider client={queryClient}>
             <KeyboardProvider>
                 <StatusBar style="dark" />
-                <SplashScreenController />
+                <SplashScreenController fontsLoaded={fontsLoaded || !!fontError} />
                 <RootNavigator />
             </KeyboardProvider>
         </QueryClientProvider>
     );
 }
+
+const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#208AEF",
+    },
+});

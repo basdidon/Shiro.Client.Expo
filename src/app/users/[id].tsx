@@ -6,6 +6,36 @@ import { useState } from "react";
 import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+function ContactRow({
+    icon,
+    value,
+    confirmed,
+}: {
+    icon: "email-outline" | "phone-outline";
+    value?: string;
+    confirmed?: boolean;
+}) {
+    if (!value) return null;
+
+    return (
+        <View style={styles.contactRow}>
+            <MaterialDesignIcons name={icon} size={20} color="gray" style={{ marginRight: 8 }} />
+            <AppText size="medium" style={{ flex: 1 }}>
+                {value}
+            </AppText>
+            <MaterialDesignIcons
+                name={confirmed ? "check-circle" : "alert-circle-outline"}
+                size={16}
+                color={confirmed ? "green" : "orange"}
+                style={{ marginRight: 4 }}
+            />
+            <AppText size="small" style={{ color: confirmed ? "green" : "orange" }}>
+                {confirmed ? "ยืนยันแล้ว" : "ยังไม่ยืนยัน"}
+            </AppText>
+        </View>
+    );
+}
+
 function RoleChip({
     role,
     removable,
@@ -94,14 +124,39 @@ export default function UserDetailScreen() {
                         width: 120,
                         aspectRatio: 1,
                         borderRadius: 12,
+                        alignItems: "center",
+                        justifyContent: "center",
                     }}
-                />
+                >
+                    <MaterialDesignIcons name="account" size={92} color="white" />
+                </View>
                 <View style={{ gap: 8 }}>
                     <AppText size="heading">{user.username}</AppText>
+                    {(user.firstname || user.lastname) && (
+                        <AppText size="medium" style={{ color: "gray" }}>
+                            {`${user.firstname ?? ""} ${user.lastname ?? ""}`.trim()}
+                        </AppText>
+                    )}
                     <AppText size="small" style={{ color: "#ccc" }}>
                         {user.userId}
                     </AppText>
                 </View>
+            </View>
+
+            <View style={styles.section}>
+                <AppText size="title" style={{ marginBottom: 12 }}>
+                    ข้อมูลติดต่อ
+                </AppText>
+                <ContactRow
+                    icon="email-outline"
+                    value={user.email}
+                    confirmed={user.isEmailConfirmed}
+                />
+                <ContactRow
+                    icon="phone-outline"
+                    value={user.phoneNumber}
+                    confirmed={user.isPhoneNimberConfirmed}
+                />
             </View>
 
             <View style={styles.section}>
@@ -167,7 +222,7 @@ export default function UserDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 8 },
+    container: { flex: 1, padding: 8, backgroundColor: "snow" },
     center: { flex: 1, justifyContent: "center", alignItems: "center" },
     section: { marginTop: 24 },
     sectionHeader: {
@@ -177,6 +232,7 @@ const styles = StyleSheet.create({
         marginBottom: 12,
     },
     chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+    contactRow: { flexDirection: "row", alignItems: "center", paddingVertical: 6 },
     chip: {
         flexDirection: "row",
         alignItems: "center",
@@ -198,5 +254,5 @@ const styles = StyleSheet.create({
     },
     roleOption: { paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: "#eee" },
     closeBtn: { marginTop: 16, paddingVertical: 12, alignItems: "center" },
-    closeBtnText: { color: "blue", fontSize: 16, fontWeight: "600" },
+    closeBtnText: { color: "blue", fontSize: 16, fontFamily: "Mali_600SemiBold" },
 });

@@ -3,6 +3,7 @@ import AppText from "@/components/ui/AppText";
 import { useCancelOrder, useCompleteOrder, useOrder, useShipOrder } from "@/hooks/useOrders";
 import { useCancelPayment, useCreatePayment, usePayments } from "@/hooks/usePayments";
 import { formatDateTime } from "@/lib/date";
+import { getStatusIcon } from "@/lib/orderStatusIcon";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { components } from "@/types/api";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -152,21 +153,6 @@ export default function OrderDetailScreen() {
             0,
         ) ?? 0;
 
-    const getStatusIcon = (status?: OrderStatus) => {
-        switch (status) {
-            case "Created":
-                return "clock-outline";
-            case "Shipped":
-                return "truck-outline";
-            case "Completed":
-                return "check-circle-outline";
-            case "Cancelled":
-                return "cancel";
-            default:
-                return "help-circle-outline";
-        }
-    };
-
     const handleShip = () => {
         Alert.alert("จัดส่งคำสั่งซื้อ", "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าจัดส่งแล้วหรือไม่?", [
             { text: "ยกเลิก", style: "cancel" },
@@ -245,9 +231,15 @@ export default function OrderDetailScreen() {
                             aspectRatio: 1,
                             justifyContent: "center",
                             alignItems: "center",
+                            borderRadius: 12,
+                            backgroundColor: "beige",
                         }}
                     >
-                        <MaterialDesignIcons name={getStatusIcon(order.status)} size={92} />
+                        <MaterialDesignIcons
+                            name={getStatusIcon(order.status)}
+                            size={92}
+                            color={"lightsalmon"}
+                        />
                     </View>
                     <View style={styles.header}>
                         <AppText size="heading"># {order.orderId?.slice(0, 8)}</AppText>
@@ -351,7 +343,7 @@ export default function OrderDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1 },
+    container: { flex: 1, backgroundColor: "#fff" },
     notFound: { flex: 1, justifyContent: "center", alignItems: "center" },
     header: { marginBottom: 16, gap: 8, flex: 1 },
     subtleText: { color: "gray" },
@@ -411,5 +403,10 @@ const styles = StyleSheet.create({
     cancelBtn: { backgroundColor: "#c00" },
     addPaymentBtn: { backgroundColor: "green" },
     disabledBtn: { opacity: 0.4 },
-    actionBtnText: { color: "white", textAlign: "center", fontSize: 16, fontWeight: "600" },
+    actionBtnText: {
+        color: "white",
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily: "Mali_600SemiBold",
+    },
 });

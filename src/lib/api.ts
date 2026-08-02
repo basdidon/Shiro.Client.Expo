@@ -6,6 +6,21 @@ import { tokenStorage } from "@/lib/tokenStorage";
 import type { components } from "@/types/api";
 
 type TokenResponse = components["schemas"]["TokenResponse"];
+type ProblemDetails = components["schemas"]["HttpValidationProblemDetails"];
+
+// Pulls the server's own explanation (RFC 7807 problem+json body) out of a failed
+// request so the UI can show *why* it failed instead of a generic message.
+export const getApiErrorDetail = (error: unknown): string | null => {
+    if (!axios.isAxiosError(error)) return null;
+    const problem = error.response?.data as ProblemDetails | undefined;
+    if (!problem || typeof problem !== "object") return null;
+
+    if (problem.errors) {
+        const messages = Object.values(problem.errors).flat();
+        if (messages.length > 0) return messages.join("\n");
+    }
+    return problem.detail || problem.title || null;
+};
 
 // In dev, the Metro/Expo dev client already knows the laptop's current LAN IP
 // (that's how the phone reaches the bundler), so reuse it for the API host

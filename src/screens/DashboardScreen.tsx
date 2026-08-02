@@ -29,13 +29,13 @@ export default function DashboardScreen() {
         <View style={styles.container}>
             <View style={styles.cardContainer}>
                 <View style={[styles.cardLarge, { backgroundColor: "cornflowerblue" }]}>
-                    <AppText style={{ color: "white", fontWeight: "600" }}>ยอดขายวันนี้</AppText>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>ยอดขายวันนี้</AppText>
                     <AppText size="display" style={{ color: "white", textAlign: "right" }}>
                         {formatCurrency(summary.salesToday)}
                     </AppText>
                 </View>
                 <View style={[styles.cardLarge, { backgroundColor: "royalblue" }]}>
-                    <AppText style={{ color: "white", fontWeight: "600" }}>ยอดขายเดือนนี้</AppText>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>ยอดขายเดือนนี้</AppText>
                     <AppText size="display" style={{ color: "white", textAlign: "right" }}>
                         {formatCurrency(summary.salesThisMonth)}
                     </AppText>
@@ -43,21 +43,32 @@ export default function DashboardScreen() {
             </View>
             <View style={styles.cardContainer}>
                 <Link href={"/orders"} asChild>
-                    <Pressable style={StyleSheet.flatten([styles.cardSmall, { backgroundColor: "#2DD4BF" }])}>
-                        <AppText style={{ color: "white", fontWeight: "600" }}>รอดำเนินการ</AppText>
+                    <Pressable
+                        style={StyleSheet.flatten([
+                            styles.cardSmall,
+                            { backgroundColor: "#2DD4BF" },
+                        ])}
+                    >
+                        <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>รอดำเนินการ</AppText>
                         <AppText size="display" style={{ color: "white", textAlign: "right" }}>
                             {summary.pendingOrdersCount ?? 0}
                         </AppText>
                     </Pressable>
                 </Link>
                 <View style={[styles.cardSmall, { backgroundColor: "#0D9488" }]}>
-                    <AppText style={{ color: "white", fontWeight: "600" }}>กำลังจัดส่ง</AppText>
-                    <AppText size="display" style={{ color: "white", textAlign: "right" }}>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>กำลังจัดส่ง</AppText>
+                    <AppText
+                        size="display"
+                        style={{
+                            color: "white",
+                            textAlign: "right",
+                        }}
+                    >
                         {summary.shippingOrdersCount ?? 0}
                     </AppText>
                 </View>
                 <View style={styles.cardSmall}>
-                    <AppText style={{ color: "white", fontWeight: "600" }}>เสร็จสิ้นวันนี้</AppText>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>เสร็จสิ้นวันนี้</AppText>
                     <AppText size="display" style={{ color: "white", textAlign: "right" }}>
                         {summary.completedTodayCount ?? 0}
                     </AppText>
@@ -78,7 +89,6 @@ const styles = StyleSheet.create({
     },
     cardLarge: {
         flex: 1,
-        height: 124,
         padding: 12,
         borderRadius: 12,
         justifyContent: "space-between",
@@ -87,7 +97,6 @@ const styles = StyleSheet.create({
     cardSmall: {
         flex: 1,
         backgroundColor: "#115E59",
-        height: 92,
         padding: 12,
         borderRadius: 12,
         justifyContent: "space-between",

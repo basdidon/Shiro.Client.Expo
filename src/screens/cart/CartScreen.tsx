@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     totalRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
     submitBtn: { backgroundColor: "blue", padding: 14, borderRadius: 12 },
     submitBtnDisabled: { backgroundColor: "#ccc" },
-    submitTxtBtn: { color: "white", fontSize: 18, fontWeight: "bold", textAlign: "center" },
+    submitTxtBtn: { color: "white", fontSize: 18, fontFamily: "Mali_700Bold", textAlign: "center" },
     checkoutLineCard: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     },
     statusRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
     countdownText: { textAlign: "center", color: "gray" },
-    countdownUrgent: { color: "#e67e22", fontWeight: "600" },
+    countdownUrgent: { color: "#e67e22", fontFamily: "Mali_600SemiBold" },
     expiredText: { textAlign: "center", color: "#d64545" },
     editCartText: { textAlign: "center", color: "gray", marginTop: 4 },
     errorText: { color: "red", textAlign: "center" },

@@ -71,7 +71,7 @@ export default function CreateProductScreen() {
                 keyboardShouldPersistTaps="handled"
                 bottomOffset={62}
             >
-                <AppText size="heading" style={styles.title}>
+                <AppText size="title" style={styles.title}>
                     เพิ่มสินค้าใหม่
                 </AppText>
 

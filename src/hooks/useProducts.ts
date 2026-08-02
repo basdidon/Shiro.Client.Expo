@@ -11,9 +11,25 @@ import { updateProduct } from "@/api/products/updateProduct";
 import api from "@/lib/api";
 import type { components } from "@/types/api";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 
 type CursorResultOfProductDto = components["schemas"]["CursorResultOfProductDto"];
 type ProductImageType = components["schemas"]["ProductImageType"];
+
+// Used for idempotent PUTs where a dropped connection (no `error.response` - the request
+// never got a reply, not a 4xx/5xx) is safe to retry, e.g. a known RN-Android bug where a
+// 204 response intermittently surfaces as ERR_NETWORK even though the server applied it.
+const retryOnNetworkError = async <T,>(fn: () => Promise<T>, attempts = 3): Promise<T> => {
+    for (let attempt = 1; ; attempt++) {
+        try {
+            return await fn();
+        } catch (err) {
+            const isNetworkError = axios.isAxiosError(err) && !err.response;
+            if (!isNetworkError || attempt >= attempts) throw err;
+            await new Promise((resolve) => setTimeout(resolve, attempt * 500));
+        }
+    }
+};
 
 export const getProducts = async (
     limit: number,
@@ -63,7 +79,8 @@ export const useUpdateProduct = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateProduct,
+        mutationFn: (command: Parameters<typeof updateProduct>[0]) =>
+            retryOnNetworkError(() => updateProduct(command)),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             queryClient.invalidateQueries({ queryKey: ["products", variables.productId] });
@@ -108,7 +125,7 @@ export const useUploadProductImage = () => {
                 throw new Error("upload-url response missing uploadUrl, key, or contentType");
             }
             await uploadImageToPresignedUrl(uploadUrl, fileUri, contentType);
-            await updateProductImageKey(productId, type, key);
+            await retryOnNetworkError(() => updateProductImageKey(productId, type, key));
             return key;
         },
         onSuccess: (_, variables) => {

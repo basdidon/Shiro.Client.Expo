@@ -219,6 +219,11 @@ const styles = StyleSheet.create({
     actionBtn: { flex: 1, paddingVertical: 12, borderRadius: 12 },
     cancelBtn: { backgroundColor: "#eee" },
     confirmBtn: { backgroundColor: "blue" },
-    actionBtnText: { textAlign: "center", fontSize: 16, fontWeight: "600", color: "white" },
+    actionBtnText: {
+        textAlign: "center",
+        fontSize: 16,
+        fontFamily: "Mali_600SemiBold",
+        color: "white",
+    },
     cancelBtnText: { color: "#333" },
 });

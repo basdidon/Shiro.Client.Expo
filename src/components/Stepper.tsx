@@ -45,6 +45,6 @@ const styles = StyleSheet.create({
     containerSmall: { gap: 12 },
     button: { backgroundColor: "blue", padding: 8, borderRadius: 24 },
     buttonSmall: { padding: 4, borderRadius: 16 },
-    text: { fontSize: 20, fontWeight: "bold" },
+    text: { fontSize: 20, fontFamily: "Mali_700Bold" },
     textSmall: { fontSize: 14, minWidth: 16, textAlign: "center" },
 });

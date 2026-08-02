@@ -92,9 +92,12 @@ export default function PaymentsScreen() {
                                             >
                                                 <AppText
                                                     size="extraSmall"
-                                                    style={{ color: "#fff", fontWeight: 600 }}
+                                                    style={{
+                                                        color: "#fff",
+                                                        fontFamily: "Mali_600SemiBold",
+                                                    }}
                                                 >
-                                                    {isCancelled ? "ยกเลิกแล้ว" : "เสร็จสมบูรณ์"}
+                                                    {isCancelled ? "ยกเลิกแล้ว" : "ชำระแล้ว"}
                                                 </AppText>
                                             </View>
                                             <View style={{ flexDirection: "row", gap: 4 }}>

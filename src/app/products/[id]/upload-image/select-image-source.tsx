@@ -5,7 +5,8 @@ import { Platform, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useUploadProductImage } from "@/hooks/useProducts";
-import { cropAndResize } from "@/lib/productImageProcessing";
+import { cropAndResize, getImageSaveFormat } from "@/lib/productImageProcessing";
+import { SaveFormat } from "expo-image-manipulator";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 
@@ -20,7 +21,6 @@ export default function () {
 
     const { mutateAsync: uploadImage } = useUploadProductImage();
 
-    const [uploadingSource, setUploadingSource] = useState<"camera" | "gallery" | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     // expo-image-picker's `aspect` option is Android-only (iOS's native editor is
@@ -48,25 +48,28 @@ export default function () {
         setError(null);
         try {
             const target = type === "Thumbnail" ? THUMBNAIL_SIZE : DETAIL_SIZE;
+            const format = getImageSaveFormat(asset);
             const processedUri = await cropAndResize(
                 asset.uri,
                 asset.width,
                 asset.height,
                 target.width,
                 target.height,
+                format,
             );
+            const extension = format === SaveFormat.PNG ? "png" : "jpg";
             await uploadImage({
                 productId,
                 type,
                 fileUri: processedUri,
-                filename: asset.fileName ?? `${type.toLowerCase()}.jpg`,
+                filename: `${type.toLowerCase()}.${extension}`,
             });
             router.back();
         } catch (err) {
             console.error("[UploadProductImageButton] upload failed:", err);
             setError("อัปโหลดรูปภาพไม่สำเร็จ กรุณาลองใหม่อีกครั้ง");
         } finally {
-            setUploadingSource(null);
+            router.dismissTo({ pathname: "/products/[id]", params: { id: productId } });
         }
     };
 
@@ -85,7 +88,6 @@ export default function () {
         });
         if (result.canceled) return;
 
-        setUploadingSource("camera");
         await uploadPickedAsset(selectedType, result.assets[0]);
     };
 
@@ -104,7 +106,6 @@ export default function () {
         });
         if (result.canceled) return;
 
-        setUploadingSource("gallery");
         await uploadPickedAsset(selectedType, result.assets[0]);
     };
 

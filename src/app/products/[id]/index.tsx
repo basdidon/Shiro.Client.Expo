@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
     },
     mainContainer: { flex: 1, margin: 12, marginHorizontal: 20 },
     contentContainer: { flex: 1 },
-    nameLabel: { fontSize: 24, fontWeight: "bold" },
+    nameLabel: { fontSize: 24, fontFamily: "Mali_700Bold" },
     footerContainer: {
         elevation: 5,
         backgroundColor: "white",

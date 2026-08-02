@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     },
     tabActive: { backgroundColor: "blue", borderColor: "blue" },
     tabText: { color: "#555" },
-    tabTextActive: { color: "white", fontWeight: "bold" },
+    tabTextActive: { color: "white", fontFamily: "Mali_700Bold" },
     addressCard: {
         borderWidth: 1,
         borderColor: "#eee",
@@ -205,5 +205,5 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingVertical: 10,
     },
-    createAddressText: { color: "blue", fontWeight: "600" },
+    createAddressText: { color: "blue", fontFamily: "Mali_600SemiBold" },
 });

@@ -65,15 +65,24 @@ export default function UsersScreen() {
                                 >
                                     <View
                                         style={{
-                                            width: 36,
+                                            width: 48,
                                             aspectRatio: 1,
                                             marginRight: 12,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            backgroundColor: "wheat",
+                                            borderRadius: 12,
                                         }}
                                     >
-                                        <MaterialDesignIcons name="account-circle" size={32} />
+                                        <MaterialDesignIcons name="account" size={32} color="tan" />
                                     </View>
                                     <View style={{ flex: 1 }}>
                                         <AppText size="large">{item.username}</AppText>
+                                        {(item.firstname || item.lastname) && (
+                                            <AppText size="small" style={{ color: "gray" }}>
+                                                {`${item.firstname ?? ""} ${item.lastname ?? ""}`.trim()}
+                                            </AppText>
+                                        )}
                                         <AppText size="small" style={{ color: "gray" }}>
                                             {item.roles && item.roles.length > 0
                                                 ? item.roles.join(", ")

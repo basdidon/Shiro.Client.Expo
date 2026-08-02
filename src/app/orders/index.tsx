@@ -1,22 +1,21 @@
+import OrderListItem from "@/components/OrderListItem";
 import RadioPillButtonGroup from "@/components/RadioButtonPillGroup";
 import AppText from "@/components/ui/AppText";
 import { useOrders } from "@/hooks/useOrders";
-import { formatDateTime } from "@/lib/date";
 import type { components } from "@/types/api";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Link, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type OrderStatus = components["schemas"]["OrderStatus"];
 
 const STATUS_OPTIONS: { id: number; label: string; value: string; status?: OrderStatus }[] = [
-    { id: 1, label: "All", value: "all" },
-    { id: 2, label: "Created", value: "created", status: "Created" },
-    { id: 3, label: "Shipped", value: "shipped", status: "Shipped" },
-    { id: 4, label: "Completed", value: "completed", status: "Completed" },
-    { id: 5, label: "Cancelled", value: "cancelled", status: "Cancelled" },
+    { id: 1, label: "ทั้งหมด", value: "all" },
+    { id: 2, label: "รอดำเนินการ", value: "created", status: "Created" },
+    { id: 3, label: "กำลังจัดส่ง", value: "shipped", status: "Shipped" },
+    { id: 4, label: "เสร็จสมบูรณ์", value: "completed", status: "Completed" },
+    { id: 5, label: "ยกเลิก", value: "cancelled", status: "Cancelled" },
 ];
 
 export default function Orders() {
@@ -29,7 +28,7 @@ export default function Orders() {
 
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
-            <View style={{ margin: 12, marginVertical: 8 }}>
+            <View style={{ marginVertical: 8 }}>
                 <RadioPillButtonGroup
                     options={STATUS_OPTIONS}
                     selectedId={selectedId}
@@ -44,97 +43,7 @@ export default function Orders() {
                         ยังไม่มีคำสั่งซื้อ
                     </AppText>
                 ) : (
-                    orders.map((x) => (
-                        <Link
-                            key={x.orderId}
-                            href={{ pathname: "/orders/[id]", params: { id: x.orderId! } }}
-                            asChild
-                        >
-                            <Pressable
-                                style={{
-                                    flexDirection: "row",
-                                    backgroundColor: "white",
-                                    padding: 12,
-                                    columnGap: 12,
-                                    marginBottom: 8,
-                                }}
-                            >
-                                <View
-                                    style={{
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        width: 88,
-                                        aspectRatio: 1,
-                                        backgroundColor: "beige",
-                                        borderRadius: 12,
-                                    }}
-                                >
-                                    <MaterialDesignIcons
-                                        name="file-document-outline"
-                                        size={64}
-                                        color={"lightsalmon"}
-                                    />
-                                </View>
-                                <View style={{ rowGap: 4 }}>
-                                    <Text
-                                        style={{
-                                            fontSize: 20,
-                                            fontWeight: "bold",
-                                            letterSpacing: 0.5,
-                                        }}
-                                    >
-                                        # {x.orderId?.slice(0, 8)}
-                                    </Text>
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <MaterialDesignIcons
-                                            name="account-outline"
-                                            size={20}
-                                            color={"gray"}
-                                            style={{ marginRight: 8 }}
-                                        />
-                                        <AppText style={{ color: "gray" }}>{x.orderByName}</AppText>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <MaterialDesignIcons
-                                            name="clock-plus-outline"
-                                            size={20}
-                                            color={"gray"}
-                                            style={{ marginRight: 8 }}
-                                        />
-                                        <AppText style={{ color: "gray" }}>
-                                            {formatDateTime(x.createdAt)}
-                                        </AppText>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <MaterialDesignIcons
-                                            name="list-box-outline"
-                                            size={20}
-                                            color={"gray"}
-                                            style={{ marginRight: 8 }}
-                                        />
-                                        <AppText style={{ color: "gray" }}>
-                                            {x.orderLines?.length ?? 0} รายการ
-                                        </AppText>
-                                    </View>
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                        <MaterialDesignIcons
-                                            name="currency-thb"
-                                            size={20}
-                                            color={"gray"}
-                                            style={{ marginRight: 8 }}
-                                        />
-                                        <AppText style={{ fontSize: 14, fontWeight: "600" }}>
-                                            {x.orderLines?.reduce(
-                                                (sum, line) => sum + Number(line.lineTotal ?? 0),
-                                                0,
-                                            )}
-                                            .-
-                                        </AppText>
-                                    </View>
-                                </View>
-                            </Pressable>
-                        </Link>
-                    ))
+                    orders.map((x) => <OrderListItem key={x.orderId} order={x} />)
                 )}
             </ScrollView>
         </SafeAreaView>
@@ -144,5 +53,6 @@ export default function Orders() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: "#f5f5f5",
     },
 });
