@@ -2,7 +2,9 @@ import { addAddress } from "@/api/users/addAddress";
 import { getAddresses } from "@/api/users/getAddresses";
 import { removeAddress } from "@/api/users/removeAddress";
 import { updateAddress } from "@/api/users/updateAddress";
+import { retryOnNetworkError } from "@/lib/retryOnNetworkError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
 
 export const useAddresses = () => {
     return useQuery({
@@ -15,7 +17,10 @@ export const useAddAddress = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: addAddress,
+        mutationFn: (command: Parameters<typeof addAddress>[0]) => {
+            const idempotencyKey = Crypto.randomUUID();
+            return retryOnNetworkError(() => addAddress(command, idempotencyKey));
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
         },
@@ -26,7 +31,8 @@ export const useUpdateAddress = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateAddress,
+        mutationFn: (command: Parameters<typeof updateAddress>[0]) =>
+            retryOnNetworkError(() => updateAddress(command)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
         },
@@ -37,7 +43,8 @@ export const useRemoveAddress = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: removeAddress,
+        mutationFn: (userAddressId: Parameters<typeof removeAddress>[0]) =>
+            retryOnNetworkError(() => removeAddress(userAddressId)),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });
         },

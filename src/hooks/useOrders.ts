@@ -7,8 +7,10 @@ import { getOrders } from "@/api/orders/getOrders";
 import { removeOrderLine } from "@/api/orders/removeOrderLine";
 import { shipOrder } from "@/api/orders/shipOrder";
 import { updateOrderLine } from "@/api/orders/updateOrderLine";
+import { retryOnNetworkError } from "@/lib/retryOnNetworkError";
 import type { components } from "@/types/api";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
 
 type OrderStatus = components["schemas"]["OrderStatus"];
 
@@ -34,7 +36,10 @@ export const useCreateOrder = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: createOrder,
+        mutationFn: (command: Parameters<typeof createOrder>[0]) => {
+            const idempotencyKey = Crypto.randomUUID();
+            return retryOnNetworkError(() => createOrder(command, idempotencyKey));
+        },
         onSuccess: (order) => {
             queryClient.invalidateQueries({ queryKey: ["orders"] });
             queryClient.setQueryData(["orders", order.orderId], order);
@@ -46,7 +51,10 @@ export const useAddOrderLine = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: addOrderLine,
+        mutationFn: (command: Parameters<typeof addOrderLine>[0]) => {
+            const idempotencyKey = Crypto.randomUUID();
+            return retryOnNetworkError(() => addOrderLine(command, idempotencyKey));
+        },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["orders", variables.orderId] });
             queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -58,7 +66,8 @@ export const useUpdateOrderLine = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateOrderLine,
+        mutationFn: (command: Parameters<typeof updateOrderLine>[0]) =>
+            retryOnNetworkError(() => updateOrderLine(command)),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["orders", variables.orderId] });
             queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -70,7 +79,8 @@ export const useRemoveOrderLine = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: removeOrderLine,
+        mutationFn: (params: Parameters<typeof removeOrderLine>[0]) =>
+            retryOnNetworkError(() => removeOrderLine(params)),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["orders", variables.orderId] });
             queryClient.invalidateQueries({ queryKey: ["orders"] });

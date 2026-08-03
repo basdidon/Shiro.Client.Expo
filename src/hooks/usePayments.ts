@@ -1,7 +1,9 @@
 import { cancelPayment } from "@/api/payments/cancelPayment";
 import { createPayment } from "@/api/payments/createPayment";
 import { getPayments } from "@/api/payments/getPayments";
+import { retryOnNetworkError } from "@/lib/retryOnNetworkError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
 
 export const usePayments = (params: { orderId?: string; userId?: string }, enabled = true) => {
     return useQuery({
@@ -15,7 +17,10 @@ export const useCreatePayment = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: createPayment,
+        mutationFn: (command: Parameters<typeof createPayment>[0]) => {
+            const idempotencyKey = Crypto.randomUUID();
+            return retryOnNetworkError(() => createPayment(command, idempotencyKey));
+        },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["payments"] });
             queryClient.invalidateQueries({ queryKey: ["orders", variables.orderId] });

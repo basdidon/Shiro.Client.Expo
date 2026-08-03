@@ -3,6 +3,8 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "dependencies": {
+    "@expo-google-fonts/cherry-bomb-one": "^0.4.2",
+    "@expo-google-fonts/coiny": "^0.4.1",
     "@expo-google-fonts/mali": "^0.4.1",
     "@expo/material-symbols": "^0.1.1",
     "@expo/ui": "~57.0.8",
@@ -19,6 +21,7 @@
     "expo": "~57.0.9",
     "expo-camera": "~57.0.3",
     "expo-constants": "~57.0.6",
+    "expo-crypto": "~57.0.1",
     "expo-dev-client": "~57.0.10",
     "expo-device": "~57.0.1",
     "expo-file-system": "~57.0.1",
