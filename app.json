@@ -62,7 +62,8 @@
                     "androidGoogleMapsApiKey": "REPLACE_WITH_ANDROID_GOOGLE_MAPS_API_KEY",
                     "iosGoogleMapsApiKey": "REPLACE_WITH_IOS_GOOGLE_MAPS_API_KEY"
                 }
-            ]
+            ],
+            "expo-notifications"
         ],
         "experiments": {
             "typedRoutes": true,
