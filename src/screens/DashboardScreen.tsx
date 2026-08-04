@@ -29,14 +29,32 @@ export default function DashboardScreen() {
         <View style={styles.container}>
             <View style={styles.cardContainer}>
                 <View style={[styles.cardLarge, { backgroundColor: "cornflowerblue" }]}>
-                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>ยอดขายวันนี้</AppText>
-                    <AppText size="display" style={{ color: "white", textAlign: "right" }}>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>
+                        ยอดขายวันนี้
+                    </AppText>
+                    <AppText
+                        size="display"
+                        style={{
+                            color: "white",
+                            textAlign: "right",
+                            fontFamily: "CherryBombOne_400Regular",
+                        }}
+                    >
                         {formatCurrency(summary.salesToday)}
                     </AppText>
                 </View>
                 <View style={[styles.cardLarge, { backgroundColor: "royalblue" }]}>
-                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>ยอดขายเดือนนี้</AppText>
-                    <AppText size="display" style={{ color: "white", textAlign: "right" }}>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>
+                        ยอดขายเดือนนี้
+                    </AppText>
+                    <AppText
+                        size="display"
+                        style={{
+                            color: "white",
+                            textAlign: "right",
+                            fontFamily: "CherryBombOne_400Regular",
+                        }}
+                    >
                         {formatCurrency(summary.salesThisMonth)}
                     </AppText>
                 </View>
@@ -49,27 +67,48 @@ export default function DashboardScreen() {
                             { backgroundColor: "#2DD4BF" },
                         ])}
                     >
-                        <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>รอดำเนินการ</AppText>
-                        <AppText size="display" style={{ color: "white", textAlign: "right" }}>
+                        <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>
+                            รอดำเนินการ
+                        </AppText>
+                        <AppText
+                            size="display"
+                            style={{
+                                color: "white",
+                                textAlign: "right",
+                                fontFamily: "CherryBombOne_400Regular",
+                            }}
+                        >
                             {summary.pendingOrdersCount ?? 0}
                         </AppText>
                     </Pressable>
                 </Link>
                 <View style={[styles.cardSmall, { backgroundColor: "#0D9488" }]}>
-                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>กำลังจัดส่ง</AppText>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>
+                        กำลังจัดส่ง
+                    </AppText>
                     <AppText
                         size="display"
                         style={{
                             color: "white",
                             textAlign: "right",
+                            fontFamily: "CherryBombOne_400Regular",
                         }}
                     >
                         {summary.shippingOrdersCount ?? 0}
                     </AppText>
                 </View>
                 <View style={styles.cardSmall}>
-                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>เสร็จสิ้นวันนี้</AppText>
-                    <AppText size="display" style={{ color: "white", textAlign: "right" }}>
+                    <AppText style={{ color: "white", fontFamily: "Mali_600SemiBold" }}>
+                        เสร็จสิ้นวันนี้
+                    </AppText>
+                    <AppText
+                        size="display"
+                        style={{
+                            color: "white",
+                            textAlign: "right",
+                            fontFamily: "CherryBombOne_400Regular",
+                        }}
+                    >
                         {summary.completedTodayCount ?? 0}
                     </AppText>
                 </View>

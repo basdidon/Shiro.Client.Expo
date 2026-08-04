@@ -247,7 +247,6 @@ const styles = StyleSheet.create({
         backgroundColor: "#eee",
         borderRadius: 12,
         paddingHorizontal: 10,
-        paddingVertical: 4,
     },
     roleChipText: {
         color: "#555",

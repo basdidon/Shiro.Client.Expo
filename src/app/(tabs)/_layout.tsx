@@ -6,13 +6,14 @@ import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Pressable } from "react-native";
 
-export default function TabLayout() {
+export default function TabLayout() {  
     const roles = useAuthStore((state) => state.roles);
     const showDashboard =
         roles.includes("super-admin") || roles.includes("owner") || roles.includes("order-manager");
     return (
         <Tabs
             screenOptions={{
+                headerTitleStyle: { fontFamily: "Mali_700Bold" },
                 headerRight: () => (
                     <HeaderButtonsContainer>
                         <CartButton />

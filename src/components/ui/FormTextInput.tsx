@@ -42,7 +42,10 @@ function FormTextInputInner<
         <Controller
             control={control}
             name={name}
-            render={({ field: { onChange, onBlur, value, ref: fieldRef }, fieldState: { error } }) => (
+            render={({
+                field: { onChange, onBlur, value, ref: fieldRef },
+                fieldState: { error },
+            }) => (
                 <View>
                     <TextInput
                         ref={mergeRefs(fieldRef, ref)}
@@ -78,6 +81,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 12,
         paddingVertical: 10,
+        fontFamily: "Mali_400Regular",
     },
     error: { color: "red", fontSize: 12, marginTop: 4 },
 });

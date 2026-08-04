@@ -12,30 +12,21 @@ type AppTextSizeKey =
     | "heading"
     | "display";
 
-// Mali needs lineHeight = 2x fontSize or tall marks like ไม้เอก get clipped on Android.
-// That leaves unwanted empty space below the glyph, so we claw it back with a negative
-// marginBottom (margin sits outside the text's internal render box, so it doesn't
-// reintroduce the clipping).
-const LINE_HEIGHT_RATIO = 2;
-const VISUAL_RATIO = 1.3;
-
 function sizeStyle(fontSize: number): TextStyle {
     return {
         fontSize,
-        lineHeight: fontSize * LINE_HEIGHT_RATIO,
-        marginBottom: -(fontSize * (LINE_HEIGHT_RATIO - VISUAL_RATIO)),
     };
 }
 
 const AppTextSizeStyles: Record<AppTextSizeKey, StyleProp<TextStyle>> = {
-    extraSmall: sizeStyle(10),
-    small: sizeStyle(12),
-    medium: sizeStyle(14),
-    large: sizeStyle(16),
-    label: { ...sizeStyle(16), fontFamily: "Mali_700Bold" },
-    title: { ...sizeStyle(20), fontFamily: "Mali_700Bold" },
-    heading: { ...sizeStyle(24), fontFamily: "Mali_700Bold" },
-    display: { ...sizeStyle(36), fontFamily: "Mali_700Bold" },
+    extraSmall: { fontSize: 10 },
+    small: { fontSize: 12 },
+    medium: { fontSize: 14 },
+    large: { fontSize: 16 },
+    label: { fontSize: 16, fontFamily: "Mali_700Bold" },
+    title: { fontSize: 20, fontFamily: "Mali_700Bold" },
+    heading: { fontSize: 24, fontFamily: "Mali_700Bold" },
+    display: { fontSize: 36, fontFamily: "Mali_700Bold" },
 } as const;
 
 interface AppTextProps extends TextProps {
