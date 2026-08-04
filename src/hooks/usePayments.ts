@@ -1,7 +1,6 @@
 import { cancelPayment } from "@/api/payments/cancelPayment";
 import { createPayment } from "@/api/payments/createPayment";
 import { getPayments } from "@/api/payments/getPayments";
-import { retryOnNetworkError } from "@/lib/retryOnNetworkError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import * as Crypto from "expo-crypto";
 
@@ -18,8 +17,11 @@ export const useCreatePayment = () => {
 
     return useMutation({
         mutationFn: (command: Parameters<typeof createPayment>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could create a duplicate
+            // payment if the original request actually succeeded server-side.
             const idempotencyKey = Crypto.randomUUID();
-            return retryOnNetworkError(() => createPayment(command, idempotencyKey));
+            return createPayment(command, idempotencyKey);
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["payments"] });

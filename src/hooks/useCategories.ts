@@ -18,8 +18,11 @@ export const useCreateCategory = () => {
 
     return useMutation({
         mutationFn: (command: Parameters<typeof createCategory>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could create a duplicate
+            // category if the original request actually succeeded server-side.
             const idempotencyKey = Crypto.randomUUID();
-            return retryOnNetworkError(() => createCategory(command, idempotencyKey));
+            return createCategory(command, idempotencyKey);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["categories"] });

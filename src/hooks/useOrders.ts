@@ -37,8 +37,11 @@ export const useCreateOrder = () => {
 
     return useMutation({
         mutationFn: (command: Parameters<typeof createOrder>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could create a duplicate
+            // order if the original request actually succeeded server-side.
             const idempotencyKey = Crypto.randomUUID();
-            return retryOnNetworkError(() => createOrder(command, idempotencyKey));
+            return createOrder(command, idempotencyKey);
         },
         onSuccess: (order) => {
             queryClient.invalidateQueries({ queryKey: ["orders"] });
@@ -52,8 +55,11 @@ export const useAddOrderLine = () => {
 
     return useMutation({
         mutationFn: (command: Parameters<typeof addOrderLine>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could add a duplicate
+            // order line if the original request actually succeeded server-side.
             const idempotencyKey = Crypto.randomUUID();
-            return retryOnNetworkError(() => addOrderLine(command, idempotencyKey));
+            return addOrderLine(command, idempotencyKey);
         },
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["orders", variables.orderId] });

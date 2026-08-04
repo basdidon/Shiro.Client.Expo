@@ -18,8 +18,11 @@ export const useAddAddress = () => {
 
     return useMutation({
         mutationFn: (command: Parameters<typeof addAddress>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could create a duplicate
+            // address if the original request actually succeeded server-side.
             const idempotencyKey = Crypto.randomUUID();
-            return retryOnNetworkError(() => addAddress(command, idempotencyKey));
+            return addAddress(command, idempotencyKey);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["addresses"] });

@@ -9,7 +9,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/components/ui/AppText";
 import FormCategoryPicker from "@/components/ui/FormCategoryPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
-import { useCategories } from "@/hooks/useCategories";
 import { useCreateProduct } from "@/hooks/useProducts";
 import {
     CreateProductFormInput,
@@ -26,7 +25,6 @@ export default function CreateProductScreen() {
 
     const unitPriceRef = useRef<TextInput>(null);
     const barcodeRef = useRef<TextInput>(null);
-    const { data: categories } = useCategories();
 
     const {
         control,
