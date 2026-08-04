@@ -1,4 +1,5 @@
 import { createProduct } from "@/api/products/createProduct";
+import { deleteProduct } from "@/api/products/deleteProduct";
 import { getProductByBarcode } from "@/api/products/getProductByBarcode";
 import { getProductById } from "@/api/products/getProductById";
 import {
@@ -42,8 +43,11 @@ export const useCreateProduct = () => {
 
     return useMutation({
         mutationFn: (command: Parameters<typeof createProduct>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could create a duplicate
+            // product if the original request actually succeeded server-side.
             const idempotencyKey = Crypto.randomUUID();
-            return retryOnNetworkError(() => createProduct(command, idempotencyKey));
+            return createProduct(command, idempotencyKey);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
@@ -73,6 +77,17 @@ export const useUpdateProduct = () => {
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             queryClient.invalidateQueries({ queryKey: ["products", variables.productId] });
+        },
+    });
+};
+
+export const useDeleteProduct = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (productId: string) => retryOnNetworkError(() => deleteProduct(productId)),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["products"] });
         },
     });
 };

@@ -2,7 +2,7 @@ import HeartButton from "@/components/HeartButton";
 import Stepper from "@/components/Stepper";
 import AppText from "@/components/ui/AppText";
 import Tag from "@/components/ui/Tag";
-import { useProduct, useProductImageDownloadUrl } from "@/hooks/useProducts";
+import { useDeleteProduct, useProduct, useProductImageDownloadUrl } from "@/hooks/useProducts";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -11,11 +11,11 @@ import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
+    Alert,
     Button,
     Pressable,
     ScrollView,
     StyleSheet,
-    Text,
     TouchableOpacity,
     View,
 } from "react-native";
@@ -37,6 +37,7 @@ export default function SingleProductPage() {
         "Detail",
         !!product?.hasDetailImage,
     );
+    const { mutateAsync: deleteProduct, isPending: isDeleting } = useDeleteProduct();
 
     const cartItem = useCartStore((state) => state.items.find((item) => item.productId === id));
     const setCartItem = useCartStore((state) => state.setItem);
@@ -68,6 +69,24 @@ export default function SingleProductPage() {
         router.back();
     };
 
+    const handleDelete = () => {
+        Alert.alert("ลบสินค้า", `ต้องการลบสินค้า "${product?.name ?? ""}" หรือไม่?`, [
+            { text: "ยกเลิก", style: "cancel" },
+            {
+                text: "ลบ",
+                style: "destructive",
+                onPress: async () => {
+                    try {
+                        await deleteProduct(id);
+                        router.back();
+                    } catch {
+                        Alert.alert("ลบไม่สำเร็จ", "กรุณาลองใหม่อีกครั้ง");
+                    }
+                },
+            },
+        ]);
+    };
+
     const headerRight = () => (
         <Link href="/cart" asChild>
             <Pressable hitSlop={8}>
@@ -89,7 +108,7 @@ export default function SingleProductPage() {
         return (
             <View style={{ flex: 1, gap: 16, justifyContent: "center", alignItems: "center" }}>
                 <Stack.Screen options={{ title: "", headerRight }} />
-                <Text>{error.message}</Text>
+                <AppText>{error.message}</AppText>
                 <Button title="Reload" onPress={() => refetch()} />
             </View>
         );
@@ -118,10 +137,10 @@ export default function SingleProductPage() {
                 )}
                 <View style={{ margin: 8 }}>
                     <View style={{ gap: 4, flexDirection: "column", alignItems: "flex-start" }}>
-                        <Text style={{ fontSize: 10, color: "gray" }}>{id}</Text>
-                        <Text style={{ fontSize: 28 }} numberOfLines={2}>
+                        <AppText style={{ fontSize: 10, color: "gray" }}>{id}</AppText>
+                        <AppText style={{ fontSize: 28 }} numberOfLines={2}>
                             {product.name}
-                        </Text>
+                        </AppText>
 
                         <View style={{ flexDirection: "row", gap: 4 }}>
                             {product.barcodes.map((x) => (
@@ -129,7 +148,9 @@ export default function SingleProductPage() {
                             ))}
                         </View>
                         <AppText>{type}</AppText>
-                        <Text style={{ alignSelf: "flex-end", fontSize: 48 }}>{unitPrice}.-</Text>
+                        <AppText style={{ alignSelf: "flex-end", fontSize: 48 }}>
+                            {unitPrice}.-
+                        </AppText>
                     </View>
                     {(canAddToOrder || isProductManager) && (
                         <View>
@@ -160,9 +181,9 @@ export default function SingleProductPage() {
                                                     size={24}
                                                 />
                                             </View>
-                                            <Text style={styles.menuBtnText}>
+                                            <AppText style={styles.menuBtnText}>
                                                 เพิ่มสินค้าลงคำสั่งซื้อ
-                                            </Text>
+                                            </AppText>
                                         </TouchableOpacity>
                                     </Link>
                                 )}
@@ -178,7 +199,9 @@ export default function SingleProductPage() {
                                                     size={24}
                                                 />
                                             </View>
-                                            <Text style={styles.menuBtnText}>แก้ไขสินค้า</Text>
+                                            <AppText style={styles.menuBtnText}>
+                                                แก้ไขสินค้า
+                                            </AppText>
                                         </TouchableOpacity>
                                     </Link>
                                 )}
@@ -197,24 +220,44 @@ export default function SingleProductPage() {
                                                     size={24}
                                                 />
                                             </View>
-                                            <Text style={styles.menuBtnText}>แก้ไขรูปภาพ</Text>
+                                            <AppText style={styles.menuBtnText}>
+                                                แก้ไขรูปภาพ
+                                            </AppText>
                                         </TouchableOpacity>
                                     </Link>
                                 )}
+                                {isProductManager && (
+                                    <TouchableOpacity
+                                        style={styles.menuBtn}
+                                        onPress={handleDelete}
+                                        disabled={isDeleting}
+                                    >
+                                        <View style={styles.iconContainer}>
+                                            <MaterialDesignIcons
+                                                name="trash-can-outline"
+                                                size={24}
+                                                color="#c00"
+                                            />
+                                        </View>
+                                        <AppText style={[styles.menuBtnText, styles.deleteText]}>
+                                            {isDeleting ? "กำลังลบ..." : "ลบสินค้า"}
+                                        </AppText>
+                                    </TouchableOpacity>
+                                )}
                             </View>
                         </View>
-                    )} 
+                    )}
                 </View>
             </ScrollView>
             {/* Footer */}
             <View style={styles.footerContainer}>
                 <View style={styles.footerRow}>
                     <View style={{ flex: 1 }}>
-                        <Text>Total Price :</Text>
-                        <Text style={{ fontSize: 24 }}>
+                        <AppText>Total Price :</AppText>
+                        <AppText style={{ fontSize: 24 }}>
                             <MaterialDesignIcons name="currency-thb" size={24} />
                             {unitPrice * quantity}
-                        </Text>
+                        </AppText>
                     </View>
                     <Stepper value={quantity} setValue={setQuantity} min={isInCart ? 0 : 1} />
                 </View>
@@ -224,13 +267,13 @@ export default function SingleProductPage() {
                         style={[styles.btn, isRemoving && styles.removeBtn]}
                         onPress={handleCartButtonPress}
                     >
-                        <Text style={styles.textButton}>
+                        <AppText style={styles.textButton}>
                             {isRemoving
                                 ? "ลบออกจากตะกร้า"
                                 : isInCart
                                   ? "อัปเดตตะกร้า"
                                   : "เพิ่มลงในตะกร้า"}
-                        </Text>
+                        </AppText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -279,5 +322,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     menuBtnText: { textAlign: "center", fontSize: 20 },
+    deleteText: { color: "#c00" },
     textButton: { color: "white", textAlign: "center", fontSize: 20 },
 });
