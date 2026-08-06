@@ -11,7 +11,8 @@
             "package": "com.h8studio.shiro",
             "predictiveBackGestureEnabled": false,
             "softwareKeyboardLayoutMode": "pan",
-            "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"]
+            "permissions": ["android.permission.CAMERA", "android.permission.RECORD_AUDIO"],
+            "googleServicesFile": "./google-services.json"
         },
         "web": {
             "output": "static",

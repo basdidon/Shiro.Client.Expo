@@ -55,9 +55,7 @@ export async function registerForPushNotificationsAsync() {
                 projectId,
             })
         ).data;
-        console.log(pushTokenString);
-        // TODO: backend ต้องทำ endpoint POST /user/push-token เพื่อรับ token นี้ไปเก็บ
-        // แล้วใช้ยิง notification กลับมาหา user ทีหลัง (ตอนนี้ยังไม่ได้ส่งไป backend)
+        console.log(`[PushToken] ${pushTokenString}`);
         return pushTokenString;
     } catch (e: unknown) {
         handleRegistrationError(`${e}`);

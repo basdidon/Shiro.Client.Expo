@@ -1,3 +1,5 @@
+import { useNotificationObserver } from "@/hooks/useNotificationObserver";
+import { useRegisterPushToken } from "@/hooks/useNotifications";
 import { registerForPushNotificationsAsync } from "@/lib/notification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CherryBombOne_400Regular } from "@expo-google-fonts/cherry-bomb-one";
@@ -12,12 +14,11 @@ import {
     useFonts,
 } from "@expo-google-fonts/mali";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as Notifications from "expo-notifications";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { useEffect } from "react";
+import { ActivityIndicator, Platform, StyleSheet, View } from "react-native";
 import { KeyboardProvider } from "react-native-keyboard-controller";
 
 SplashScreen.preventAutoHideAsync();
@@ -32,6 +33,31 @@ function SplashScreenController({ fontsLoaded }: { fontsLoaded: boolean }) {
             SplashScreen.hide();
         }
     }, [isLoading, fontsLoaded]);
+
+    return null;
+}
+
+// Registers this device's Expo push token with the backend. Runs on every
+// app start (once signed in) rather than only once, since the token can
+// rotate and the endpoint upserts, so re-sending it is cheap and keeps the
+// backend's copy fresh.
+function PushTokenRegistrar() {
+    const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const { mutate: registerPushToken } = useRegisterPushToken();
+
+    useEffect(() => {
+        if (!isAuthenticated) return;
+
+        registerForPushNotificationsAsync()
+            .then((token) => {
+                if (!token) return;
+                registerPushToken({
+                    token,
+                    platform: Platform.OS === "ios" ? "IOS" : "ANDROID",
+                });
+            })
+            .catch((error: unknown) => console.error("[PushToken] registration failed:", error));
+    }, [isAuthenticated, registerPushToken]);
 
     return null;
 }
@@ -145,19 +171,6 @@ function RootNavigator() {
     );
 }
 
-// Defines how notifications are handled while the app is in the foreground
-// (by default, foreground notifications are silent/hidden unless you set
-// this handler). This tells Expo to still play a sound, show a banner,
-// update the app badge, and appear in the notification list/tray.
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-        shouldShowBanner: true,
-        shouldShowList: true,
-    }),
-});
-
 export default function RootLayout() {
     const [fontsLoaded, fontError] = useFonts({
         Mali_200ExtraLight,
@@ -170,47 +183,10 @@ export default function RootLayout() {
         Coiny_400Regular,
     });
 
-    // Holds the Expo push token for this device once registration succeeds
-    // (or an error message string if it failed). Currently unused elsewhere,
-    // but this is where you'd read it to send it to your backend.
-    const [expoPushToken, setExpoPushToken] = useState("");
-    // Holds the most recently received notification while the app is open,
-    // e.g. to display an in-app banner. Currently unused elsewhere.
-    const [notification, setNotification] = useState<Notifications.Notification | undefined>(
-        undefined,
-    );
+    useNotificationObserver();
 
     useEffect(() => {
         useAuthStore.getState().init();
-
-        // Ask for permission and fetch this device's Expo push token.
-        registerForPushNotificationsAsync()
-            .then((token) => setExpoPushToken(token ?? ""))
-            .catch((error: any) => setExpoPushToken(`${error}`));
-
-        // Fires whenever a notification arrives while the app is running
-        // (foreground or background), regardless of whether the user taps it.
-        const notificationListener = Notifications.addNotificationReceivedListener(
-            (notification) => {
-                setNotification(notification);
-            },
-        );
-
-        // Fires when the user taps/interacts with a notification (e.g. taps
-        // it to open the app). Useful for deep-linking to a specific screen
-        // based on the notification's data payload.
-        const responseListener = Notifications.addNotificationResponseReceivedListener(
-            (response) => {
-                console.log(response);
-            },
-        );
-
-        // Clean up both listeners on unmount to avoid duplicate handlers /
-        // memory leaks.
-        return () => {
-            notificationListener.remove();
-            responseListener.remove();
-        };
     }, []);
 
     if (!fontsLoaded && !fontError) {
@@ -222,6 +198,7 @@ export default function RootLayout() {
             <KeyboardProvider>
                 <StatusBar style="dark" />
                 <SplashScreenController fontsLoaded={fontsLoaded || !!fontError} />
+                <PushTokenRegistrar />
                 <RootNavigator />
             </KeyboardProvider>
         </QueryClientProvider>

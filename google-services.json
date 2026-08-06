@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "787869796019",
+    "project_id": "shiro-fa3be",
+    "storage_bucket": "shiro-fa3be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787869796019:android:2572598597f9200fb7d2c6",
+        "android_client_info": {
+          "package_name": "com.h8studio.shiro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnb40PTujv7td4teYd04Qo4FGxWd0Np3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

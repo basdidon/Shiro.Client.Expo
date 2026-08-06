@@ -70,6 +70,41 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/debug/allowed-origins": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string[];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/health": {
         parameters: {
             query?: never;
@@ -459,6 +494,39 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/users/me/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/users/me/addresses": {
         parameters: {
             query?: never;
@@ -570,6 +638,43 @@ export interface paths {
                 };
             };
         };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/users/me/push-tokens": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RegisterNotificationTokenCommand"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -1900,6 +2005,8 @@ export interface components {
             /** Format: uuid */
             paymentId?: string;
             /** Format: uuid */
+            userId?: string;
+            /** Format: uuid */
             orderId?: string;
             paymentMethod?: components["schemas"]["PaymentMethod"];
             /** Format: double */
@@ -1949,6 +2056,8 @@ export interface components {
             key?: string;
             contentType?: string;
         };
+        /** @enum {unknown} */
+        PushTokenPlatform: "ANDROID" | "IOS";
         RefreshCommand: {
             refreshToken: string;
         };
@@ -1969,6 +2078,10 @@ export interface components {
             lastname: string;
             email: string;
             phoneNumber: string;
+        };
+        RegisterNotificationTokenCommand: {
+            platform: components["schemas"]["PushTokenPlatform"];
+            token: string;
         };
         RegisterResponse: {
             verificationToken: string;
