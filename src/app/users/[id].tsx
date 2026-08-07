@@ -1,9 +1,10 @@
 import AppText from "@/components/ui/AppText";
 import { useAssignRole, useAssignableRoles, useRemoveRole, useUser } from "@/hooks/useUsers";
+import { showAlert } from "@/lib/alert";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Modal, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function ContactRow({
@@ -69,7 +70,7 @@ export default function UserDetailScreen() {
     const [pickerOpen, setPickerOpen] = useState(false);
 
     const handleRemoveRole = (role: string) => {
-        Alert.alert("นำบทบาทออก", `ต้องการนำบทบาท "${role}" ออกจาก ${user?.username} หรือไม่?`, [
+        showAlert("นำบทบาทออก", `ต้องการนำบทบาท "${role}" ออกจาก ${user?.username} หรือไม่?`, [
             { text: "ยกเลิก", style: "cancel" },
             {
                 text: "นำออก",
@@ -78,7 +79,7 @@ export default function UserDetailScreen() {
                     removeRole.mutate(
                         { userId, role },
                         {
-                            onError: () => Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถนำบทบาทออกได้"),
+                            onError: () => showAlert("เกิดข้อผิดพลาด", "ไม่สามารถนำบทบาทออกได้"),
                         },
                     ),
             },
@@ -90,7 +91,7 @@ export default function UserDetailScreen() {
         assignRole.mutate(
             { userId, role },
             {
-                onError: () => Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถเพิ่มบทบาทได้"),
+                onError: () => showAlert("เกิดข้อผิดพลาด", "ไม่สามารถเพิ่มบทบาทได้"),
             },
         );
     };

@@ -3,7 +3,6 @@ import { router, Stack, useLocalSearchParams } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
     ActivityIndicator,
-    Alert,
     Button,
     Pressable,
     StyleSheet,
@@ -17,6 +16,7 @@ import AppText from "@/components/ui/AppText";
 import FormIconPicker from "@/components/ui/FormIconPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
 import { useCategories, useDeleteCategory, useUpdateCategory } from "@/hooks/useCategories";
+import { showAlert } from "@/lib/alert";
 import { DEFAULT_CATEGORY_ICON, type CategoryIconName } from "@/lib/categoryIcons";
 import {
     categoryFormSchema,
@@ -71,7 +71,7 @@ export default function EditCategoryScreen() {
     };
 
     const handleDelete = () => {
-        Alert.alert(
+        showAlert(
             "ลบหมวดหมู่",
             `ต้องการลบหมวดหมู่ "${category?.name ?? ""}" หรือไม่?`,
             [

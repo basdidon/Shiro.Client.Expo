@@ -1,7 +1,7 @@
 import axios from "axios";
 import Constants from "expo-constants";
-import { Alert } from "react-native";
 
+import { showAlert } from "@/lib/alert";
 import { tokenStorage } from "@/lib/tokenStorage";
 import type { components } from "@/types/api";
 
@@ -73,7 +73,7 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         if (axios.isAxiosError(error) && error.response && error.response.status >= 500) {
-            Alert.alert("เกิดข้อผิดพลาดที่เซิร์ฟเวอร์", "กรุณาลองใหม่อีกครั้งในภายหลัง");
+            showAlert("เกิดข้อผิดพลาดที่เซิร์ฟเวอร์", "กรุณาลองใหม่อีกครั้งในภายหลัง");
             return Promise.reject(error);
         }
 

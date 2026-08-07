@@ -2,11 +2,12 @@ import axios from "axios";
 import { CameraView, useCameraPermissions, type BarcodeScanningResult } from "expo-camera";
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef } from "react";
-import { Alert, Button, StyleSheet, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
 import { useProductByBarcode } from "@/hooks/useProducts";
+import { showAlert } from "@/lib/alert";
 import { formatBarcode } from "@/lib/barcode";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -39,7 +40,7 @@ export default function ScannerScreen() {
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 404) {
                 if (isProductManager) {
-                    Alert.alert(
+                    showAlert(
                         "ไม่พบสินค้า",
                         `ไม่พบสินค้าสำหรับบาร์โค้ด: ${formatBarcode(barcode)}\n\nต้องการสร้างสินค้าใหม่หรือไม่?`,
                         [
@@ -55,14 +56,14 @@ export default function ScannerScreen() {
                         ],
                     );
                 } else {
-                    Alert.alert(
+                    showAlert(
                         "ไม่พบสินค้า",
                         `ไม่พบสินค้าสำหรับบาร์โค้ด: ${formatBarcode(barcode)}`,
                         [{ text: "ตกลง", onPress: unlock }],
                     );
                 }
             } else {
-                Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถค้นหาสินค้าได้ กรุณาลองใหม่อีกครั้ง", [
+                showAlert("เกิดข้อผิดพลาด", "ไม่สามารถค้นหาสินค้าได้ กรุณาลองใหม่อีกครั้ง", [
                     { text: "ตกลง", onPress: unlock },
                 ]);
             }

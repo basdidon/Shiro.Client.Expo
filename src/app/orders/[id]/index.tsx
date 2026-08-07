@@ -3,6 +3,7 @@ import AppText from "@/components/ui/AppText";
 import { useCancelOrder, useCompleteOrder, useOrder, useShipOrder } from "@/hooks/useOrders";
 import { useCancelPayment, useCreatePayment, usePayments } from "@/hooks/usePayments";
 import { formatDateTime } from "@/lib/date";
+import { showAlert } from "@/lib/alert";
 import { getStatusIcon } from "@/lib/orderStatusIcon";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { components } from "@/types/api";
@@ -11,7 +12,6 @@ import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
-    Alert,
     Pressable,
     ScrollView,
     StyleSheet,
@@ -60,7 +60,7 @@ function PaymentsSection({ orderId, remaining }: { orderId: string; remaining: n
 
     const handleCancelPayment = (paymentId?: string) => {
         if (!paymentId) return;
-        Alert.alert("ยกเลิกการชำระเงิน", "ต้องการยกเลิกรายการชำระเงินนี้หรือไม่?", [
+        showAlert("ยกเลิกการชำระเงิน", "ต้องการยกเลิกรายการชำระเงินนี้หรือไม่?", [
             { text: "ไม่", style: "cancel" },
             {
                 text: "ยกเลิก",
@@ -154,14 +154,14 @@ export default function OrderDetailScreen() {
         ) ?? 0;
 
     const handleShip = () => {
-        Alert.alert("จัดส่งคำสั่งซื้อ", "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าจัดส่งแล้วหรือไม่?", [
+        showAlert("จัดส่งคำสั่งซื้อ", "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าจัดส่งแล้วหรือไม่?", [
             { text: "ยกเลิก", style: "cancel" },
             { text: "ยืนยัน", onPress: () => shipOrder.mutate(id) },
         ]);
     };
 
     const handleComplete = () => {
-        Alert.alert(
+        showAlert(
             "ยืนยันคำสั่งซื้อ",
             "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าเสร็จสมบูรณ์หรือไม่?",
             [
@@ -172,7 +172,7 @@ export default function OrderDetailScreen() {
     };
 
     const handleCancel = () => {
-        Alert.alert("ยกเลิกคำสั่งซื้อ", "ต้องการยกเลิกคำสั่งซื้อนี้หรือไม่?", [
+        showAlert("ยกเลิกคำสั่งซื้อ", "ต้องการยกเลิกคำสั่งซื้อนี้หรือไม่?", [
             { text: "ไม่", style: "cancel" },
             {
                 text: "ยกเลิกคำสั่งซื้อ",

@@ -3,6 +3,7 @@ import Stepper from "@/components/Stepper";
 import AppText from "@/components/ui/AppText";
 import Tag from "@/components/ui/Tag";
 import { useDeleteProduct, useProduct, useProductImageDownloadUrl } from "@/hooks/useProducts";
+import { showAlert } from "@/lib/alert";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -11,7 +12,6 @@ import { Link, router, Stack, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
-    Alert,
     Button,
     Pressable,
     ScrollView,
@@ -70,7 +70,7 @@ export default function SingleProductPage() {
     };
 
     const handleDelete = () => {
-        Alert.alert("ลบสินค้า", `ต้องการลบสินค้า "${product?.name ?? ""}" หรือไม่?`, [
+        showAlert("ลบสินค้า", `ต้องการลบสินค้า "${product?.name ?? ""}" หรือไม่?`, [
             { text: "ยกเลิก", style: "cancel" },
             {
                 text: "ลบ",
@@ -80,7 +80,7 @@ export default function SingleProductPage() {
                         await deleteProduct(id);
                         router.back();
                     } catch {
-                        Alert.alert("ลบไม่สำเร็จ", "กรุณาลองใหม่อีกครั้ง");
+                        showAlert("ลบไม่สำเร็จ", "กรุณาลองใหม่อีกครั้ง");
                     }
                 },
             },

@@ -2,13 +2,14 @@ import axios from "axios";
 import { CameraView, useCameraPermissions, type BarcodeScanningResult } from "expo-camera";
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import { useCallback, useRef, useState } from "react";
-import { Alert, Button, Modal, Pressable, StyleSheet, View } from "react-native";
+import { Button, Modal, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
 import Stepper from "@/components/Stepper";
 import { useAddOrderLine, useOrder, useUpdateOrderLine } from "@/hooks/useOrders";
 import { useProductByBarcode } from "@/hooks/useProducts";
+import { showAlert } from "@/lib/alert";
 import { formatBarcode } from "@/lib/barcode";
 import type { components } from "@/types/api";
 
@@ -51,11 +52,11 @@ export default function ScanOrderItemScreen() {
             // stays locked while the confirm modal is open; unlock() runs on cancel/confirm
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 404) {
-                Alert.alert("ไม่พบสินค้า", `ไม่พบสินค้าสำหรับบาร์โค้ด: ${formatBarcode(barcode)}`, [
+                showAlert("ไม่พบสินค้า", `ไม่พบสินค้าสำหรับบาร์โค้ด: ${formatBarcode(barcode)}`, [
                     { text: "ตกลง", onPress: unlock },
                 ]);
             } else {
-                Alert.alert(
+                showAlert(
                     "เกิดข้อผิดพลาด",
                     "ไม่สามารถค้นหาสินค้าได้ กรุณาลองใหม่อีกครั้ง",
                     [{ text: "ตกลง", onPress: unlock }],
@@ -96,7 +97,7 @@ export default function ScanOrderItemScreen() {
             setScannedProduct(null);
             unlock();
         } catch {
-            Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถเพิ่มสินค้าลงในคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง");
+            showAlert("เกิดข้อผิดพลาด", "ไม่สามารถเพิ่มสินค้าลงในคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง");
         }
     };
 

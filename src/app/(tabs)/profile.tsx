@@ -1,8 +1,9 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Link } from "expo-router";
-import { Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import AppText from "@/components/ui/AppText";
+import { showAlert } from "@/lib/alert";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Profile() {
@@ -23,7 +24,7 @@ export default function Profile() {
     const isFinanceManager = roles.includes("finance-manager");
 
     const handleLogout = () => {
-        Alert.alert("ออกจากระบบ", "คุณต้องการออกจากระบบใช่หรือไม่", [
+        showAlert("ออกจากระบบ", "คุณต้องการออกจากระบบใช่หรือไม่", [
             { text: "ยกเลิก", style: "cancel" },
             { text: "ออกจากระบบ", style: "destructive", onPress: () => logout() },
         ]);

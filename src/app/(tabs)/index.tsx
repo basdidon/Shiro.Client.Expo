@@ -1,5 +1,6 @@
 import BestSellersView from "@/components/BestSellersView";
 import { useProductByBarcode } from "@/hooks/useProducts";
+import { showAlert } from "@/lib/alert";
 import { formatBarcode } from "@/lib/barcode";
 import CommandListView from "@/screens/CommandListView";
 import { useAuthStore } from "@/store/useAuthStore";
@@ -7,15 +8,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
-import {
-    ActivityIndicator,
-    Alert,
-    Pressable,
-    ScrollView,
-    StyleSheet,
-    TextInput,
-    View,
-} from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 export default function Index() {
     const roles = useAuthStore((state) => state.roles);
@@ -37,7 +30,7 @@ export default function Index() {
         } catch (err) {
             if (axios.isAxiosError(err) && err.response?.status === 404) {
                 if (isProductManager) {
-                    Alert.alert(
+                    showAlert(
                         "ไม่พบสินค้า",
                         `ไม่พบสินค้าสำหรับบาร์โค้ด: ${formatBarcode(trimmed)}\n\nต้องการสร้างสินค้าใหม่หรือไม่?`,
                         [
@@ -55,13 +48,13 @@ export default function Index() {
                         ],
                     );
                 } else {
-                    Alert.alert(
+                    showAlert(
                         "ไม่พบสินค้า",
                         `ไม่พบสินค้าสำหรับบาร์โค้ด: ${formatBarcode(trimmed)}`,
                     );
                 }
             } else {
-                Alert.alert("เกิดข้อผิดพลาด", "ไม่สามารถค้นหาสินค้าได้ กรุณาลองใหม่อีกครั้ง");
+                showAlert("เกิดข้อผิดพลาด", "ไม่สามารถค้นหาสินค้าได้ กรุณาลองใหม่อีกครั้ง");
             }
         }
     };

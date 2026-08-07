@@ -4,11 +4,18 @@ import { DEFAULT_CATEGORY_ICON, type CategoryIconName } from "@/lib/categoryIcon
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link, Stack } from "expo-router";
-import { ActivityIndicator, Button, Pressable, StyleSheet, View } from "react-native";
+import {
+    ActivityIndicator,
+    Button,
+    Pressable,
+    RefreshControl,
+    StyleSheet,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function EditCategoriesScreen() {
-    const { data: categories, isPending, isError, error, refetch } = useCategories();
+    const { data: categories, isPending, isError, error, refetch, isRefetching } = useCategories();
 
     const headerRight = () => (
         <Link href={"/categories/create"} asChild>
@@ -47,6 +54,9 @@ export default function EditCategoriesScreen() {
                     data={categories}
                     keyExtractor={(item, index) => String(item.id ?? index)}
                     contentContainerStyle={{ padding: 12 }}
+                    refreshControl={
+                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                    }
                     renderItem={({ item }) => (
                         <Link
                             href={{

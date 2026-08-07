@@ -5,7 +5,7 @@ import { useOrders } from "@/hooks/useOrders";
 import type { components } from "@/types/api";
 import { useLocalSearchParams } from "expo-router";
 import { useMemo, useState } from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type OrderStatus = components["schemas"]["OrderStatus"];
@@ -23,7 +23,7 @@ export default function Orders() {
     const [selectedId, setSelectedId] = useState<string>("2");
     const status = STATUS_OPTIONS.find((x) => x.id.toString() === selectedId)?.status;
 
-    const { data, isPending } = useOrders(20, orderById, status);
+    const { data, isPending, refetch, isRefetching } = useOrders(20, orderById, status);
     const orders = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
 
     return (
@@ -35,7 +35,12 @@ export default function Orders() {
                     onPress={setSelectedId}
                 />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                refreshControl={
+                    <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                }
+            >
                 {isPending ? (
                     <ActivityIndicator style={{ marginTop: 24 }} />
                 ) : orders.length === 0 ? (

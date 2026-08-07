@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { ActivityIndicator, RefreshControl, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PaymentsScreen() {
@@ -13,7 +13,7 @@ export default function PaymentsScreen() {
     const userId = useAuthStore((state) => state.userId);
     const isFinanceManager = roles.includes("finance-manager");
 
-    const { data, isPending } = usePayments(
+    const { data, isPending, refetch, isRefetching } = usePayments(
         isFinanceManager ? {} : { userId: userId ?? undefined },
         isFinanceManager || !!userId,
     );
@@ -44,6 +44,9 @@ export default function PaymentsScreen() {
                     data={payments}
                     keyExtractor={(item) => item.paymentId!}
                     contentContainerStyle={{ padding: 12 }}
+                    refreshControl={
+                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                    }
                     renderItem={({ item }) => {
                         var isCancelled = !!item.cancelledAt;
                         return (

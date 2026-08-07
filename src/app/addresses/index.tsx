@@ -1,14 +1,22 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link, Stack } from "expo-router";
-import { ActivityIndicator, Alert, Button, Pressable, StyleSheet, View } from "react-native";
+import {
+    ActivityIndicator,
+    Button,
+    Pressable,
+    RefreshControl,
+    StyleSheet,
+    View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
 import { useAddresses, useRemoveAddress } from "@/hooks/useAddresses";
+import { showAlert } from "@/lib/alert";
 
 export default function AddressesScreen() {
-    const { data: addresses, isPending, isError, error, refetch } = useAddresses();
+    const { data: addresses, isPending, isError, error, refetch, isRefetching } = useAddresses();
     const { mutate: removeAddress } = useRemoveAddress();
 
     const headerRight = () => (
@@ -20,7 +28,7 @@ export default function AddressesScreen() {
     );
 
     const handleRemove = (userAddressId: string) => {
-        Alert.alert("ลบที่อยู่", "คุณต้องการลบที่อยู่นี้ใช่หรือไม่", [
+        showAlert("ลบที่อยู่", "คุณต้องการลบที่อยู่นี้ใช่หรือไม่", [
             { text: "ยกเลิก", style: "cancel" },
             {
                 text: "ลบ",
@@ -64,6 +72,9 @@ export default function AddressesScreen() {
                     data={addresses}
                     keyExtractor={(item) => item.userAddressId}
                     contentContainerStyle={{ padding: 12 }}
+                    refreshControl={
+                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                    }
                     renderItem={({ item }) => {
                         const a = item.shippingAddress;
                         return (

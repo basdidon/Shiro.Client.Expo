@@ -1,5 +1,7 @@
+import OfflineBanner from "@/components/OfflineBanner";
 import { useNotificationObserver } from "@/hooks/useNotificationObserver";
 import { useRegisterPushToken } from "@/hooks/useNotifications";
+import "@/lib/networkStatus";
 import { registerForPushNotificationsAsync } from "@/lib/notification";
 import { useAuthStore } from "@/store/useAuthStore";
 import { CherryBombOne_400Regular } from "@expo-google-fonts/cherry-bomb-one";
@@ -199,6 +201,7 @@ export default function RootLayout() {
                 <StatusBar style="dark" />
                 <SplashScreenController fontsLoaded={fontsLoaded || !!fontError} />
                 <PushTokenRegistrar />
+                <OfflineBanner />
                 <RootNavigator />
             </KeyboardProvider>
         </QueryClientProvider>

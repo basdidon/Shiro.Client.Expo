@@ -5,11 +5,12 @@ import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
 import { debounce } from "lodash";
 import { useCallback, useMemo } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function UsersScreen() {
-    const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useUsers(20);
+    const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isRefetching } =
+        useUsers(20);
     const users = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
 
     const handleEndReached = useCallback(
@@ -39,6 +40,9 @@ export default function UsersScreen() {
                 <FlashList
                     data={users}
                     keyExtractor={(item) => item.userId!}
+                    refreshControl={
+                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                    }
                     onEndReachedThreshold={0.4}
                     onEndReached={handleEndReached}
                     ListFooterComponent={

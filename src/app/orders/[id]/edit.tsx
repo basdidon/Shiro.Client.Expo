@@ -1,11 +1,12 @@
 import Stepper from "@/components/Stepper";
 import AppText from "@/components/ui/AppText";
 import { useOrder, useRemoveOrderLine, useUpdateOrderLine } from "@/hooks/useOrders";
+import { showAlert } from "@/lib/alert";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { components } from "@/types/api";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Link, router, Stack, useLocalSearchParams } from "expo-router";
-import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type LineOfOrderDto = components["schemas"]["LineOfOrderDto"];
@@ -23,7 +24,7 @@ function OrderLineRow({ orderId, line }: { orderId: string; line: LineOfOrderDto
 
     const handleRemove = () => {
         if (!line.orderLineId) return;
-        Alert.alert("ลบรายการ", `ต้องการลบ "${line.productName}" ออกจากคำสั่งซื้อหรือไม่?`, [
+        showAlert("ลบรายการ", `ต้องการลบ "${line.productName}" ออกจากคำสั่งซื้อหรือไม่?`, [
             { text: "ยกเลิก", style: "cancel" },
             {
                 text: "ลบ",

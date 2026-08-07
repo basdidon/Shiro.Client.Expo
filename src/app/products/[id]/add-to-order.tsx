@@ -2,12 +2,13 @@ import Stepper from "@/components/Stepper";
 import AppText from "@/components/ui/AppText";
 import { useAddOrderLine, useOrders, useUpdateOrderLine } from "@/hooks/useOrders";
 import { useProduct } from "@/hooks/useProducts";
+import { showAlert } from "@/lib/alert";
 import type { components } from "@/types/api";
 import { FlashList } from "@shopify/flash-list";
 import { router, useLocalSearchParams } from "expo-router";
 import { debounce } from "lodash";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, Modal, Pressable, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Modal, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 type OrderDto = components["schemas"]["OrderDto"];
@@ -67,7 +68,7 @@ export default function AddProductToOrderScreen() {
             setSelectedOrder(null);
             router.back();
         } catch {
-            Alert.alert(
+            showAlert(
                 "เกิดข้อผิดพลาด",
                 "ไม่สามารถเพิ่มสินค้าลงในคำสั่งซื้อได้ กรุณาลองใหม่อีกครั้ง",
             );
