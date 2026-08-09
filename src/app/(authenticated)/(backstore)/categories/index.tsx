@@ -20,7 +20,7 @@ export default function EditCategoriesScreen() {
     const headerRight = () => (
         <Link href={"/categories/create"} asChild>
             <Pressable>
-                <MaterialDesignIcons name="plus" size={22} />
+                <MaterialDesignIcons name="view-grid-plus-outline" size={22} />
             </Pressable>
         </Link>
     );
