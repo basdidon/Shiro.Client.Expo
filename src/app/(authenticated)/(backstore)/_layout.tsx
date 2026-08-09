@@ -17,10 +17,16 @@ export default () => {
             state.roles.includes("order-manager") ||
             state.roles.includes("staff"),
     );
+    const isFinanceManager = useAuthStore((state) => state.roles.includes("finance-manager"));
 
     return (
         <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
+
+            <Stack.Screen
+                name="products/[id]/index"
+                options={{ headerShown: true, presentation: "modal" }}
+            />
 
             <Stack.Protected guard={isAuthenticated && isProductManager}>
                 <Stack.Screen
@@ -70,6 +76,13 @@ export default () => {
                 <Stack.Screen
                     name="products/[id]/add-to-order"
                     options={{ headerShown: true, title: "เลือกคำสั่งซื้อ" }}
+                />
+            </Stack.Protected>
+
+            <Stack.Protected guard={isFinanceManager}>
+                <Stack.Screen
+                    name="payments/index"
+                    options={{ headerShown: true, headerTitle: "" }}
                 />
             </Stack.Protected>
         </Stack>

@@ -20,7 +20,7 @@ export default function AddressesScreen() {
     const { mutate: removeAddress } = useRemoveAddress();
 
     const headerRight = () => (
-        <Link href="/addresses/create" asChild>
+        <Link href="/user/addresses/create" asChild>
             <Pressable>
                 <MaterialDesignIcons name="plus" size={22} />
             </Pressable>
@@ -63,7 +63,7 @@ export default function AddressesScreen() {
             {addresses.length === 0 ? (
                 <View style={styles.loading}>
                     <AppText style={{ color: "gray" }}>ยังไม่มีที่อยู่ที่บันทึกไว้</AppText>
-                    <Link href="/addresses/create" asChild>
+                    <Link href="/user/addresses/create" asChild>
                         <Button title="เพิ่มที่อยู่จัดส่ง" />
                     </Link>
                 </View>
@@ -73,7 +73,11 @@ export default function AddressesScreen() {
                     keyExtractor={(item) => item.userAddressId}
                     contentContainerStyle={{ padding: 12 }}
                     refreshControl={
-                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                        <RefreshControl
+                            tintColor="blue"
+                            refreshing={isRefetching}
+                            onRefresh={refetch}
+                        />
                     }
                     renderItem={({ item }) => {
                         const a = item.shippingAddress;
@@ -93,7 +97,7 @@ export default function AddressesScreen() {
                                 <View style={styles.cardActions}>
                                     <Link
                                         href={{
-                                            pathname: "/addresses/[id]/edit",
+                                            pathname: "/user/addresses/[id]/edit",
                                             params: { id: item.userAddressId },
                                         }}
                                         asChild

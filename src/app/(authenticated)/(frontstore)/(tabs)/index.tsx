@@ -2,7 +2,6 @@ import BestSellersView from "@/components/BestSellersView";
 import { useProductByBarcode } from "@/hooks/useProducts";
 import { showAlert } from "@/lib/alert";
 import { formatBarcode } from "@/lib/barcode";
-import CommandListView from "@/screens/CommandListView";
 import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import axios from "axios";
@@ -100,7 +99,6 @@ export default function Index() {
                 <View
                     style={{ aspectRatio: 16 / 9, backgroundColor: "lightgray", borderRadius: 8 }}
                 />
-                <CommandListView />
                 {showDashboard && <BestSellersView />}
             </ScrollView>
         </View>

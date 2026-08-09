@@ -20,15 +20,20 @@ export default () => {
     return (
         <Tabs
             screenOptions={{
-                headerTitle: "frontstore tabs",
                 headerTitleStyle: { fontFamily: "Mali_700Bold" },
                 headerRight: () => (
                     <HeaderButtonsContainer>
-                        <Link href={"/(authenticated)/(backstore)/(tabs)"} replace asChild>
-                            <Pressable>
-                                <MaterialDesignIcons name="warehouse" color={"#000"} size={24} />
-                            </Pressable>
-                        </Link>
+                        {canAccessBackstore && (
+                            <Link href={"/(authenticated)/(backstore)/(tabs)"} replace asChild>
+                                <Pressable>
+                                    <MaterialDesignIcons
+                                        name="warehouse"
+                                        color={"#000"}
+                                        size={24}
+                                    />
+                                </Pressable>
+                            </Link>
+                        )}
                         <CartButton />
                     </HeaderButtonsContainer>
                 ),
@@ -37,6 +42,7 @@ export default () => {
             <Tabs.Screen
                 name="index"
                 options={{
+                    title: "หน้าแรก",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "home" : "home-outline"}
@@ -49,6 +55,7 @@ export default () => {
             <Tabs.Screen
                 name="products"
                 options={{
+                    title: "รายการสินค้า",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "package-variant" : "package-variant-closed"}
@@ -61,6 +68,7 @@ export default () => {
             <Tabs.Screen
                 name="scanner"
                 options={{
+                    title: "แสกนสินค้า",
                     tabBarIcon: ({ color }) => (
                         <MaterialDesignIcons
                             name="barcode-scan"
@@ -73,6 +81,8 @@ export default () => {
             <Tabs.Screen
                 name="orders"
                 options={{
+                    title: "ประวัติ",
+                    headerTitle: "ประวัติการซื้อของฉัน",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={

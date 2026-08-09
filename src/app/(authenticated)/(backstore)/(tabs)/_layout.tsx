@@ -9,29 +9,13 @@ export default () => {
     return (
         <Tabs
             screenOptions={{
-                headerTitle: "backstore tabs",
                 headerTitleStyle: { fontFamily: "Mali_700Bold" },
-                headerRight: () => {
-                    return (
-                        <HeaderButtonsContainer>
-                            <Link href={"/(authenticated)/(frontstore)/(tabs)"} replace asChild>
-                                <Pressable>
-                                    <MaterialDesignIcons
-                                        name="storefront-outline"
-                                        color={"#000"}
-                                        size={24}
-                                    />
-                                </Pressable>
-                            </Link>
-                        </HeaderButtonsContainer>
-                    );
-                },
             }}
         >
             <Tabs.Screen
                 name="index"
                 options={{
-                    tabBarLabel: "dashboard",
+                    title: "แดชบอร์ด",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "view-dashboard" : "view-dashboard-outline"}
@@ -44,6 +28,21 @@ export default () => {
             <Tabs.Screen
                 name="products"
                 options={{
+                    title: "รายการสินค้า",
+                    headerRight: () => {
+                        return (
+                            <HeaderButtonsContainer>
+                                <Link href={"/(authenticated)/(backstore)/products/create"} asChild>
+                                    <Pressable>
+                                        <MaterialDesignIcons
+                                            name="package-variant-plus"
+                                            size={24}
+                                        />
+                                    </Pressable>
+                                </Link>
+                            </HeaderButtonsContainer>
+                        );
+                    },
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "package-variant" : "package-variant-closed"}
@@ -56,6 +55,7 @@ export default () => {
             <Tabs.Screen
                 name="scanner"
                 options={{
+                    title: "แสกนสินค้า",
                     tabBarIcon: ({ color }) => (
                         <MaterialDesignIcons
                             name="barcode-scan"
@@ -68,6 +68,7 @@ export default () => {
             <Tabs.Screen
                 name="orders"
                 options={{
+                    title: "คำสั่งซื้อ",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={
@@ -84,6 +85,23 @@ export default () => {
             <Tabs.Screen
                 name="profile"
                 options={{
+                    title: "ผู้ใช้งาน",
+                    headerTitle: "",
+                    headerRight: () => {
+                        return (
+                            <HeaderButtonsContainer>
+                                <Link href={"/(authenticated)/(frontstore)/(tabs)"} replace asChild>
+                                    <Pressable>
+                                        <MaterialDesignIcons
+                                            name="storefront-outline"
+                                            color={"#000"}
+                                            size={24}
+                                        />
+                                    </Pressable>
+                                </Link>
+                            </HeaderButtonsContainer>
+                        );
+                    },
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "account" : "account-outline"}

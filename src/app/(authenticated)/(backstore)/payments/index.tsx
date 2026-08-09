@@ -9,14 +9,9 @@ import { ActivityIndicator, RefreshControl, StyleSheet, View } from "react-nativ
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PaymentsScreen() {
-    const roles = useAuthStore((state) => state.roles);
     const userId = useAuthStore((state) => state.userId);
-    const isFinanceManager = roles.includes("finance-manager");
 
-    const { data, isPending, refetch, isRefetching } = usePayments(
-        isFinanceManager ? {} : { userId: userId ?? undefined },
-        isFinanceManager || !!userId,
-    );
+    const { data, isPending, refetch, isRefetching } = usePayments({}, !!userId);
 
     const payments = data?.items ?? [];
 
@@ -32,7 +27,7 @@ export default function PaymentsScreen() {
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <View style={styles.subHeader}>
                 <AppText size="small" style={styles.subtleText}>
-                    {isFinanceManager ? "การชำระเงินทั้งหมด" : "การชำระเงินของฉัน"}
+                    การชำระเงินทั้งหมด
                 </AppText>
             </View>
             {payments.length === 0 ? (
@@ -45,7 +40,11 @@ export default function PaymentsScreen() {
                     keyExtractor={(item) => item.paymentId!}
                     contentContainerStyle={{ padding: 12 }}
                     refreshControl={
-                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                        <RefreshControl
+                            tintColor="blue"
+                            refreshing={isRefetching}
+                            onRefresh={refetch}
+                        />
                     }
                     renderItem={({ item }) => {
                         var isCancelled = !!item.cancelledAt;
@@ -81,7 +80,7 @@ export default function PaymentsScreen() {
                                             <AppText size="small">
                                                 {item.paymentMethod == "Cash"
                                                     ? "เงินสด"
-                                                    : "เงินจ่าย"}
+                                                    : "โอนจ่าย"}
                                             </AppText>
                                         </View>
                                         <View style={{ alignItems: "flex-end", gap: 2 }}>

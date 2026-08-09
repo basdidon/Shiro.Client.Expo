@@ -122,7 +122,7 @@ export default function SingleProductPage() {
             edges={["left", "right", "bottom"]}
             style={{ flexDirection: "column", flex: 1 }}
         >
-            <Stack.Screen options={{ title: segments[0], headerRight }} />
+            <Stack.Screen options={{ title: "", headerRight }} />
             <ScrollView
                 style={{ flex: 1, backgroundColor: "white" }}
                 showsVerticalScrollIndicator={false}
@@ -153,7 +153,7 @@ export default function SingleProductPage() {
                             {unitPrice}.-
                         </AppText>
                     </View>
-                    {(canAddToOrder || isProductManager) && (
+                    {segments[1] === "(backstore)" && (canAddToOrder || isProductManager) && (
                         <View>
                             <AppText size="title">เมนู</AppText>
                             <View

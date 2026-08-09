@@ -1,4 +1,5 @@
 import RadioPillButtonGroup from "@/components/RadioButtonPillGroup";
+import OrderStatusStepper from "@/components/orders/OrderStatusStepper";
 import AppText from "@/components/ui/AppText";
 import { useCancelOrder, useCompleteOrder, useOrder, useShipOrder } from "@/hooks/useOrders";
 import { useCancelPayment, useCreatePayment, usePayments } from "@/hooks/usePayments";
@@ -276,6 +277,10 @@ export default function OrderDetailScreen() {
                         </View>
                     </View>
                 </View>
+
+                {order.status && order.status !== "Cancelled" && (
+                    <OrderStatusStepper status={order.status} />
+                )}
 
                 <View style={styles.items}>
                     {order.orderLines?.map((line) => (

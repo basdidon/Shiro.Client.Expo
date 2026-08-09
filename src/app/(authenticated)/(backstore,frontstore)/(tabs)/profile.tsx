@@ -11,17 +11,6 @@ export default function Profile() {
     const username = useAuthStore((state) => state.username);
     const userId = useAuthStore((state) => state.userId);
     const roles = useAuthStore((state) => state.roles);
-    const canWriteProduucts =
-        roles.includes("super-admin") ||
-        roles.includes("owner") ||
-        roles.includes("product-manager");
-    const canViewAnyOrder =
-        roles.includes("super-admin") ||
-        roles.includes("owner") ||
-        roles.includes("order-manager") ||
-        roles.includes("staff");
-    const canManageUsers = roles.includes("super-admin") || roles.includes("owner");
-    const isFinanceManager = roles.includes("finance-manager");
 
     const handleLogout = () => {
         showAlert("ออกจากระบบ", "คุณต้องการออกจากระบบใช่หรือไม่", [
@@ -61,7 +50,13 @@ export default function Profile() {
                         ทั่วไป
                     </AppText>
                     <View style={styles.menu}>
-                        <Link href={{ pathname: "/orders", params: { orderById: userId } }} asChild>
+                        <Link
+                            href={{
+                                pathname: "/user/orders",
+                                params: { orderById: userId },
+                            }}
+                            asChild
+                        >
                             <Pressable style={styles.menuItem}>
                                 <MaterialDesignIcons
                                     name="file-document-multiple-outline"
@@ -74,7 +69,7 @@ export default function Profile() {
                                 <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
                             </Pressable>
                         </Link>
-                        <Link href="/addresses" asChild>
+                        <Link href="/user/addresses" asChild>
                             <Pressable style={styles.menuItem}>
                                 <MaterialDesignIcons
                                     name="map-marker-outline"
@@ -87,106 +82,16 @@ export default function Profile() {
                                 <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
                             </Pressable>
                         </Link>
-                        <Link href="/payments" asChild>
+                        <Link href="/user/payments" asChild>
                             <Pressable style={styles.menuItem}>
                                 <MaterialDesignIcons name="cash-multiple" size={20} color="#333" />
                                 <AppText size="large" style={styles.menuItemText}>
-                                    {isFinanceManager ? "การชำระเงินทั้งหมด" : "การชำระเงินของฉัน"}
+                                    การชำระเงินของฉัน
                                 </AppText>
                                 <MaterialDesignIcons name="chevron-right" size={20} color="#999" />
                             </Pressable>
                         </Link>
                     </View>
-                    {canWriteProduucts && (
-                        <>
-                            <AppText style={styles.menuGroupHeader} size="title">
-                                ฐานข้อมูล
-                            </AppText>
-                            <View style={styles.menu}>
-                                <Link href="/categories/manage" asChild>
-                                    <Pressable style={styles.menuItem}>
-                                        <MaterialDesignIcons
-                                            name="view-grid-plus-outline"
-                                            size={20}
-                                            color="#333"
-                                        />
-                                        <AppText size="large" style={styles.menuItemText}>
-                                            หมวดหมู่สินค้า
-                                        </AppText>
-                                        <MaterialDesignIcons
-                                            name="chevron-right"
-                                            size={20}
-                                            color="#999"
-                                        />
-                                    </Pressable>
-                                </Link>
-                                <Link href="/products/create" asChild>
-                                    <Pressable style={styles.menuItem}>
-                                        <MaterialDesignIcons
-                                            name="package-variant-closed-plus"
-                                            size={20}
-                                            color="#333"
-                                        />
-                                        <AppText size="large" style={styles.menuItemText}>
-                                            เพิ่มข้อมูลสินค้า
-                                        </AppText>
-                                        <MaterialDesignIcons
-                                            name="chevron-right"
-                                            size={20}
-                                            color="#999"
-                                        />
-                                    </Pressable>
-                                </Link>
-                            </View>
-                        </>
-                    )}
-                    {(canViewAnyOrder || canManageUsers) && (
-                        <>
-                            <AppText style={styles.menuGroupHeader} size="title">
-                                การจัดการ
-                            </AppText>
-                            <View style={styles.menu}>
-                                {canViewAnyOrder && (
-                                    <Link href="/orders" asChild>
-                                        <Pressable style={styles.menuItem}>
-                                            <MaterialDesignIcons
-                                                name="file-document-multiple-outline"
-                                                size={20}
-                                                color="#333"
-                                            />
-                                            <AppText size="large" style={styles.menuItemText}>
-                                                คำสั่งซื้อ
-                                            </AppText>
-                                            <MaterialDesignIcons
-                                                name="chevron-right"
-                                                size={20}
-                                                color="#999"
-                                            />
-                                        </Pressable>
-                                    </Link>
-                                )}
-                                {canManageUsers && (
-                                    <Link href="/users" asChild>
-                                        <Pressable style={styles.menuItem}>
-                                            <MaterialDesignIcons
-                                                name="account-multiple-outline"
-                                                size={20}
-                                                color="#333"
-                                            />
-                                            <AppText size="large" style={styles.menuItemText}>
-                                                ผู้ใช้งาน
-                                            </AppText>
-                                            <MaterialDesignIcons
-                                                name="chevron-right"
-                                                size={20}
-                                                color="#999"
-                                            />
-                                        </Pressable>
-                                    </Link>
-                                )}
-                            </View>
-                        </>
-                    )}
                     <AppText style={styles.menuGroupHeader} size="title">
                         เกี่ยวกับ
                     </AppText>
