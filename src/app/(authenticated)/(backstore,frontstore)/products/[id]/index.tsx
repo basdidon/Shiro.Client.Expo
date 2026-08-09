@@ -8,7 +8,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { useCartStore } from "@/store/useCartStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Image } from "expo-image";
-import { Link, router, Stack, useLocalSearchParams } from "expo-router";
+import { Link, router, Stack, useLocalSearchParams, useSegments } from "expo-router";
 import { useState } from "react";
 import {
     ActivityIndicator,
@@ -23,6 +23,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SingleProductPage() {
     const { id, type } = useLocalSearchParams<{ id: string; type: string }>();
+    const segments = useSegments();
     const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
     const canAddToOrder = useAuthStore(
         (state) =>
@@ -121,7 +122,7 @@ export default function SingleProductPage() {
             edges={["left", "right", "bottom"]}
             style={{ flexDirection: "column", flex: 1 }}
         >
-            <Stack.Screen options={{ title: "", headerRight }} />
+            <Stack.Screen options={{ title: segments[0], headerRight }} />
             <ScrollView
                 style={{ flex: 1, backgroundColor: "white" }}
                 showsVerticalScrollIndicator={false}
@@ -250,33 +251,35 @@ export default function SingleProductPage() {
                 </View>
             </ScrollView>
             {/* Footer */}
-            <View style={styles.footerContainer}>
-                <View style={styles.footerRow}>
-                    <View style={{ flex: 1 }}>
-                        <AppText>Total Price :</AppText>
-                        <AppText style={{ fontSize: 24 }}>
-                            <MaterialDesignIcons name="currency-thb" size={24} />
-                            {unitPrice * quantity}
-                        </AppText>
+            {segments[1] == "(frontstore)" && (
+                <View style={styles.footerContainer}>
+                    <View style={styles.footerRow}>
+                        <View style={{ flex: 1 }}>
+                            <AppText>Total Price :</AppText>
+                            <AppText style={{ fontSize: 24 }}>
+                                <MaterialDesignIcons name="currency-thb" size={24} />
+                                {unitPrice * quantity}
+                            </AppText>
+                        </View>
+                        <Stepper value={quantity} setValue={setQuantity} min={isInCart ? 0 : 1} />
                     </View>
-                    <Stepper value={quantity} setValue={setQuantity} min={isInCart ? 0 : 1} />
+                    <View style={styles.footerRow}>
+                        <HeartButton value={liked} setValue={setLiked} />
+                        <TouchableOpacity
+                            style={[styles.btn, isRemoving && styles.removeBtn]}
+                            onPress={handleCartButtonPress}
+                        >
+                            <AppText style={styles.textButton}>
+                                {isRemoving
+                                    ? "ลบออกจากตะกร้า"
+                                    : isInCart
+                                      ? "อัปเดตตะกร้า"
+                                      : "เพิ่มลงในตะกร้า"}
+                            </AppText>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={styles.footerRow}>
-                    <HeartButton value={liked} setValue={setLiked} />
-                    <TouchableOpacity
-                        style={[styles.btn, isRemoving && styles.removeBtn]}
-                        onPress={handleCartButtonPress}
-                    >
-                        <AppText style={styles.textButton}>
-                            {isRemoving
-                                ? "ลบออกจากตะกร้า"
-                                : isInCart
-                                  ? "อัปเดตตะกร้า"
-                                  : "เพิ่มลงในตะกร้า"}
-                        </AppText>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            )}
         </SafeAreaView>
     );
 }

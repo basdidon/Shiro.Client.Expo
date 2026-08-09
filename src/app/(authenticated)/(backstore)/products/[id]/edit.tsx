@@ -8,7 +8,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/components/ui/AppText";
 import FormCategoryPicker from "@/components/ui/FormCategoryPicker";
 import FormTextInput from "@/components/ui/FormTextInput";
-import { useCategories } from "@/hooks/useCategories";
 import { useProduct, useUpdateProduct } from "@/hooks/useProducts";
 import { getApiErrorDetail } from "@/lib/api";
 import {
@@ -32,8 +31,6 @@ export default function EditProductScreen() {
         resolver: zodResolver(updateProductSchema),
         defaultValues: { name: "", unitPrice: "", categoryId: null },
     });
-
-    const { data: categories } = useCategories();
 
     useEffect(() => {
         if (product) {

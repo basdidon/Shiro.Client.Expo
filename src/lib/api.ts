@@ -57,21 +57,42 @@ let refreshPromise: Promise<string | null> | null = null;
 
 const refreshAccessToken = async (): Promise<string | null> => {
     const refreshToken = await tokenStorage.getRefreshToken();
-    if (!refreshToken) return null;
-
-    const { data } = await axios.post<TokenResponse>(`${baseURL}/api/auth/refresh`, { refreshToken });
-
-    if (!data.accessToken) return null;
-    await tokenStorage.setAccessToken(data.accessToken);
-    if (data.refreshToken?.token) {
-        await tokenStorage.setRefreshToken(data.refreshToken.token);
+    if (!refreshToken) {
+        console.warn("[auth] refresh skipped: no refresh token in storage");
+        return null;
     }
-    return data.accessToken;
+
+    try {
+        const { data } = await axios.post<TokenResponse>(`${baseURL}/api/auth/refresh`, { refreshToken });
+
+        if (!data.accessToken) {
+            console.warn("[auth] refresh response had no accessToken", data);
+            return null;
+        }
+        await tokenStorage.setAccessToken(data.accessToken);
+        if (data.refreshToken?.token) {
+            await tokenStorage.setRefreshToken(data.refreshToken.token);
+        }
+        console.log("[auth] refresh succeeded");
+        return data.accessToken;
+    } catch (err) {
+        if (axios.isAxiosError(err)) {
+            console.warn(
+                `[auth] refresh call failed: status=${err.response?.status ?? "none"} code=${err.code ?? "none"} message=${err.message} baseURL=${baseURL}`,
+            );
+        } else {
+            console.warn("[auth] refresh call failed with non-axios error:", err);
+        }
+        throw err;
+    }
 };
 
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
+        console.warn(
+            `[auth] response interceptor caught error: url=${error?.config?.url ?? "?"} status=${error?.response?.status ?? "none"}`,
+        );
         if (axios.isAxiosError(error) && error.response && error.response.status >= 500) {
             showAlert("เกิดข้อผิดพลาดที่เซิร์ฟเวอร์", "กรุณาลองใหม่อีกครั้งในภายหลัง");
             return Promise.reject(error);
@@ -82,6 +103,9 @@ api.interceptors.response.use(
             originalRequest?.url === "/api/auth/login" || originalRequest?.url === "/api/auth/refresh";
 
         if (error.response?.status !== 401 || isAuthEndpoint || originalRequest._retry) {
+            console.warn(
+                `[auth] 401 handling skipped: url=${originalRequest?.url ?? "?"} status=${error.response?.status ?? "none"} isAxiosError=${axios.isAxiosError(error)} isAuthEndpoint=${isAuthEndpoint} alreadyRetried=${!!originalRequest?._retry}`,
+            );
             return Promise.reject(error);
         }
         originalRequest._retry = true;
@@ -95,7 +119,24 @@ api.interceptors.response.use(
 
             originalRequest.headers.set("Authorization", `Bearer ${accessToken}`);
             return api(originalRequest);
-        } catch {
+        } catch (refreshErr) {
+            // No response at all (offline, DNS hiccup, server unreachable) doesn't tell us the
+            // refresh token is actually invalid - only a definite rejection from the server does.
+            // Logging out on a transient network blip would nuke a perfectly good session.
+            const isNetworkFailure = axios.isAxiosError(refreshErr) && !refreshErr.response;
+
+            if (isNetworkFailure) {
+                console.warn(
+                    `[auth] refresh hit a network error for ${originalRequest?.url ?? "?"}, keeping session`,
+                    refreshErr,
+                );
+                return Promise.reject(error);
+            }
+
+            console.warn(
+                `[auth] logging out: refresh rejected for original request ${originalRequest?.url ?? "?"}`,
+                refreshErr,
+            );
             await tokenStorage.clear();
             // lazy require: useAuthStore imports this file, so a static import would be circular
             const { useAuthStore } = require("@/store/useAuthStore") as typeof import("@/store/useAuthStore");

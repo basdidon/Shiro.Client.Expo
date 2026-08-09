@@ -55,7 +55,11 @@ export default function EditCategoriesScreen() {
                     keyExtractor={(item, index) => String(item.id ?? index)}
                     contentContainerStyle={{ padding: 12 }}
                     refreshControl={
-                        <RefreshControl tintColor="blue" refreshing={isRefetching} onRefresh={refetch} />
+                        <RefreshControl
+                            tintColor="blue"
+                            refreshing={isRefetching}
+                            onRefresh={refetch}
+                        />
                     }
                     renderItem={({ item }) => (
                         <Link

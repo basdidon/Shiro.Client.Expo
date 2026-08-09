@@ -8,7 +8,14 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import axios from "axios";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import {
+    ActivityIndicator,
+    Pressable,
+    ScrollView,
+    StyleSheet,
+    TextInput,
+    View,
+} from "react-native";
 
 export default function Index() {
     const roles = useAuthStore((state) => state.roles);

@@ -102,7 +102,10 @@ export default function EditOrderScreen() {
     return (
         <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
             <Stack.Screen options={{ headerRight }} />
-            <ScrollView contentContainerStyle={{ padding: 16 }} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                contentContainerStyle={{ padding: 16 }}
+                showsVerticalScrollIndicator={false}
+            >
                 <View style={styles.header}>
                     <AppText size="heading"># {order.orderId?.slice(0, 8)}</AppText>
                     <AppText size="small" style={styles.subtleText}>
