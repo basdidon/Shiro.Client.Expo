@@ -54,9 +54,7 @@ export default function ShippingAddressSection({ onAddressChange }: ShippingAddr
 
     useEffect(() => {
         if (mode === "saved") {
-            const selected = savedAddresses?.find(
-                (item) => item.userAddressId === selectedId,
-            );
+            const selected = savedAddresses?.find((item) => item.userAddressId === selectedId);
             onAddressChange(selected?.shippingAddress ?? null);
             return;
         }
@@ -97,9 +95,7 @@ export default function ShippingAddressSection({ onAddressChange }: ShippingAddr
                         style={[styles.tab, mode === "manual" && styles.tabActive]}
                         onPress={() => setMode("manual")}
                     >
-                        <AppText
-                            style={mode === "manual" ? styles.tabTextActive : styles.tabText}
-                        >
+                        <AppText style={mode === "manual" ? styles.tabTextActive : styles.tabText}>
                             กรอกที่อยู่ใหม่
                         </AppText>
                     </Pressable>
@@ -107,7 +103,7 @@ export default function ShippingAddressSection({ onAddressChange }: ShippingAddr
             )}
 
             {!isLoading && savedAddresses && savedAddresses.length === 0 && (
-                <Link href="/addresses/create" asChild>
+                <Link href="/user/addresses/create" asChild>
                     <Pressable style={styles.createAddressBtn}>
                         <MaterialDesignIcons name="plus" size={18} color="blue" />
                         <AppText style={styles.createAddressText}>เพิ่มที่อยู่จัดส่ง</AppText>

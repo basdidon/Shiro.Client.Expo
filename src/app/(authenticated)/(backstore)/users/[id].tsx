@@ -156,7 +156,7 @@ export default function UserDetailScreen() {
                 <ContactRow
                     icon="phone-outline"
                     value={user.phoneNumber}
-                    confirmed={user.isPhoneNimberConfirmed}
+                    confirmed={user.isPhoneNumberConfirmed}
                 />
             </View>
 

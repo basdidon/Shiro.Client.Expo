@@ -141,9 +141,7 @@ export default function Cart() {
                                 disabled={createCheckout.isPending}
                             >
                                 <Text style={styles.submitTxtBtn}>
-                                    {createCheckout.isPending
-                                        ? "กำลังล็อกราคา..."
-                                        : "ล็อกราคาใหม่"}
+                                    {createCheckout.isPending ? "กำลังล็อกราคา..." : "ล็อกราคาใหม่"}
                                 </Text>
                             </TouchableOpacity>
                         </>
@@ -156,7 +154,10 @@ export default function Cart() {
                                     color={isUrgent ? "#e67e22" : "gray"}
                                 />
                                 <AppText
-                                    style={[styles.countdownText, isUrgent && styles.countdownUrgent]}
+                                    style={[
+                                        styles.countdownText,
+                                        isUrgent && styles.countdownUrgent,
+                                    ]}
                                 >
                                     ราคาล็อกไว้อีก {formatCountdown(msLeft)} นาที
                                 </AppText>
@@ -174,9 +175,7 @@ export default function Cart() {
                                 disabled={createOrder.isPending || !address}
                             >
                                 <Text style={styles.submitTxtBtn}>
-                                    {createOrder.isPending
-                                        ? "กำลังยืนยัน..."
-                                        : "ยืนยันคำสั่งซื้อ"}
+                                    {createOrder.isPending ? "กำลังยืนยัน..." : "ยืนยันคำสั่งซื้อ"}
                                 </Text>
                             </TouchableOpacity>
                             <Pressable onPress={() => setCheckout(null)} hitSlop={8}>
