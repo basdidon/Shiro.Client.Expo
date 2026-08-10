@@ -202,13 +202,13 @@ function ProductThumbnail({
         <View
             style={{
                 aspectRatio: 1,
-                backgroundColor: "#ccc",
+                backgroundColor: "#faf9f6",
                 borderRadius: 8,
                 justifyContent: "center",
                 alignItems: "center",
             }}
         >
-            <MaterialDesignIcons name="image-off-outline" size={92} color={"#fff"} />
+            <MaterialDesignIcons name="image-off-outline" size={92} color={"#d3d3d3"} />
         </View>
     );
 }

@@ -73,7 +73,7 @@ export default function PaymentsScreen() {
                                             />
                                         </View>
                                         <View style={{ flex: 1 }}>
-                                            <AppText size="label">Name PlaceHolder</AppText>
+                                            <AppText size="label">{item.username}</AppText>
                                             <AppText size="small">
                                                 OrderID : #{item.orderId?.slice(0, 8)}
                                             </AppText>

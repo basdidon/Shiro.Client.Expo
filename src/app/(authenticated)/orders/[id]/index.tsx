@@ -3,8 +3,8 @@ import OrderStatusStepper from "@/components/orders/OrderStatusStepper";
 import AppText from "@/components/ui/AppText";
 import { useCancelOrder, useCompleteOrder, useOrder, useShipOrder } from "@/hooks/useOrders";
 import { useCancelPayment, useCreatePayment, usePayments } from "@/hooks/usePayments";
-import { formatDateTime } from "@/lib/date";
 import { showAlert } from "@/lib/alert";
+import { formatDateTime } from "@/lib/date";
 import { getStatusIcon } from "@/lib/orderStatusIcon";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { components } from "@/types/api";
@@ -162,14 +162,10 @@ export default function OrderDetailScreen() {
     };
 
     const handleComplete = () => {
-        showAlert(
-            "ยืนยันคำสั่งซื้อ",
-            "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าเสร็จสมบูรณ์หรือไม่?",
-            [
-                { text: "ยกเลิก", style: "cancel" },
-                { text: "ยืนยัน", onPress: () => completeOrder.mutate(id) },
-            ],
-        );
+        showAlert("ยืนยันคำสั่งซื้อ", "ต้องการทำเครื่องหมายคำสั่งซื้อนี้ว่าเสร็จสมบูรณ์หรือไม่?", [
+            { text: "ยกเลิก", style: "cancel" },
+            { text: "ยืนยัน", onPress: () => completeOrder.mutate(id) },
+        ]);
     };
 
     const handleCancel = () => {
@@ -277,7 +273,20 @@ export default function OrderDetailScreen() {
                         </View>
                     </View>
                 </View>
-
+                <View style={{ flexDirection: "row", gap: 8, marginBottom: 16 }}>
+                    <MaterialDesignIcons name="map-marker-outline" size={18} />
+                    {order.shippingAddress === null ? (
+                        <AppText>ไม่พบที่อยู่จัดส่ง</AppText>
+                    ) : (
+                        <AppText size="small">
+                            {order.shippingAddress?.addressLine1}{" "}
+                            {order.shippingAddress?.addressLine2} ต.{" "}
+                            {order.shippingAddress?.subDistrict} อ.{" "}
+                            {order.shippingAddress?.district} จ. {order.shippingAddress?.province}{" "}
+                            {order.shippingAddress?.zipCode}
+                        </AppText>
+                    )}
+                </View>
                 {order.status && order.status !== "Cancelled" && (
                     <OrderStatusStepper status={order.status} />
                 )}
@@ -307,15 +316,20 @@ export default function OrderDetailScreen() {
 
                 {showStatusControls && (
                     <View style={styles.statusActions}>
+                        <Pressable
+                            style={[styles.actionBtn, styles.cancelBtn]}
+                            onPress={handleCancel}
+                            disabled={cancelOrder.isPending}
+                        >
+                            <AppText style={styles.actionBtnText}>ยกเลิกคำสั่งซื้อ</AppText>
+                        </Pressable>
                         {isCreated && (
                             <Pressable
                                 style={[styles.actionBtn, styles.shipBtn]}
                                 onPress={handleShip}
                                 disabled={shipOrder.isPending}
                             >
-                                <AppText style={styles.actionBtnText}>
-                                    ทำเครื่องหมายว่าจัดส่งแล้ว
-                                </AppText>
+                                <AppText style={styles.actionBtnText}>จัดส่งแล้ว</AppText>
                             </Pressable>
                         )}
                         {isShipped && (
@@ -328,18 +342,9 @@ export default function OrderDetailScreen() {
                                 onPress={handleComplete}
                                 disabled={completeOrder.isPending || !isFullyPaid}
                             >
-                                <AppText style={styles.actionBtnText}>
-                                    ทำเครื่องหมายว่าเสร็จสมบูรณ์
-                                </AppText>
+                                <AppText style={styles.actionBtnText}>เสร็จสิ้น</AppText>
                             </Pressable>
                         )}
-                        <Pressable
-                            style={[styles.actionBtn, styles.cancelBtn]}
-                            onPress={handleCancel}
-                            disabled={cancelOrder.isPending}
-                        >
-                            <AppText style={styles.actionBtnText}>ยกเลิกคำสั่งซื้อ</AppText>
-                        </Pressable>
                     </View>
                 )}
             </ScrollView>
@@ -350,7 +355,7 @@ export default function OrderDetailScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: "#fff" },
     notFound: { flex: 1, justifyContent: "center", alignItems: "center" },
-    header: { marginBottom: 16, gap: 8, flex: 1 },
+    header: { marginBottom: 0, gap: 8, flex: 1 },
     subtleText: { color: "gray" },
     timestamps: {
         gap: 4,
@@ -401,8 +406,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingVertical: 8,
     },
-    statusActions: { marginTop: 24, gap: 8 },
-    actionBtn: { paddingVertical: 12, borderRadius: 12 },
+    statusActions: { flexDirection: "row", marginTop: 24, gap: 8 },
+    actionBtn: { flex: 1, paddingVertical: 12, borderRadius: 12 },
     shipBtn: { backgroundColor: "blue" },
     completeBtn: { backgroundColor: "blue" },
     cancelBtn: { backgroundColor: "#c00" },
