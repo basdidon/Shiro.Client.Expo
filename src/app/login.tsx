@@ -71,6 +71,7 @@ export default function LoginScreen() {
                     name="password"
                     placeholder="รหัสผ่าน"
                     secureTextEntry
+                    showPasswordToggle
                     autoCapitalize="none"
                 />
 

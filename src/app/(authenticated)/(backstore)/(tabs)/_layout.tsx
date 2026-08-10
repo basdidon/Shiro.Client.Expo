@@ -85,23 +85,7 @@ export default () => {
             <Tabs.Screen
                 name="profile"
                 options={{
-                    title: "ผู้ใช้งาน",
-                    headerTitle: "",
-                    headerRight: () => {
-                        return (
-                            <HeaderButtonsContainer>
-                                <Link href={"/(authenticated)/(frontstore)/(tabs)"} replace asChild>
-                                    <Pressable>
-                                        <MaterialDesignIcons
-                                            name="storefront-outline"
-                                            color={"#000"}
-                                            size={24}
-                                        />
-                                    </Pressable>
-                                </Link>
-                            </HeaderButtonsContainer>
-                        );
-                    },
+                    title: "โปรไฟล์",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "account" : "account-outline"}

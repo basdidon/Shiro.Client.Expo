@@ -18,8 +18,14 @@ export default function AuthenticatedLayout() {
             <Stack.Protected guard={isAuthenticated && canAccessBackstore}>
                 <Stack.Screen name="(backstore)" />
             </Stack.Protected>
+
             <Stack.Screen name="(frontstore)" />
             <Stack.Screen name="user/payments" options={{ headerShown: true, title: "" }} />
+            <Stack.Screen name="user/addresses" options={{ headerShown: true, title: "" }} />
+            <Stack.Screen
+                name="user/addresses/[id]/edit"
+                options={{ headerShown: true, title: "" }}
+            />
             <Stack.Screen
                 name="user/orders"
                 options={{ headerShown: true, title: "คำสั่งซื้อของฉัน" }}

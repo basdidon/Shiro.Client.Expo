@@ -1,3 +1,4 @@
+import OrderListItem from "@/components/OrderListItem";
 import Stepper from "@/components/Stepper";
 import AppText from "@/components/ui/AppText";
 import { useAddOrderLine, useOrders, useUpdateOrderLine } from "@/hooks/useOrders";
@@ -9,7 +10,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { debounce } from "lodash";
 import { useCallback, useMemo, useState } from "react";
 import { ActivityIndicator, Modal, Pressable, StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 type OrderDto = components["schemas"]["OrderDto"];
 
@@ -17,9 +18,11 @@ export default function AddProductToOrderScreen() {
     const { id: productId } = useLocalSearchParams<{ id: string }>();
     const { data: product } = useProduct(productId);
 
+    const insets = useSafeAreaInsets();
+
     const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } = useOrders(
         20,
-        "",
+        undefined,
         "Created",
     );
     const orders = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data]);
@@ -108,14 +111,8 @@ export default function AddProductToOrderScreen() {
                         ) : null
                     }
                     renderItem={({ item }) => (
-                        <Pressable style={styles.row} onPress={() => handleSelectOrder(item)}>
-                            <View style={{ flex: 1 }}>
-                                <AppText size="large"># {item.orderId?.slice(0, 8)}</AppText>
-                                <AppText size="small" style={{ color: "gray" }}>
-                                    รายการ {item.orderLines?.length ?? 0}
-                                </AppText>
-                            </View>
-                            <AppText size="large">{item.total} .-</AppText>
+                        <Pressable onPress={() => handleSelectOrder(item)}>
+                            <OrderListItem order={item} />
                         </Pressable>
                     )}
                 />
@@ -127,7 +124,7 @@ export default function AddProductToOrderScreen() {
                 animationType="slide"
                 onRequestClose={() => setSelectedOrder(null)}
             >
-                <View style={styles.modalOverlay}>
+                <View style={[styles.modalOverlay, { marginBottom: insets.bottom }]}>
                     <View style={styles.modalCard}>
                         <AppText size="title">{product?.name}</AppText>
                         <AppText size="medium" style={{ color: "gray" }}>
@@ -177,7 +174,11 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#eee",
     },
-    modalOverlay: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.5)" },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: "flex-end",
+        backgroundColor: "rgba(0,0,0,0.5)",
+    },
     modalCard: {
         backgroundColor: "white",
         borderTopLeftRadius: 20,

@@ -60,8 +60,11 @@ export default () => {
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && canManageOrderLines}>
-                <Stack.Screen name="orders/[id]/edit" options={{ headerShown: true }} />
-                <Stack.Screen name="orders/[id]/scan-item" options={{ headerShown: true }} />
+                <Stack.Screen name="orders/[id]/edit" options={{ headerShown: true, title: "" }} />
+                <Stack.Screen
+                    name="orders/[id]/scan-item"
+                    options={{ headerShown: true, title: "" }}
+                />
             </Stack.Protected>
 
             <Stack.Protected guard={isAuthenticated && canManageUsers}>

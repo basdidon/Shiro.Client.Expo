@@ -5,7 +5,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link } from "expo-router";
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function PaymentsScreen() {
@@ -56,75 +56,85 @@ export default function PaymentsScreen() {
                                 href={{ pathname: "/orders/[id]", params: { id: item.orderId! } }}
                                 asChild
                             >
-                                <View
-                                    style={{
-                                        borderLeftColor: isCancelled ? "gray" : "green",
-                                        borderLeftWidth: 8,
-                                        backgroundColor: "white",
-                                        padding: 8,
-                                        paddingLeft: 0,
-                                        borderRadius: 4,
-                                        marginBottom: 8,
-                                    }}
-                                >
-                                    <View style={{ flexDirection: "row" }}>
-                                        <View style={{ margin: 4, marginHorizontal: 8 }}>
-                                            <MaterialDesignIcons
-                                                name="account-circle-outline"
-                                                size={36}
-                                                color={"#222"}
-                                            />
-                                        </View>
-                                        <View style={{ flex: 1 }}>
-                                            <AppText size="label">Name PlaceHolder</AppText>
-                                            <AppText size="small">
-                                                OrderID : #{item.orderId?.slice(0, 8)}
-                                            </AppText>
-                                            <AppText size="small">
-                                                {item.paymentMethod == "Cash"
-                                                    ? "เงินสด"
-                                                    : "โอนจ่าย"}
-                                            </AppText>
-                                        </View>
-                                        <View style={{ alignItems: "flex-end", gap: 2 }}>
-                                            <View
-                                                style={{
-                                                    padding: 2,
-                                                    paddingHorizontal: 8,
-                                                    backgroundColor: isCancelled ? "gray" : "green",
-                                                    borderRadius: 8,
-                                                }}
-                                            >
-                                                <AppText
-                                                    size="extraSmall"
+                                <Pressable>
+                                    <View
+                                        style={{
+                                            borderLeftColor: isCancelled ? "gray" : "green",
+                                            borderLeftWidth: 8,
+                                            backgroundColor: "white",
+                                            padding: 8,
+                                            paddingLeft: 0,
+                                            borderRadius: 4,
+                                            marginBottom: 8,
+                                        }}
+                                    >
+                                        <View style={{ flexDirection: "row" }}>
+                                            <View style={{ margin: 4, marginHorizontal: 8 }}>
+                                                <MaterialDesignIcons
+                                                    name={
+                                                        item.paymentMethod == "Cash"
+                                                            ? "cash-multiple"
+                                                            : "swap-horizontal"
+                                                    }
+                                                    size={36}
+                                                    color={"#444"}
+                                                />
+                                            </View>
+                                            <View style={{ flex: 1 }}>
+                                                <AppText size="label">
+                                                    #{item.paymentId?.slice(0, 8)}
+                                                </AppText>
+                                                <AppText size="small">
+                                                    OrderID : #{item.orderId?.slice(0, 8)}
+                                                </AppText>
+                                                <AppText size="small">
+                                                    {item.paymentMethod == "Cash"
+                                                        ? "เงินสด"
+                                                        : "โอนจ่าย"}
+                                                </AppText>
+                                            </View>
+                                            <View style={{ alignItems: "flex-end", gap: 2 }}>
+                                                <View
                                                     style={{
-                                                        color: "#fff",
-                                                        fontFamily: "Mali_600SemiBold",
+                                                        padding: 2,
+                                                        paddingHorizontal: 8,
+                                                        backgroundColor: isCancelled
+                                                            ? "gray"
+                                                            : "green",
+                                                        borderRadius: 8,
                                                     }}
                                                 >
-                                                    {isCancelled ? "ยกเลิกแล้ว" : "ชำระแล้ว"}
-                                                </AppText>
-                                            </View>
-                                            <View style={{ flexDirection: "row", gap: 4 }}>
-                                                <AppText size="extraSmall">
-                                                    {formatTime(item.createdAt)}
-                                                </AppText>
-                                                <MaterialDesignIcons name="clock-outline" />
-                                            </View>
-                                            <View style={{ flexDirection: "row", gap: 4 }}>
-                                                <AppText size="extraSmall">
-                                                    {formatDate(item.createdAt)}
-                                                </AppText>
-                                                <MaterialDesignIcons name="calendar-month-outline" />
+                                                    <AppText
+                                                        size="extraSmall"
+                                                        style={{
+                                                            color: "#fff",
+                                                            fontFamily: "Mali_600SemiBold",
+                                                        }}
+                                                    >
+                                                        {isCancelled ? "ยกเลิกแล้ว" : "ชำระแล้ว"}
+                                                    </AppText>
+                                                </View>
+                                                <View style={{ flexDirection: "row", gap: 4 }}>
+                                                    <AppText size="extraSmall">
+                                                        {formatTime(item.createdAt)}
+                                                    </AppText>
+                                                    <MaterialDesignIcons name="clock-outline" />
+                                                </View>
+                                                <View style={{ flexDirection: "row", gap: 4 }}>
+                                                    <AppText size="extraSmall">
+                                                        {formatDate(item.createdAt)}
+                                                    </AppText>
+                                                    <MaterialDesignIcons name="calendar-month-outline" />
+                                                </View>
                                             </View>
                                         </View>
+                                        <View style={{ marginTop: 8 }}>
+                                            <AppText style={{ textAlign: "right" }}>
+                                                ฿ {Number(item.amount).toFixed(2)}
+                                            </AppText>
+                                        </View>
                                     </View>
-                                    <View style={{ marginTop: 8 }}>
-                                        <AppText style={{ textAlign: "right" }}>
-                                            ฿ {Number(item.amount).toFixed(2)}
-                                        </AppText>
-                                    </View>
-                                </View>
+                                </Pressable>
                             </Link>
                         );
                     }}

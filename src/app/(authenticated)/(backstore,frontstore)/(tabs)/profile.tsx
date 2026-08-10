@@ -1,5 +1,5 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Link } from "expo-router";
+import { Link, useSegments } from "expo-router";
 import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import AppText from "@/components/ui/AppText";
@@ -7,11 +7,21 @@ import { showAlert } from "@/lib/alert";
 import { useAuthStore } from "@/store/useAuthStore";
 
 export default function Profile() {
+    const segments = useSegments();
+
     const logout = useAuthStore((state) => state.logout);
     const username = useAuthStore((state) => state.username);
     const userId = useAuthStore((state) => state.userId);
     const roles = useAuthStore((state) => state.roles);
-
+    const canAccessBackstore = useAuthStore(
+        (state) =>
+            state.roles.includes("super-admin") ||
+            state.roles.includes("owner") ||
+            state.roles.includes("finance-manager") ||
+            state.roles.includes("product-manager") ||
+            state.roles.includes("order-manager") ||
+            state.roles.includes("staff"),
+    );
     const handleLogout = () => {
         showAlert("ออกจากระบบ", "คุณต้องการออกจากระบบใช่หรือไม่", [
             { text: "ยกเลิก", style: "cancel" },
@@ -46,6 +56,67 @@ export default function Profile() {
                     )}
                 </View>
                 <View>
+                    {canAccessBackstore && (
+                        <View>
+                            <AppText style={styles.menuGroupHeader} size="title">
+                                เฉพาะพนักงาน
+                            </AppText>
+                            <View style={styles.menu}>
+                                {segments[1] === "(backstore)" && (
+                                    <Link
+                                        href={{
+                                            pathname: "/(authenticated)/(frontstore)/(tabs)",
+                                            params: { orderById: userId },
+                                        }}
+                                        replace
+                                        asChild
+                                    >
+                                        <Pressable style={styles.menuItem}>
+                                            <MaterialDesignIcons
+                                                name="storefront-outline"
+                                                size={20}
+                                                color="#333"
+                                            />
+                                            <AppText size="large" style={styles.menuItemText}>
+                                                ไปหน้าร้าน
+                                            </AppText>
+                                            <MaterialDesignIcons
+                                                name="chevron-right"
+                                                size={20}
+                                                color="#999"
+                                            />
+                                        </Pressable>
+                                    </Link>
+                                )}
+                                {segments[1] === "(frontstore)" && (
+                                    <Link
+                                        href={{
+                                            pathname: "/(authenticated)/(backstore)/(tabs)",
+                                            params: { orderById: userId },
+                                        }}
+                                        replace
+                                        asChild
+                                    >
+                                        <Pressable style={styles.menuItem}>
+                                            <MaterialDesignIcons
+                                                name="office-building-outline"
+                                                size={20}
+                                                color="#333"
+                                            />
+                                            <AppText size="large" style={styles.menuItemText}>
+                                                จัดการหลังร้าน
+                                            </AppText>
+                                            <MaterialDesignIcons
+                                                name="chevron-right"
+                                                size={20}
+                                                color="#999"
+                                            />
+                                        </Pressable>
+                                    </Link>
+                                )}
+                            </View>
+                        </View>
+                    )}
                     <AppText style={styles.menuGroupHeader} size="title">
                         ทั่วไป
                     </AppText>

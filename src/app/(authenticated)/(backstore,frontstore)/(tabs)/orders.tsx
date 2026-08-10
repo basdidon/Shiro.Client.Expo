@@ -4,10 +4,10 @@ import AppText from "@/components/ui/AppText";
 import { useOrders } from "@/hooks/useOrders";
 import type { components } from "@/types/api";
 import { FlashList } from "@shopify/flash-list";
-import { useLocalSearchParams } from "expo-router";
+import { Link, useLocalSearchParams } from "expo-router";
 import { debounce } from "lodash";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, View } from "react-native";
 
 type OrderStatus = components["schemas"]["OrderStatus"];
 
@@ -83,7 +83,17 @@ export default function Orders() {
                             />
                         ) : null
                     }
-                    renderItem={({ item }) => <OrderListItem order={item} />}
+                    renderItem={({ item }) => (
+                        <Link
+                            key={item.orderId}
+                            href={{ pathname: "/orders/[id]", params: { id: item.orderId! } }}
+                            asChild
+                        >
+                            <Pressable>
+                                <OrderListItem order={item} />
+                            </Pressable>
+                        </Link>
+                    )}
                 />
             )}
         </View>

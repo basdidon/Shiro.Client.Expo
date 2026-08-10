@@ -1,39 +1,17 @@
 import CartButton from "@/components/CartButton";
 import HeaderButtonsContainer from "@/components/HeaderButtonsContainer";
-import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import { Tabs } from "expo-router";
 
 const TAB_BAR_ICON_SIZE = 24;
 
 export default () => {
-    const canAccessBackstore = useAuthStore(
-        (state) =>
-            state.roles.includes("super-admin") ||
-            state.roles.includes("owner") ||
-            state.roles.includes("finance-manager") ||
-            state.roles.includes("product-manager") ||
-            state.roles.includes("order-manager") ||
-            state.roles.includes("staff"),
-    );
     return (
         <Tabs
             screenOptions={{
                 headerTitleStyle: { fontFamily: "Mali_700Bold" },
                 headerRight: () => (
                     <HeaderButtonsContainer>
-                        {canAccessBackstore && (
-                            <Link href={"/(authenticated)/(backstore)/(tabs)"} replace asChild>
-                                <Pressable>
-                                    <MaterialDesignIcons
-                                        name="warehouse"
-                                        color={"#000"}
-                                        size={24}
-                                    />
-                                </Pressable>
-                            </Link>
-                        )}
                         <CartButton />
                     </HeaderButtonsContainer>
                 ),
@@ -99,6 +77,7 @@ export default () => {
             <Tabs.Screen
                 name="profile"
                 options={{
+                    title: "โปรไฟล์",
                     tabBarIcon: ({ focused, color }) => (
                         <MaterialDesignIcons
                             name={focused ? "account" : "account-outline"}

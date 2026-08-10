@@ -4,7 +4,6 @@ export default () => {
     return (
         <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
-
             <Stack.Screen
                 name="products/[id]/index"
                 options={{ headerShown: true, presentation: "modal" }}

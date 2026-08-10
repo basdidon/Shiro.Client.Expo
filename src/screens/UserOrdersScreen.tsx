@@ -4,9 +4,10 @@ import AppText from "@/components/ui/AppText";
 import { useOrders } from "@/hooks/useOrders";
 import type { components } from "@/types/api";
 import { FlashList } from "@shopify/flash-list";
+import { Link } from "expo-router";
 import { debounce } from "lodash";
 import { useCallback, useMemo, useState } from "react";
-import { ActivityIndicator, RefreshControl, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Pressable, RefreshControl, StyleSheet, View } from "react-native";
 
 type OrderStatus = components["schemas"]["OrderStatus"];
 
@@ -85,7 +86,19 @@ export default function UserOrdersScreen({ orderById }: Props) {
                             />
                         ) : null
                     }
-                    renderItem={({ item }) => <OrderListItem order={item} />}
+                    renderItem={({ item }) => (
+                        <Link
+                            href={{
+                                pathname: "/(authenticated)/orders/[id]",
+                                params: { id: item.orderId! },
+                            }}
+                            asChild
+                        >
+                            <Pressable>
+                                <OrderListItem order={item} />
+                            </Pressable>
+                        </Link>
+                    )}
                 />
             )}
         </View>
