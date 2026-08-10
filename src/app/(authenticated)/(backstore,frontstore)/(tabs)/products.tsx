@@ -1,7 +1,6 @@
 import AppText from "@/components/ui/AppText";
 import { useCategories } from "@/hooks/useCategories";
 import { useProductImageDownloadUrl, useProducts } from "@/hooks/useProducts";
-import { useAuthStore } from "@/store/useAuthStore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
@@ -25,7 +24,6 @@ const HAFT_COLUMN_GAP = COLUMN_GAP / 2;
 export default function ProductPage() {
     const { categoryId: categoryIdParam } = useLocalSearchParams<{ categoryId?: string }>();
     const categoryId = categoryIdParam ? Number(categoryIdParam) : undefined;
-    const isProductManager = useAuthStore((state) => state.roles.includes("product-manager"));
     const {
         data,
         isError,
