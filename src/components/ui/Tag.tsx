@@ -21,5 +21,6 @@ const styles = StyleSheet.create({
     text: {
         color: "white",
         fontSize: 12,
+        fontFamily: "Mali_400Regular",
     },
 });

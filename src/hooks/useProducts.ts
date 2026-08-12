@@ -1,4 +1,5 @@
 import { createProduct } from "@/api/products/createProduct";
+import { deleteProduct } from "@/api/products/deleteProduct";
 import { getProductByBarcode } from "@/api/products/getProductByBarcode";
 import { getProductById } from "@/api/products/getProductById";
 import {
@@ -9,8 +10,10 @@ import {
 } from "@/api/products/productImages";
 import { updateProduct } from "@/api/products/updateProduct";
 import api from "@/lib/api";
+import { retryOnNetworkError } from "@/lib/retryOnNetworkError";
 import type { components } from "@/types/api";
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import * as Crypto from "expo-crypto";
 
 type CursorResultOfProductDto = components["schemas"]["CursorResultOfProductDto"];
 type ProductImageType = components["schemas"]["ProductImageType"];
@@ -39,7 +42,13 @@ export const useCreateProduct = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: createProduct,
+        mutationFn: (command: Parameters<typeof createProduct>[0]) => {
+            // Not wrapped in retryOnNetworkError: the API doesn't dedupe by
+            // Idempotency-Key yet, so a blind retry here could create a duplicate
+            // product if the original request actually succeeded server-side.
+            const idempotencyKey = Crypto.randomUUID();
+            return createProduct(command, idempotencyKey);
+        },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
         },
@@ -63,10 +72,22 @@ export const useUpdateProduct = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: updateProduct,
+        mutationFn: (command: Parameters<typeof updateProduct>[0]) =>
+            retryOnNetworkError(() => updateProduct(command)),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["products"] });
             queryClient.invalidateQueries({ queryKey: ["products", variables.productId] });
+        },
+    });
+};
+
+export const useDeleteProduct = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (productId: string) => retryOnNetworkError(() => deleteProduct(productId)),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["products"] });
         },
     });
 };
@@ -108,7 +129,7 @@ export const useUploadProductImage = () => {
                 throw new Error("upload-url response missing uploadUrl, key, or contentType");
             }
             await uploadImageToPresignedUrl(uploadUrl, fileUri, contentType);
-            await updateProductImageKey(productId, type, key);
+            await retryOnNetworkError(() => updateProductImageKey(productId, type, key));
             return key;
         },
         onSuccess: (_, variables) => {

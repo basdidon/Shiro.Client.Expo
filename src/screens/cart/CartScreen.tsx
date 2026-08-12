@@ -7,6 +7,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { Link, router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CartItemView from "./CartItemView";
 import ShippingAddressSection from "./ShippingAddressSection";
@@ -90,9 +91,11 @@ export default function Cart() {
     if (checkout) {
         return (
             <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
-                <ScrollView
+                <KeyboardAwareScrollView
                     contentContainerStyle={styles.scrollContent}
                     showsVerticalScrollIndicator={false}
+                    keyboardShouldPersistTaps="handled"
+                    bottomOffset={62}
                 >
                     <AppText size="title">สรุปคำสั่งซื้อ</AppText>
                     <AppText style={styles.muted}>ราคาถูกล็อกไว้แล้ว</AppText>
@@ -114,7 +117,7 @@ export default function Cart() {
                     })}
 
                     <ShippingAddressSection onAddressChange={setAddress} />
-                </ScrollView>
+                </KeyboardAwareScrollView>
                 <View style={styles.footer}>
                     {errorMessage && <AppText style={styles.errorText}>{errorMessage}</AppText>}
                     {isExpired ? (
@@ -138,9 +141,7 @@ export default function Cart() {
                                 disabled={createCheckout.isPending}
                             >
                                 <Text style={styles.submitTxtBtn}>
-                                    {createCheckout.isPending
-                                        ? "กำลังล็อกราคา..."
-                                        : "ล็อกราคาใหม่"}
+                                    {createCheckout.isPending ? "กำลังล็อกราคา..." : "ล็อกราคาใหม่"}
                                 </Text>
                             </TouchableOpacity>
                         </>
@@ -153,7 +154,10 @@ export default function Cart() {
                                     color={isUrgent ? "#e67e22" : "gray"}
                                 />
                                 <AppText
-                                    style={[styles.countdownText, isUrgent && styles.countdownUrgent]}
+                                    style={[
+                                        styles.countdownText,
+                                        isUrgent && styles.countdownUrgent,
+                                    ]}
                                 >
                                     ราคาล็อกไว้อีก {formatCountdown(msLeft)} นาที
                                 </AppText>
@@ -171,9 +175,7 @@ export default function Cart() {
                                 disabled={createOrder.isPending || !address}
                             >
                                 <Text style={styles.submitTxtBtn}>
-                                    {createOrder.isPending
-                                        ? "กำลังยืนยัน..."
-                                        : "ยืนยันคำสั่งซื้อ"}
+                                    {createOrder.isPending ? "กำลังยืนยัน..." : "ยืนยันคำสั่งซื้อ"}
                                 </Text>
                             </TouchableOpacity>
                             <Pressable onPress={() => setCheckout(null)} hitSlop={8}>
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
     totalRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" },
     submitBtn: { backgroundColor: "blue", padding: 14, borderRadius: 12 },
     submitBtnDisabled: { backgroundColor: "#ccc" },
-    submitTxtBtn: { color: "white", fontSize: 18, fontWeight: "bold", textAlign: "center" },
+    submitTxtBtn: { color: "white", fontSize: 18, fontFamily: "Mali_700Bold", textAlign: "center" },
     checkoutLineCard: {
         flexDirection: "row",
         justifyContent: "space-between",
@@ -269,7 +271,7 @@ const styles = StyleSheet.create({
     },
     statusRow: { flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 6 },
     countdownText: { textAlign: "center", color: "gray" },
-    countdownUrgent: { color: "#e67e22", fontWeight: "600" },
+    countdownUrgent: { color: "#e67e22", fontFamily: "Mali_600SemiBold" },
     expiredText: { textAlign: "center", color: "#d64545" },
     editCartText: { textAlign: "center", color: "gray", marginTop: 4 },
     errorText: { color: "red", textAlign: "center" },

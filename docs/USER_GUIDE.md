@@ -27,7 +27,7 @@ This guide walks through using the Shiro app as an end user. Screens are in Thai
 
 ![](screenshots/login.png)
 
-Once signed in, you land on the main tab bar with five tabs: **Home**, **หมวดหมู่** (Categories), **รายการสินค้า** (Products), **แสกนสินค้า** (Scan), and **โปรไฟล์** (Profile).
+Once signed in, you land on the main tab bar with five tabs: **Home**, **รายการสินค้า** (Products), **แสกนสินค้า** (Scan), **ประวัติ** (Orders), and **โปรไฟล์** (Profile).
 
 ---
 
@@ -40,6 +40,7 @@ What you see here depends on your role:
     - Today's sales and this month's sales totals
     - Pending / shipping / completed order counts (tap "รอดำเนินการ" / Pending to jump to the Orders list)
     - A "สินค้าขายดี" (Best sellers) list — tap any product to open its detail page
+- **Staff-level roles** (product managers, order managers, staff, finance managers, owners, super-admins) also see a "ฐานข้อมูล" (Database) management menu on this tab, with links that adapt to your role: ผู้ใช้งาน/Users (owners/super-admins), หมวดหมู่สินค้า/Categories (all staff-level roles), รายการสินค้า/Products (product managers), คำสั่งซื้อ/Orders (order managers/staff), and ประวัติการชำระเงิน/Payment history (finance managers). This menu used to live under Profile — it's now on Home.
 
 ![](screenshots/dashboard.png)
 
@@ -47,7 +48,6 @@ What you see here depends on your role:
 
 ## Browsing categories & products
 
-- **หมวดหมู่ (Categories tab)**: a grid of category icons. Tap a category to see its products.
 - **รายการสินค้า (Products tab)**: a scrollable grid of all products with name and price. If you arrived via a category, a filter chip shows at the top — tap **ล้างตัวกรอง** (Clear filter) to see everything again.
 - Tap any product card to open its **product detail page**, showing name, price, and barcode(s).
 
@@ -89,7 +89,7 @@ An empty cart shows a prompt to browse products instead.
 
 ## My Orders
 
-Access via **Profile → คำสั่งซื้อของฉัน** (My orders).
+Access via the **ประวัติ (Orders) tab** in the bottom nav, or via **Profile → คำสั่งซื้อของฉัน** (My orders).
 
 - Filter by status: All / Created (อยู่ระหว่างดำเนินการ) / Shipped (จัดส่งแล้ว) / Completed (เสร็จสมบูรณ์) / Cancelled (ยกเลิกแล้ว).
 - Tap an order to see its full detail: items, total, timestamps, and (depending on your role) status actions or payment entry.
@@ -123,7 +123,7 @@ Access via **Profile → การชำระเงินของฉัน / �
 
 - Regular users see only their own payments.
 - Finance managers see every payment across all orders.
-- Each entry shows the amount, method (เงินสด/Cash or โอนเงิน/Bank transfer), and links back to its order. Cancelled payments are shown greyed out.
+- Each entry shows the customer's username, the amount, method (เงินสด/Cash or โอนจ่าย/Bank transfer), and links back to its order. Cancelled payments are shown greyed out.
 
 ![](screenshots/payments.png)
 
@@ -133,9 +133,8 @@ Access via **Profile → การชำระเงินของฉัน / �
 
 Access via the **โปรไฟล์ (Profile)** tab. Shows your username, user ID, and role badges, plus a menu that adapts to your permissions:
 
-- **ทั่วไป (General)** — My orders, Saved addresses, My/All payments
-- **ฐานข้อมูล (Database)** _(product managers only)_ — Manage categories, Add a product
-- **การจัดการ (Management)** _(order managers/staff/admins)_ — All orders, Users _(owners/super-admins only)_
+- **เฉพาะพนักงาน (Staff only)** _(any staff-level role)_ — a single toggle link to switch between the storefront and the backstore management area: **ไปหน้าร้าน** (Go to storefront) when you're currently in the backstore, or **จัดการหลังร้าน** (Go to backstore) when you're currently in the storefront. (The category/product/order/user management links live on the backstore's Home tab now — see [Home tab](#home-tab-dashboard).)
+- **ทั่วไป (General)** — My orders, Saved addresses, My payments
 - **เกี่ยวกับ (About)** — App info
 - **ออกจากระบบ (Log out)** at the bottom, with a confirmation prompt
 
@@ -146,7 +145,7 @@ Access via the **โปรไฟล์ (Profile)** tab. Shows your username, use
 
 ## Roles & permissions
 
-The app tailors what you see based on your assigned role(s):
+The app tailors what you see based on your assigned role(s). Any staff-level role also gets access to a separate backstore area (management tools, distinct tab bar) alongside the regular storefront — switch between them via the toggle in [Profile](#profile).
 
 | Role                       | Can do                                                  |
 | -------------------------- | ------------------------------------------------------- |

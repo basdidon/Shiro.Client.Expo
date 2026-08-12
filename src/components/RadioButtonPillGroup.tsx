@@ -18,7 +18,7 @@ const RadioPillButtonGroup = ({ options, selectedId, onPress }: RadioPillButtonG
             <ScrollView
                 showsHorizontalScrollIndicator={false}
                 horizontal
-                contentContainerStyle={{ columnGap: 8, marginVertical: 4 }}
+                contentContainerStyle={{ paddingHorizontal: 12, columnGap: 8, marginVertical: 4 }}
             >
                 {options.map((x) => {
                     const selected = selectedId == x.id;
@@ -38,7 +38,12 @@ const RadioPillButtonGroup = ({ options, selectedId, onPress }: RadioPillButtonG
                             ]}
                             onPress={() => onPress(id, x.value)}
                         >
-                            <Text style={selected ? { color: "white" } : { color: "blue" }}>
+                            <Text
+                                style={[
+                                    { fontFamily: "Mali_400Regular" },
+                                    selected ? { color: "white" } : { color: "blue" },
+                                ]}
+                            >
                                 {x.label}
                             </Text>
                         </Pressable>

@@ -6,7 +6,7 @@ function CartButton() {
     return (
         <Link href="/cart" asChild>
             <Pressable hitSlop={8}>
-                <MaterialDesignIcons name="cart-outline" size={22} />
+                <MaterialDesignIcons name="cart-outline" size={24} />
             </Pressable>
         </Link>
     );

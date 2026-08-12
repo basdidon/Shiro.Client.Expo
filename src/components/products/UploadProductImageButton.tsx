@@ -5,7 +5,8 @@ import { ActivityIndicator, Platform, Pressable, StyleSheet, Text, View } from "
 
 import AppText from "@/components/ui/AppText";
 import { useUploadProductImage } from "@/hooks/useProducts";
-import { cropAndResize } from "@/lib/productImageProcessing";
+import { cropAndResize, getImageSaveFormat } from "@/lib/productImageProcessing";
+import { SaveFormat } from "expo-image-manipulator";
 
 const THUMBNAIL_SIZE = { width: 512, height: 512 };
 const DETAIL_SIZE = { width: 1024, height: 768 };
@@ -57,18 +58,21 @@ export default function UploadProductImageButton({ productId }: { productId: str
         setError(null);
         try {
             const target = type === "Thumbnail" ? THUMBNAIL_SIZE : DETAIL_SIZE;
+            const format = getImageSaveFormat(asset);
             const processedUri = await cropAndResize(
                 asset.uri,
                 asset.width,
                 asset.height,
                 target.width,
                 target.height,
+                format,
             );
+            const extension = format === SaveFormat.PNG ? "png" : "jpg";
             await uploadImage({
                 productId,
                 type,
                 fileUri: processedUri,
-                filename: asset.fileName ?? `${type.toLowerCase()}.jpg`,
+                filename: `${type.toLowerCase()}.${extension}`,
             });
             closeAll();
         } catch (err) {
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginTop: 16,
     },
-    triggerText: { color: "blue", textAlign: "center", fontSize: 20 },
+    triggerText: { color: "blue", textAlign: "center", fontSize: 20, fontFamily: "Mali_400Regular" },
     sheetContent: { padding: 16, paddingBottom: 32 },
     sheetTitle: { textAlign: "center", marginBottom: 12 },
     row: {

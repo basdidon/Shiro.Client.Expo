@@ -1,18 +1,21 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios from "axios";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Button, StyleSheet, View } from "react-native";
+import { Button, Pressable, StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/components/ui/AppText";
 import FormTextInput from "@/components/ui/FormTextInput";
 import { loginSchema, type LoginFormValues } from "@/lib/validation/authSchemas";
 import { useAuthStore } from "@/store/useAuthStore";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
 export default function LoginScreen() {
     const login = useAuthStore((state) => state.login);
+    const router = useRouter();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -26,7 +29,10 @@ export default function LoginScreen() {
         setError(null);
         setIsSubmitting(true);
         try {
-            await login(username, password);
+            const result = await login(username, password);
+            if (result === "verification-required") {
+                router.replace("/verify-otp");
+            }
         } catch (err) {
             if (axios.isAxiosError(err) && !err.response) {
                 setError("ขาดการเชื่อมต่อ กรุณาตรวจสอบอินเทอร์เน็ตของคุณ");
@@ -39,8 +45,12 @@ export default function LoginScreen() {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.form}>
+        <SafeAreaView edges={["left", "right", "bottom"]} style={styles.container}>
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.form}
+                keyboardShouldPersistTaps="handled"
+                bottomOffset={62}
+            >
                 <AppText size="heading" style={styles.title}>
                     เข้าสู่ระบบ
                 </AppText>
@@ -51,7 +61,9 @@ export default function LoginScreen() {
                     placeholder="ชื่อผู้ใช้"
                     autoCapitalize="none"
                     autoCorrect={false}
+                    autoFocus
                     returnKeyType="next"
+                    submitBehavior="submit"
                     onSubmitEditing={() => setFocus("password")}
                 />
                 <FormTextInput
@@ -59,6 +71,7 @@ export default function LoginScreen() {
                     name="password"
                     placeholder="รหัสผ่าน"
                     secureTextEntry
+                    showPasswordToggle
                     autoCapitalize="none"
                 />
 
@@ -75,14 +88,27 @@ export default function LoginScreen() {
                         ยังไม่มีบัญชี? สมัครสมาชิก
                     </AppText>
                 </Link>
-            </View>
+                <View style={{ marginTop: "auto" }}>
+                    <Link href={"/app-info"} asChild>
+                        <Pressable>
+                            <MaterialDesignIcons name="information-slab-circle-outline" size={18} />
+                        </Pressable>
+                    </Link>
+                </View>
+            </KeyboardAwareScrollView>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    form: { gap: 12, paddingHorizontal: 24 },
+    form: {
+        flexGrow: 1,
+        backgroundColor: "white",
+        gap: 12,
+        paddingTop: 48,
+        paddingHorizontal: 24,
+    },
     title: { textAlign: "center", marginBottom: 12 },
     error: { color: "red" },
     link: { alignSelf: "center", marginTop: 8 },
