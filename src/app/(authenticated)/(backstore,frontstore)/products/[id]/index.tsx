@@ -88,13 +88,17 @@ export default function SingleProductPage() {
         ]);
     };
 
-    const headerRight = () => (
-        <Link href="/cart" asChild>
-            <Pressable hitSlop={8}>
-                <MaterialDesignIcons name="cart-outline" size={22} />
-            </Pressable>
-        </Link>
-    );
+    const headerRight = () => {
+        return segments[1] === "(frontstore)" ? (
+            <Link href="/cart" asChild>
+                <Pressable hitSlop={8}>
+                    <MaterialDesignIcons name="cart-outline" size={22} />
+                </Pressable>
+            </Link>
+        ) : (
+            <></>
+        );
+    };
 
     if (isPending) {
         return (
@@ -122,7 +126,12 @@ export default function SingleProductPage() {
             edges={["left", "right", "bottom"]}
             style={{ flexDirection: "column", flex: 1 }}
         >
-            <Stack.Screen options={{ title: "", headerRight }} />
+            <Stack.Screen
+                options={{
+                    title: "",
+                    headerRight,
+                }}
+            />
             <ScrollView
                 style={{ flex: 1, backgroundColor: "white" }}
                 showsVerticalScrollIndicator={false}
@@ -134,7 +143,7 @@ export default function SingleProductPage() {
                         contentFit="cover"
                     />
                 ) : (
-                    <View style={{ backgroundColor: "cyan", aspectRatio: 4 / 3 }} />
+                    <View style={{ backgroundColor: "#faf9f6", aspectRatio: 4 / 3 }} />
                 )}
                 <View style={{ margin: 8 }}>
                     <View style={{ gap: 4, flexDirection: "column", alignItems: "flex-start" }}>

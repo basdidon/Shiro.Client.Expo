@@ -72,6 +72,11 @@ const refreshAccessToken = async (): Promise<string | null> => {
         await tokenStorage.setAccessToken(data.accessToken);
         if (data.refreshToken?.token) {
             await tokenStorage.setRefreshToken(data.refreshToken.token);
+        } else {
+            console.warn(
+                "[auth] refresh response had no rotated refreshToken.token - keeping the previous refresh token in storage",
+                data,
+            );
         }
         console.log("[auth] refresh succeeded");
         return data.accessToken;
